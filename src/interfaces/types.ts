@@ -1,34 +1,10 @@
-export interface FormInvoiceData {
-    academicYear: number
-    school:       string
-    responsibleTeacherName?: string
-    student: Student
-    studentAcademicRecord: StudentAcademicRecord
-}
-type Student = {
-    studentName:         string
-    studentNumber:       number
-    studentYearAndClass: string
-}
-type StudentAcademicRecord = {
-    subject: Matter
-    subjectSituation: 'Aprovado' | 'Reprovado' | 'Em recuperação'
-    grades:   Grades
-    absences: Absences
-}
-type Grades = {
+export type Bimester = {
     firstQuarter:  number
     secondQuarter: number
     thirdQuarter:  number
     fourthQuarter: number
 }
-type Absences = {
-    firstQuarter:  number
-    secondQuarter: number
-    thirdQuarter:  number
-    fourthQuarter: number
-}
-type Matter =
+export type Matter =
   | 'Português'
   | 'Matemática'
   | 'História'
@@ -45,12 +21,48 @@ type Matter =
   | 'Ensino Religioso'
   | 'Tecnologia'
   | 'Convivência'
-  | string;
+  | string
+export enum SubjectSituation {
+    APPROVED           = 'Aprovado',
+    RECOVERY           = 'Em recuperação',
+    FAILED_FOR_ABSENCE = 'Reprovado por falta',
+    DISAPPROVED        = 'Reprovado'
+}
+export enum Concept {
+    A = 'A',
+    B = 'B',
+    C = 'C',
+    D = 'D'
+}
+interface AcademicRecord {
+    grades:   Bimester
+    absences: Bimester
+    concept:  Concept
+    totalClasses:  number
+    totalAbsences: number
+    finalResult:   SubjectSituation
+}
+export interface StudentAcademicRecord {
+    [subject: Matter]: AcademicRecord
+}
+interface Student {
+    name:         string
+    number:       number
+    yearAndClass: string
+}
+export interface SchoolReport {
+    school:       string
+    teacher:      string
+    academicYear: number
+    student:               Student
+    studentAcademicRecord: StudentAcademicRecord
+}
 /* Components/Form/Input */
-interface InputType {
-    name:  string
-    label: string
-    container?: boolean
+type InputType = {
+    name:           string
+    label?:         string
+    labelPosition?: 'before' | 'after'
+    container?:     boolean
 }
 /**
  * Defines the types of native input properties.

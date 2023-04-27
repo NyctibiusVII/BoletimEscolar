@@ -1,52 +1,46 @@
 import { useEffect, useRef } from 'react'
 import { useField } from '@unform/core'
 
-import type { InputProps } from '@/interfaces/types'
+import { InputProps } from "@/interfaces/types"
 
-export const Input = ({ name, label, container=false, ...rest }: InputProps) => {
+export const Input = ({ name, label, labelPosition='before', container=false, ...props }: InputProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
+    const {
+        fieldName,
+        defaultValue,
+        registerField
+    } = useField(name)
 
-    const { fieldName, defaultValue, registerField, error } = useField(name)
-
-    const InputComponent =
-        <input
-            id={fieldName}
-            ref={inputRef}
-            defaultValue={defaultValue}
-            {...rest}
-        />
-
-    const LabelComponent =
+    const Input =
+        <input id={fieldName} ref={inputRef} defaultValue={defaultValue} {...props}/>
+    const Label =
         <label htmlFor={fieldName}>{label}</label>
-
-    const ContainerComponent = (Component: JSX.Element) =>
-        <div className={`flex flex-nowrap gap-1 ${fieldName}`}>{Component}</div>
 
     useEffect(() => {
         return registerField({
             name: fieldName,
-            ref: inputRef.current,
-            getValue: ref => {
-                return ref.value
-            },
-            setValue: (ref, value) => {
-                ref.value = value
-            },
-            clearValue: ref => {
-                ref.value = ''
-            }
+            ref:  inputRef.current,
+            getValue:   ref => ref.value,
+            setValue:  (ref, value) => ref.value = value,
+            clearValue: ref => ref.value = ''
         })
     }, [fieldName, registerField])
 
-    return (
-        <>
-            { container ?
-                ContainerComponent(<>{LabelComponent} {InputComponent}</>)
-                :
-                <>{LabelComponent} {InputComponent}</>
+    return <>{ container ?
+        <div className={'flex flex-nowrap gap-1'}>
+            {
+                (label && labelPosition === 'after') && <>{Input}{Label}</>
+                ||
+                (label) && <>{Label}{Input}</>
+                || Input
             }
-
-            { error && <span>{error}</span> }
-        </>
-    )
+        </div>
+        :
+        <>{
+            (label && labelPosition === 'after') && <>{Input}{Label}</>
+            ||
+            (label) && <>{Label}{Input}</>
+            || Input
+        }</>
+    }</>
 }

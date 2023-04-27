@@ -20,3 +20,9 @@ body {
     color: var(--foreground);
     background: var(--background);
 }
+
+@layer {
+    .tableItens {
+        @apply text-center align-middle px-1.5 py-1;
+    }
+}
