@@ -24,19 +24,8 @@ select:-webkit-autofill:focus {
     -webkit-transition: background-color 5000s ease-in-out 0s;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: var(--gray-95);
-    }
-}
+@media (prefers-color-scheme: dark) { :root { --background: var(--gray-95); } }
 
-body {
-    color: var(--foreground);
-    background: var(--background);
-}
+body { background: var(--background); }
 
-@layer {
-    .tableItens {
-        @apply text-center align-middle px-1.5 py-1;
-    }
-}
+@layer { .tableItens { @apply text-center align-middle px-1.5 py-1; } }

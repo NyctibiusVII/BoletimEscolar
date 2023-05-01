@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { GetStaticProps } from 'next'
 
 import { FormHandles, Scope, SubmitHandler } from '@unform/core'
@@ -25,26 +25,33 @@ interface HomeProps {
 
 export default function Home({ academicYear }: HomeProps) {
     const formRef = useRef<FormHandles>(null)
+    const mainRef = useRef<HTMLDivElement>(null)
 
     const hasResponsibleTeacherName = true
-    const hasSignatures        = true
-    const hasConcept           = true
-    const hasConceptValues     = true
+    const hasSignatures = true
+    const hasConcept = true
+    const hasConceptValues = true
     const hasFinalResultValues = true
 
     const [activeQuarter, setActiveQuarter] = useState({
-        firstQuarter:  true,
+        firstQuarter: true,
         secondQuarter: true,
-        thirdQuarter:  true,
+        thirdQuarter: true,
         fourthQuarter: true
     })
     const noteWeight = Object.values(activeQuarter).filter(Boolean).length
 
-    const schoolReportClippingBorderColor = 'red-600'
-    const insufficientGradeColor          = 'red-600'
-    const enoughGradeColor                = 'green-500'
+    const [schoolReportColors, setSchoolReportColors] = useState({
+        card:              `bg-white`,
+        border:            `border-gray-95`,
+        clippingBorder:    `border-red-600`,
+        signatures:        `bg-gray-95`,
+        text:              `text-gray-95`,
+        insufficientGrade: `text-red-600`,
+        enoughGrade:       `text-green-500`
+    })
     const minimumAttendancePercentageToPass = 25
-    const minimumPassingGrade  = 6
+    const minimumPassingGrade = 6
     const minimumRecoveryGrade = 4
 
     const [subjects, setSubjects] = useState<Matter[]>([
@@ -96,10 +103,10 @@ export default function Home({ academicYear }: HomeProps) {
     ) => {
         const dataUpdate = (prevState: SchoolReport) => {
             const { grades, absences, totalClasses } = { ...prevState.studentAcademicRecord[subject] }
-            grades[bimester]   = academicRecord === 'grades'   ? value : grades[bimester]
+            grades[bimester] = academicRecord === 'grades' ? value : grades[bimester]
             absences[bimester] = academicRecord === 'absences' ? value : absences[bimester]
 
-            const gradesByQuarter   = Object.values(grades)
+            const gradesByQuarter = Object.values(grades)
             const absencesByQuarter = Object.values(absences)
 
             const sumGradesByActiveQuarter = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
@@ -177,21 +184,41 @@ export default function Home({ academicYear }: HomeProps) {
             .finally(() => buttonGenerateImage.style.visibility = 'visible')
     }
 
-    return(
-        <div className='min-h-screen flex flex-col items-center justify-center'>
-            <main id='school-report' className={`w-auto min-w-[30rem] bg-white border-2 border-solid border-gray-70 ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4 hover:border-dashed hover:border-${schoolReportClippingBorderColor}`}>
-                <Form ref={formRef} onSubmit={handleFormSubmit} className='border'>
+    useEffect(() => {
+        const inputList = document.getElementsByClassName('grade') as HTMLCollectionOf<HTMLInputElement>
+
+        for (let i = 0; i < inputList.length; i++) {
+            const input = inputList[i]
+            input.classList.remove(schoolReportColors.enoughGrade, schoolReportColors.insufficientGrade)
+
+            input.classList.add(Number(input.value) >= minimumPassingGrade
+                ? schoolReportColors.enoughGrade
+                : schoolReportColors.insufficientGrade
+            )
+        }
+    }, [schoolReportColors.enoughGrade, schoolReportColors.insufficientGrade, schoolReport.studentAcademicRecord])
+
+    return (
+        <div className={`min-h-screen ${schoolReportColors.text} flex flex-col items-center justify-center`}>
+            <main
+                id='school-report'
+                ref={mainRef}
+                onMouseEnter={() => { if (mainRef.current) mainRef.current.classList.add(schoolReportColors.clippingBorder) }}
+                onMouseLeave={() => { if (mainRef.current) mainRef.current.classList.remove(schoolReportColors.clippingBorder) }}
+                className={`w-auto min-w-[30rem] ${schoolReportColors.card} border-2 border-solid hover:border-dashed ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4`}
+            >
+                <Form ref={formRef} onSubmit={handleFormSubmit} className={`border ${schoolReportColors.border}`}>
                     <section>
                         <h1 className='text-center my-6'>BOLETIM ESCOLAR:&nbsp;<span>{schoolReport.academicYear}</span></h1>
 
-                        <hr />
+                        <hr className={schoolReportColors.border} />
 
                         <div className='flex justify-between gap-12 p-1'>
                             <Input
                                 name='school'
                                 label='Escola:'
                                 type='text'
-                                className='w-full min-w-[24rem]'
+                                className={`w-full min-w-[24rem] ${schoolReportColors.card}`}
                                 onChange={event => setSchoolReport(prevState => ({ ...prevState, school: event.target.value }))}
                                 value={schoolReport.school}
                                 container
@@ -202,7 +229,7 @@ export default function Home({ academicYear }: HomeProps) {
                                     name='teacher'
                                     label='Prof:'
                                     type='text'
-                                    className='w-36'
+                                    className={`w-36 ${schoolReportColors.card}`}
                                     onChange={event => setSchoolReport(prevState => ({ ...prevState, teacher: event.target.value }))}
                                     value={schoolReport.teacher}
                                     container
@@ -211,7 +238,7 @@ export default function Home({ academicYear }: HomeProps) {
                             }
                         </div>
 
-                        <hr />
+                        <hr className={schoolReportColors.border} />
 
                         <div className='flex justify-between gap-12 p-1'>
                             <Scope path='student'>
@@ -219,7 +246,7 @@ export default function Home({ academicYear }: HomeProps) {
                                     name='name'
                                     label='Nome:'
                                     type='text'
-                                    className='w-full min-w-[24rem]'
+                                    className={`w-full min-w-[24rem] ${schoolReportColors.card}`}
                                     onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, name: event.target.value } }))}
                                     value={schoolReport.student.name}
                                     container
@@ -231,7 +258,7 @@ export default function Home({ academicYear }: HomeProps) {
                                         name='number'
                                         label='N°:'
                                         type='number'
-                                        className='w-9'
+                                        className={`w-9 ${schoolReportColors.card}`}
                                         onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, number: Number(event.target.value) } }))}
                                         value={schoolReport.student.number}
                                         step='1'
@@ -244,7 +271,7 @@ export default function Home({ academicYear }: HomeProps) {
                                         name='yearAndClass'
                                         label='Ano:'
                                         type='text'
-                                        className='w-12'
+                                        className={`w-12 ${schoolReportColors.card}`}
                                         onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, yearAndClass: event.target.value } }))}
                                         value={schoolReport.student.yearAndClass}
                                         minLength={1}
@@ -261,40 +288,40 @@ export default function Home({ academicYear }: HomeProps) {
                         <table className='table-auto border-collapse border-spacing-0'>
                             <thead>
                                 <tr>
-                                    <th className='tableItens w-40 border border-t-2 border-r-2' rowSpan={2}>Componentes curriculares</th>
-                                    <th className='tableItens border border-t-2 border-r-2' colSpan={4}>Notas</th>
-                                    <th className='tableItens border border-t-2 border-r-2' colSpan={4}>Faltas</th>
-                                    { hasConcept && <th className='tableItens w-20 border border-t-2' rowSpan={2}>5° Conceito</th> }
-                                    <th className='tableItens w-20 border border-t-2' rowSpan={2}>Total de faltas</th>
-                                    <th className='tableItens w-30 border border-t-2' rowSpan={2}>Resultado final</th>
+                                    <th className={`tableItens w-40 border border-t-2 border-r-2 ${schoolReportColors.border}`} rowSpan={2}>Componentes curriculares</th>
+                                    <th className={`tableItens border border-t-2 border-r-2 ${schoolReportColors.border}`} colSpan={4}>Notas</th>
+                                    <th className={`tableItens border border-t-2 border-r-2 ${schoolReportColors.border}`} colSpan={4}>Faltas</th>
+                                    { hasConcept && <th className={`tableItens w-20 border border-t-2 ${schoolReportColors.border}`} rowSpan={2}>5° Conceito</th> }
+                                    <th className={`tableItens w-20 border border-t-2 ${schoolReportColors.border}`} rowSpan={2}>Total de faltas</th>
+                                    <th className={`tableItens w-30 border border-t-2 ${schoolReportColors.border}`} rowSpan={2}>Resultado final</th>
                                 </tr>
                                 <tr>
-                                    <th className='tableItens w-14 border'>1° Bim</th>
-                                    <th className='tableItens w-14 border'>2° Bim</th>
-                                    <th className='tableItens w-14 border'>3° Bim</th>
-                                    <th className='tableItens w-14 border border-r-2'>4° Bim</th>
-                                    <th className='tableItens w-14 border'>1° Bim</th>
-                                    <th className='tableItens w-14 border'>2° Bim</th>
-                                    <th className='tableItens w-14 border'>3° Bim</th>
-                                    <th className='tableItens w-14 border border-r-2'>4° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>1° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>2° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>3° Bim</th>
+                                    <th className={`tableItens w-14 border border-r-2 ${schoolReportColors.border}`}>4° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>1° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>2° Bim</th>
+                                    <th className={`tableItens w-14 border ${schoolReportColors.border}`}>3° Bim</th>
+                                    <th className={`tableItens w-14 border border-r-2 ${schoolReportColors.border}`}>4° Bim</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                { subjects.map((subject, index) => {
+                                { subjects.map(subject => {
                                     const matter = schoolReport.studentAcademicRecord[`${subject}`]
 
                                     return (
-                                        <Scope path={`${subject}`} key={index}>
-                                            <tr key={index}>
-                                                <td className='tableItens border border-r-2'>{subject}</td>
+                                        <Scope path={`${subject}`} key={subject}>
+                                            <tr key={subject}>
+                                                <td className={`tableItens border border-r-2 ${schoolReportColors.border}`}>{subject}</td>
                                                 <Scope path='grades'>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.firstQuarter &&
                                                             <Input
                                                                 name='firstQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.firstQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10  ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                                 value={matter?.grades.firstQuarter}
                                                                 step='0.1'
@@ -303,12 +330,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.firstQuarter &&
                                                             <Input
                                                                 name='secondQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.secondQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 grade ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                                 value={matter?.grades.secondQuarter}
                                                                 step='0.1'
@@ -317,12 +344,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.firstQuarter &&
                                                             <Input
                                                                 name='thirdQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.thirdQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 grade ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                                 value={matter?.grades.thirdQuarter}
                                                                 step='0.1'
@@ -331,12 +358,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border border-r-2'>
+                                                    <td className={`tableItens border border-r-2 ${schoolReportColors.border}`}>
                                                         { activeQuarter.firstQuarter &&
                                                             <Input
                                                                 name='fourthQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.fourthQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 grade ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                                 value={matter?.grades.fourthQuarter}
                                                                 step='0.1'
@@ -348,12 +375,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                 </Scope>
 
                                                 <Scope path='absences'>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.firstQuarter &&
                                                             <Input
                                                                 name='firstQuarter'
                                                                 type='number'
-                                                                className='w-10'
+                                                                className={`w-10 ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'absences')}
                                                                 value={matter?.absences.firstQuarter}
                                                                 step='1'
@@ -362,12 +389,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.secondQuarter &&
                                                             <Input
                                                                 name='secondQuarter'
                                                                 type='number'
-                                                                className='w-10'
+                                                                className={`w-10 ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'absences')}
                                                                 value={matter?.absences.secondQuarter}
                                                                 step='1'
@@ -376,12 +403,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border'>
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
                                                         { activeQuarter.thirdQuarter &&
                                                             <Input
                                                                 name='thirdQuarter'
                                                                 type='number'
-                                                                className='w-10'
+                                                                className={`w-10 ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'absences')}
                                                                 value={matter?.absences.thirdQuarter}
                                                                 step='1'
@@ -390,12 +417,12 @@ export default function Home({ academicYear }: HomeProps) {
                                                             />
                                                         }
                                                     </td>
-                                                    <td className='tableItens border border-r-2'>
+                                                    <td className={`tableItens border border-r-2 ${schoolReportColors.border}`}>
                                                         { activeQuarter.fourthQuarter &&
                                                             <Input
                                                                 name='fourthQuarter'
                                                                 type='number'
-                                                                className='w-10'
+                                                                className={`w-10 ${schoolReportColors.card}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'absences')}
                                                                 value={matter?.absences.fourthQuarter}
                                                                 step='1'
@@ -407,8 +434,8 @@ export default function Home({ academicYear }: HomeProps) {
                                                 </Scope>
 
                                                 { hasConcept &&
-                                                    <td className='tableItens border'>
-                                                        { hasConceptValues &&
+                                                    <td className={`tableItens border ${schoolReportColors.border}`}>
+                                                        {hasConceptValues &&
                                                             <Input
                                                                 name='concept'
                                                                 type='text'
@@ -422,7 +449,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                         }
                                                     </td>
                                                 }
-                                                <td className='tableItens border'>
+                                                <td className={`tableItens border ${schoolReportColors.border}`}>
                                                     <Input
                                                         name='totalAbsences'
                                                         type='number'
@@ -432,7 +459,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                         disabled
                                                     />
                                                 </td>
-                                                <td className='tableItens border'>
+                                                <td className={`tableItens border ${schoolReportColors.border}`}>
                                                     { hasFinalResultValues &&
                                                         <Input
                                                             name='finalResult'
@@ -464,13 +491,13 @@ export default function Home({ academicYear }: HomeProps) {
                 { hasSignatures &&
                     <div className='w-full flex flex-col gap-4'>
                         <div className='flex gap-4'>
-                            <div className='w-full flex items-end'><p className='w-24'>1° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
-                            <div className='w-full flex items-end'><p className='w-24'>2° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>1° Bim:</p><span className={`w-full h-0.5 ${schoolReportColors.signatures}`} /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>2° Bim:</p><span className={`w-full h-0.5 ${schoolReportColors.signatures}`} /></div>
                         </div>
 
                         <div className='flex gap-4'>
-                            <div className='w-full flex items-end'><p className='w-24'>3° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
-                            <div className='w-full flex items-end'><p className='w-24'>4° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>3° Bim:</p><span className={`w-full h-0.5 ${schoolReportColors.signatures}`} /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>4° Bim:</p><span className={`w-full h-0.5 ${schoolReportColors.signatures}`} /></div>
                         </div>
                     </div>
                 }
@@ -483,7 +510,7 @@ export const getStaticProps: GetStaticProps = async () => {
     const academicYear = new Date().getFullYear()
 
     return {
-        props: {academicYear},
+        props: { academicYear },
         revalidate: 60 * 60 * 24 // 24 hours
     }
 }
