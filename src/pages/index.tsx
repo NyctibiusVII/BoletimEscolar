@@ -3,6 +3,7 @@ import { GetStaticProps } from 'next'
 
 import { FormHandles, Scope, SubmitHandler } from '@unform/core'
 import { Form } from '@unform/web'
+import domtoimage from 'dom-to-image'
 
 import { Input } from '@/components/form/input'
 
@@ -160,12 +161,30 @@ export default function Home({ academicYear }: HomeProps) {
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
         // sendData(schoolReport)
         console.log(data)
+        generateImage()
         // setSchoolReport(schoolReportStartup)
+    }
+
+    const generateImage = () => {
+        const schoolReportNode: HTMLElement = document.getElementById('school-report') ?? document.body
+        const buttonGenerateImage: HTMLElement | null = document.getElementById('generate-image')
+
+        if(!buttonGenerateImage) return
+        buttonGenerateImage.style.visibility = 'hidden'
+
+        domtoimage.toPng(schoolReportNode)
+            .then(dataUrl => {
+                var img = new Image()
+                img.src = dataUrl
+                document.body.appendChild(img)
+            })
+            .catch(error => console.error('Opa, algo deu errado!\nPor favor, recarregue a página.', error))
+            .finally(() => buttonGenerateImage.style.visibility = 'visible')
     }
 
     return(
         <div className='min-h-screen flex flex-col items-center justify-center'>
-            <main className={`w-auto min-w-[30rem] bg-white border-2 border-solid border-gray-70 ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4 hover:border-dashed hover:border-red-600`}>
+            <main id='school-report' className={`w-auto min-w-[30rem] bg-white border-2 border-solid border-gray-70 ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4 hover:border-dashed hover:border-${schoolReportClippingBorderColor}`}>
                 <Form ref={formRef} onSubmit={handleFormSubmit} className='border'>
                     <section>
                         <h1 className='text-center my-6'>BOLETIM ESCOLAR:&nbsp;<span>{schoolReport.academicYear}</span></h1>
@@ -438,7 +457,13 @@ export default function Home({ academicYear }: HomeProps) {
                         </table>
                     </Scope>
 
-                    <button type='submit'>ENVIAR</button>
+                    <button
+                        id='generate-image'
+                        type='submit'
+                        className='text-white bg-green-500 hover:bg-green-600 border border-white rounded-lg py-2 px-4 shadow-lg fixed right-16 bottom-16 transition-colors'
+                    >
+                        Gerar Imagem
+                    </button>
                 </Form>
 
                 <div className='w-full flex flex-col gap-4'>
