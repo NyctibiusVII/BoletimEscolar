@@ -184,20 +184,6 @@ export default function Home({ academicYear }: HomeProps) {
             .finally(() => buttonGenerateImage.style.visibility = 'visible')
     }
 
-    useEffect(() => {
-        const inputList = document.getElementsByClassName('grade') as HTMLCollectionOf<HTMLInputElement>
-
-        for (let i = 0; i < inputList.length; i++) {
-            const input = inputList[i]
-            input.classList.remove(schoolReportColors.enoughGrade, schoolReportColors.insufficientGrade)
-
-            input.classList.add(Number(input.value) >= minimumPassingGrade
-                ? schoolReportColors.enoughGrade
-                : schoolReportColors.insufficientGrade
-            )
-        }
-    }, [schoolReportColors.enoughGrade, schoolReportColors.insufficientGrade, schoolReport.studentAcademicRecord])
-
     return (
         <div className={`min-h-screen ${schoolReportColors.text} flex flex-col items-center justify-center`}>
             <main
@@ -321,7 +307,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='firstQuarter'
                                                                 type='number'
-                                                                className={`w-10  ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                className={`w-10 ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                                 value={matter?.grades.firstQuarter}
                                                                 step='0.1'
@@ -335,7 +321,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='secondQuarter'
                                                                 type='number'
-                                                                className={`w-10 grade ${schoolReportColors.card}`}
+                                                                className={`w-10 ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                                 value={matter?.grades.secondQuarter}
                                                                 step='0.1'
@@ -349,7 +335,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='thirdQuarter'
                                                                 type='number'
-                                                                className={`w-10 grade ${schoolReportColors.card}`}
+                                                                className={`w-10 ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                                 value={matter?.grades.thirdQuarter}
                                                                 step='0.1'
@@ -363,7 +349,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='fourthQuarter'
                                                                 type='number'
-                                                                className={`w-10 grade ${schoolReportColors.card}`}
+                                                                className={`w-10 ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                                 value={matter?.grades.fourthQuarter}
                                                                 step='0.1'
