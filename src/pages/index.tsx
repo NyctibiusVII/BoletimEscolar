@@ -27,6 +27,7 @@ export default function Home({ academicYear }: HomeProps) {
     const formRef = useRef<FormHandles>(null)
 
     const hasResponsibleTeacherName = true
+    const hasSignatures        = true
     const hasConcept           = true
     const hasConceptValues     = true
     const hasFinalResultValues = true
@@ -37,16 +38,17 @@ export default function Home({ academicYear }: HomeProps) {
         thirdQuarter:  true,
         fourthQuarter: true
     })
+    const noteWeight = Object.values(activeQuarter).filter(Boolean).length
 
-    const insufficientGradeColor = 'red-600'
-    const enoughGradeColor       = 'green-500'
-    const percentageOfAbsencesToFail = 25
-    const passingGrade  = 6
-    const recoveryGrade = 4
-    const noteWeight    = 4
+    const schoolReportClippingBorderColor = 'red-600'
+    const insufficientGradeColor          = 'red-600'
+    const enoughGradeColor                = 'green-500'
+    const minimumAttendancePercentageToPass = 25
+    const minimumPassingGrade  = 6
+    const minimumRecoveryGrade = 4
 
     const [subjects, setSubjects] = useState<Matter[]>([
-        'Português', 'Matemática', 'Ciências', 'História', 'Geografia', 'Tecnologia', 'Convivência'
+        'Português', 'Matemática', 'Ciências', 'História', 'Geografia'
     ])
 
     const studentAcademicRecord = () => {
@@ -66,7 +68,7 @@ export default function Home({ academicYear }: HomeProps) {
                     fourthQuarter: 0
                 },
                 concept: Concept.D,
-                totalClasses: 1,
+                totalClasses: 1, // pegar esse valor com o usuário e avisa-lo. valor min é 1, max é 248
                 totalAbsences: 0,
                 finalResult: SubjectSituation.DISAPPROVED
             }
@@ -100,12 +102,10 @@ export default function Home({ academicYear }: HomeProps) {
             const gradesByQuarter   = Object.values(grades)
             const absencesByQuarter = Object.values(absences)
 
-            const average = (
-                (activeQuarter.firstQuarter  ? gradesByQuarter[0] : 0) +
-                (activeQuarter.secondQuarter ? gradesByQuarter[1] : 0) +
-                (activeQuarter.thirdQuarter  ? gradesByQuarter[2] : 0) +
-                (activeQuarter.fourthQuarter ? gradesByQuarter[3] : 0)
-            ) / noteWeight
+            const sumGradesByActiveQuarter = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
+                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + gradesByQuarter[index] : acc
+            }, 0)
+            const average = sumGradesByActiveQuarter / noteWeight
 
             const concept =
                 average >= 7
@@ -116,21 +116,17 @@ export default function Home({ academicYear }: HomeProps) {
                             ? Concept.C
                             : Concept.D
 
-            const newTotalAbsences = (
-                (activeQuarter.firstQuarter  ? absencesByQuarter[0] : 0) +
-                (activeQuarter.secondQuarter ? absencesByQuarter[1] : 0) +
-                (activeQuarter.thirdQuarter  ? absencesByQuarter[2] : 0) +
-                (activeQuarter.fourthQuarter ? absencesByQuarter[3] : 0)
-            )
-
+            const newTotalAbsences = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
+                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + absencesByQuarter[index] : acc
+            }, 0)
             const presencePercentage = totalClasses === 0 ? 0 : ((totalClasses - newTotalAbsences) / totalClasses) * 100
 
             const finalResult =
-                average >= passingGrade
+                average >= minimumPassingGrade
                     ? SubjectSituation.APPROVED
-                    : presencePercentage < percentageOfAbsencesToFail
+                    : presencePercentage < minimumAttendancePercentageToPass
                         ? SubjectSituation.FAILED_FOR_ABSENCE
-                        : average >= recoveryGrade
+                        : average >= minimumRecoveryGrade
                             ? SubjectSituation.RECOVERY
                             : SubjectSituation.DISAPPROVED
 
@@ -159,7 +155,6 @@ export default function Home({ academicYear }: HomeProps) {
     }
 
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
-        // sendData(schoolReport)
         console.log(data)
         generateImage()
         // setSchoolReport(schoolReportStartup)
@@ -299,7 +294,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='firstQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.firstQuarter >= passingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 text-${ matter?.grades.firstQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                                 value={matter?.grades.firstQuarter}
                                                                 step='0.1'
@@ -313,7 +308,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='secondQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.secondQuarter >= passingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 text-${ matter?.grades.secondQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                                 value={matter?.grades.secondQuarter}
                                                                 step='0.1'
@@ -327,7 +322,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='thirdQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.thirdQuarter >= passingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 text-${ matter?.grades.thirdQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                                 value={matter?.grades.thirdQuarter}
                                                                 step='0.1'
@@ -341,7 +336,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                             <Input
                                                                 name='fourthQuarter'
                                                                 type='number'
-                                                                className={`w-10 text-${ matter?.grades.fourthQuarter >= passingGrade ? enoughGradeColor : insufficientGradeColor }`}
+                                                                className={`w-10 text-${ matter?.grades.fourthQuarter >= minimumPassingGrade ? enoughGradeColor : insufficientGradeColor }`}
                                                                 onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                                 value={matter?.grades.fourthQuarter}
                                                                 step='0.1'
@@ -466,17 +461,19 @@ export default function Home({ academicYear }: HomeProps) {
                     </button>
                 </Form>
 
-                <div className='w-full flex flex-col gap-4'>
-                    <div className='flex gap-4'>
-                        <div className='w-full flex items-end'><p className='w-24'>1° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
-                        <div className='w-full flex items-end'><p className='w-24'>2° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
-                    </div>
+                { hasSignatures &&
+                    <div className='w-full flex flex-col gap-4'>
+                        <div className='flex gap-4'>
+                            <div className='w-full flex items-end'><p className='w-24'>1° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>2° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                        </div>
 
-                    <div className='flex gap-4'>
-                        <div className='w-full flex items-end'><p className='w-24'>3° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
-                        <div className='w-full flex items-end'><p className='w-24'>4° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                        <div className='flex gap-4'>
+                            <div className='w-full flex items-end'><p className='w-24'>3° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                            <div className='w-full flex items-end'><p className='w-24'>4° Bim:</p><span className='w-full h-0.5 bg-black' /></div>
+                        </div>
                     </div>
-                </div>
+                }
             </main>
         </div>
     )

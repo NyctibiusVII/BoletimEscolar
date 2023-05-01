@@ -22,7 +22,8 @@ module.exports = {
       'gray-95': '#030712',
       'black': '#000000',
       'red-600': '#dc2626',
-      'green-500': '#22c55e'
+      'green-500': '#22c55e',
+      'green-600': '#16a34a'
     },
     opacity: {
       '0': '0',
