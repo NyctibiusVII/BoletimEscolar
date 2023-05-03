@@ -63,6 +63,7 @@ type InputType = {
     label?:         string
     labelPosition?: 'before' | 'after'
     container?:     boolean
+    withForm?:      boolean
 }
 /**
  * Defines the types of native input properties.
