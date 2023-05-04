@@ -1,171 +1,44 @@
-import { useRef, useState } from 'react'
-import { HiMenu, HiX } from 'react-icons/hi'
-import { GetStaticProps } from 'next'
+import { useContext, useRef } from 'react'
 
 import { FormHandles, Scope, SubmitHandler } from '@unform/core'
 import { Form } from '@unform/web'
-import domtoimage from 'dom-to-image'
 
-import { Input } from '@/components/form/input'
-import { Details } from '@/components/details'
+import { GenerateImageContext } from '@/contexts/GenerateImageContext'
+import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
+import { useSchoolReport } from '@/hooks/useSchoolReport'
+import { useSidebar } from '@/hooks/useSidebar'
+import { Sidebar } from '@/components/sidebar'
+import { Input } from '@/components/input'
 
-import {
-    StudentAcademicRecord,
-    Bimester,
-    Matter,
-    SchoolReport,
-    Concept,
-    SubjectSituation
-} from '@/interfaces/types'
+import { SchoolReport } from '@/interfaces/types'
 
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
-interface HomeProps {
-    academicYear: number
-}
-
-export default function Home({ academicYear }: HomeProps) {
+export default function Home() {
     const formRef = useRef<FormHandles>(null)
     const mainRef = useRef<HTMLDivElement>(null)
 
-    const [isOpen, setIsOpen] = useState(true)
-    const toggleMenu = () => setIsOpen(!isOpen)
+    const {isOpen} = useSidebar()
+    const {generateImage} = useContext(GenerateImageContext)
 
-    const [hasResponsibleTeacherName, setHasResponsibleTeacherName] = useState(true)
-    const [hasSignatures, setHasSignatures] = useState(true)
-    const [hasConcept, setHasConcept] = useState(true)
-    const [hasConceptValues, setHasConceptValues] = useState(true)
-    const [hasFinalResultValues, setHasFinalResultValues] = useState(true)
+    const {
+        subjects,
+        activeQuarter,
+        schoolReportColors,
+        minimumPassingGrade,
+        hasResponsibleTeacherName,
+        hasSignatures,
+        hasConcept,
+        hasConceptValues,
+        hasFinalResultValues
+    } = useSchoolReportConfig()
 
-    const [minimumAttendancePercentageToPass, setMinimumAttendancePercentageToPass] = useState(25)
-    const [minimumPassingGrade, setMinimumPassingGrade] = useState(6)
-    const [minimumRecoveryGrade, setMinimumRecoveryGrade] = useState(4)
-
-    const [activeQuarter, setActiveQuarter] = useState({
-        firstQuarter: true,
-        secondQuarter: true,
-        thirdQuarter: true,
-        fourthQuarter: true
-    })
-    const noteWeight = Object.values(activeQuarter).filter(Boolean).length
-
-    const [schoolReportColors, setSchoolReportColors] = useState({
-        card:              `bg-white`,
-        border:            `border-gray-950`,
-        clippingBorder:    `border-red-600`,
-        signatures:        `bg-gray-950`,
-        text:              `text-gray-950`,
-        insufficientGrade: `text-red-600`,
-        enoughGrade:       `text-green-500`
-    })
-
-    const [subjects, setSubjects] = useState<Matter[]>([
-        'Português', 'Matemática', 'Ciências', 'História', 'Geografia'
-    ])
-
-    const studentAcademicRecord = () => {
-        const newStudentAcademicRecord: StudentAcademicRecord = {}
-        subjects.forEach(subject => {
-            newStudentAcademicRecord[subject] = {
-                grades: {
-                    firstQuarter:  0,
-                    secondQuarter: 0,
-                    thirdQuarter:  0,
-                    fourthQuarter: 0
-                },
-                absences: {
-                    firstQuarter:  0,
-                    secondQuarter: 0,
-                    thirdQuarter:  0,
-                    fourthQuarter: 0
-                },
-                concept: Concept.D,
-                totalClasses: 1, // pegar esse valor com o usuário e avisa-lo. valor min é 1, max é 248
-                totalAbsences: 0,
-                finalResult: SubjectSituation.DISAPPROVED
-            }
-        })
-        return newStudentAcademicRecord
-    }
-    const schoolReportStartup: SchoolReport = {
-        school: '',
-        teacher: '',
-        academicYear,
-        student: {
-            name: '',
-            number: 0,
-            yearAndClass: ''
-        },
-        studentAcademicRecord: studentAcademicRecord()
-    }
-    const [schoolReport, setSchoolReport] = useState<SchoolReport>(schoolReportStartup)
-
-    const updateStudentAcademicRecord = (
-        value:    number,
-        subject:  Matter,
-        bimester: keyof Bimester,
-        academicRecord: 'grades' | 'absences'
-    ) => {
-        const dataUpdate = (prevState: SchoolReport) => {
-            const { grades, absences, totalClasses } = { ...prevState.studentAcademicRecord[subject] }
-            grades[bimester] = academicRecord === 'grades' ? value : grades[bimester]
-            absences[bimester] = academicRecord === 'absences' ? value : absences[bimester]
-
-            const gradesByQuarter = Object.values(grades)
-            const absencesByQuarter = Object.values(absences)
-
-            const sumGradesByActiveQuarter = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
-                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + gradesByQuarter[index] : acc
-            }, 0)
-            const average = sumGradesByActiveQuarter / noteWeight
-
-            const concept =
-                average >= 7
-                    ? Concept.A
-                    : average >= 5
-                        ? Concept.B
-                        : average >= 3
-                            ? Concept.C
-                            : Concept.D
-
-            const newTotalAbsences = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
-                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + absencesByQuarter[index] : acc
-            }, 0)
-            const presencePercentage = totalClasses === 0 ? 0 : ((totalClasses - newTotalAbsences) / totalClasses) * 100
-
-            const finalResult =
-                average >= minimumPassingGrade
-                    ? SubjectSituation.APPROVED
-                    : presencePercentage < minimumAttendancePercentageToPass
-                        ? SubjectSituation.FAILED_FOR_ABSENCE
-                        : average >= minimumRecoveryGrade
-                            ? SubjectSituation.RECOVERY
-                            : SubjectSituation.DISAPPROVED
-
-            return { absences, concept, finalResult, grades, newTotalAbsences }
-        }
-        setSchoolReport(prevState => {
-            const { absences, concept, finalResult, grades, newTotalAbsences } = dataUpdate(prevState)
-
-            const updatedAcademicRecord = {
-                ...prevState.studentAcademicRecord[subject],
-                absences,
-                grades,
-                finalResult,
-                concept,
-                totalAbsences: newTotalAbsences
-            }
-
-            return {
-                ...prevState,
-                studentAcademicRecord: {
-                    ...prevState.studentAcademicRecord,
-                    [subject]: updatedAcademicRecord
-                }
-            }
-        })
-    }
+    const {
+        schoolReport,
+        setSchoolReport,
+        updateStudentAcademicRecord
+    } = useSchoolReport()
 
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
         console.log(data)
@@ -173,107 +46,9 @@ export default function Home({ academicYear }: HomeProps) {
         // setSchoolReport(schoolReportStartup)
     }
 
-    const generateImage = () => {
-        const schoolReportNode: HTMLElement = document.getElementById('school-report') ?? document.body
-        const buttonGenerateImage: HTMLElement | null = document.getElementById('generate-image')
-
-        if(!buttonGenerateImage) return
-        buttonGenerateImage.style.visibility = 'hidden'
-        setIsOpen(false)
-
-        domtoimage.toPng(schoolReportNode)
-            .then(dataUrl => {
-                var img = new Image()
-                img.src = dataUrl
-                document.body.appendChild(img)
-            })
-            .catch(error => console.error('Opa, algo deu errado!\nPor favor, recarregue a página.', error))
-            .finally(() => buttonGenerateImage.style.visibility = 'visible')
-    }
-
     return (
         <div className={`w-screen h-screen flex items-end lg:justify-end`}>
-            <aside className={
-                `${isOpen
-                    ? 'min-w-[20rem] lg:w-1/12 2xl:w-1/6 h-full'
-                    : 'lg:w-[4.10%] lg:h-full'
-                } w-full py-8 px-4 fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out`
-            }>
-                <button className={`w-full flex items-center justify-center gap-2`} onClick={toggleMenu}>
-                    { isOpen ? <HiX className='text-2xl' /> : <HiMenu className='text-2xl' /> }
-                    <h1 className={`${isOpen ? '':  'lg:hidden'} text-xl`}>Boletim Escolar</h1>
-                </button>
-
-                { isOpen &&
-                    <div className={`max-h-full py-8 flex flex-col gap-2 overflow-y-auto scroll-smooth`}>
-                        <Input
-                            name='enoughGrade'
-                            label='Nota de aprovação:'
-                            withForm={false}
-                            type='number'
-                            className={`w-10 inputNumberValues disabled:bg-transparent cursor-not-allowed`}
-                            onChange={event => setMinimumPassingGrade(Number(event.target.value))}
-                            value={minimumPassingGrade}
-                            step='1'
-                            min='1'
-                            max='10'
-                            container
-                            readOnly
-                            disabled
-                        />
-                        <Input
-                            name='insufficientGrade'
-                            label='Nota de recuperação:'
-                            withForm={false}
-                            type='number'
-                            className={`w-10 inputNumberValues disabled:bg-transparent cursor-not-allowed`}
-                            onChange={event => setMinimumRecoveryGrade(Number(event.target.value))}
-                            value={minimumRecoveryGrade}
-                            step='1'
-                            min='1'
-                            max='10'
-                            container
-                            readOnly
-                            disabled
-                        />
-                        <Input
-                            name='frequencyPercentage'
-                            label='Porcentagem minima de frequência para aprovação:'
-                            withForm={false}
-                            type='number'
-                            className={`w-10 inputNumberValues disabled:bg-transparent cursor-not-allowed`}
-                            onChange={event => setMinimumAttendancePercentageToPass(Number(event.target.value))}
-                            value={minimumAttendancePercentageToPass}
-                            step='1'
-                            min='1'
-                            max='100'
-                            container
-                            readOnly
-                            disabled
-                        />
-
-                        <Details summary='Habilitar / Desabilitar'>
-                            <p>content</p>
-                        </Details>
-                        <Details summary='Manter dados'>
-                            <p>content</p>
-                        </Details>
-                        <Details summary='Imagens'>
-                            <p>content</p>
-                        </Details>
-                        <Details summary='Matérias'>
-                            <p>content</p>
-                        </Details>
-                        <Details summary='Cores'>
-                            <select className='appearance-none'>
-                                <option>cor1</option>
-                                <option>cor2</option>
-                                <option>cor2</option>
-                            </select>
-                        </Details>
-                    </div>
-                }
-            </aside>
+            <Sidebar/>
 
             <div className={
                 `${isOpen
@@ -286,7 +61,7 @@ export default function Home({ academicYear }: HomeProps) {
                     ref={mainRef}
                     onMouseEnter={() => { if (mainRef.current) mainRef.current.classList.add(schoolReportColors.clippingBorder) }}
                     onMouseLeave={() => { if (mainRef.current) mainRef.current.classList.remove(schoolReportColors.clippingBorder) }}
-                    className={`${isOpen? 'w-full': 'w-fit'} max-w-6xl aspect-[4/2] ${schoolReportColors.text} ${schoolReportColors.card} border-2 border-solid hover:border-dashed ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4 z-10`}
+                    className={`w-fit max-w-6xl ${schoolReportColors.text} ${schoolReportColors.card} border-2 border-solid hover:border-dashed ${inter.className} font-bold p-2 flex flex-col items-center justify-center gap-4 z-10`}
                 >
                     <Form ref={formRef} onSubmit={handleFormSubmit} className={`w-full border ${schoolReportColors.border}`}>
                         <section>
@@ -300,7 +75,7 @@ export default function Home({ academicYear }: HomeProps) {
                                     label='Escola:'
                                     type='text'
                                     className={`w-full lg:min-w-[24rem] ${schoolReportColors.card}`}
-                                    onChange={event => setSchoolReport(prevState => ({ ...prevState, school: event.target.value }))}
+                                    onChange={event => setSchoolReport({...schoolReport, school: event.target.value})}
                                     value={schoolReport.school}
                                     container
                                     required
@@ -311,7 +86,7 @@ export default function Home({ academicYear }: HomeProps) {
                                         label='Prof:'
                                         type='text'
                                         className={`w-full ${schoolReportColors.card}`}
-                                        onChange={event => setSchoolReport(prevState => ({ ...prevState, teacher: event.target.value }))}
+                                        onChange={event => setSchoolReport({...schoolReport, teacher: event.target.value})}
                                         value={schoolReport.teacher}
                                         container
                                         required
@@ -328,7 +103,7 @@ export default function Home({ academicYear }: HomeProps) {
                                         label='Nome:'
                                         type='text'
                                         className={`w-full lg:min-w-[24rem] ${schoolReportColors.card}`}
-                                        onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, name: event.target.value } }))}
+                                        onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, name: event.target.value}})}
                                         value={schoolReport.student.name}
                                         container
                                         required
@@ -340,7 +115,7 @@ export default function Home({ academicYear }: HomeProps) {
                                             label='N°:'
                                             type='number'
                                             className={`w-full sm:w-9 inputNumberValues ${schoolReportColors.card}`}
-                                            onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, number: Number(event.target.value) } }))}
+                                            onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, number: Number(event.target.value)}})}
                                             value={schoolReport.student.number}
                                             step='1'
                                             min='1'
@@ -353,7 +128,7 @@ export default function Home({ academicYear }: HomeProps) {
                                             label='Ano:'
                                             type='text'
                                             className={`w-full ${schoolReportColors.card}`}
-                                            onChange={event => setSchoolReport(prevState => ({ ...prevState, student: { ...prevState.student, yearAndClass: event.target.value } }))}
+                                            onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, yearAndClass: event.target.value}})}
                                             value={schoolReport.student.yearAndClass}
                                             minLength={1}
                                             maxLength={4}
@@ -402,7 +177,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='firstQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                                     value={matter?.grades.firstQuarter}
                                                                     step='0.1'
@@ -416,7 +191,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='secondQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card} ${matter?.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                                     value={matter?.grades.secondQuarter}
                                                                     step='0.1'
@@ -430,7 +205,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='thirdQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card} ${matter?.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                                     value={matter?.grades.thirdQuarter}
                                                                     step='0.1'
@@ -444,7 +219,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='fourthQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card} ${matter?.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                                     value={matter?.grades.fourthQuarter}
                                                                     step='0.1'
@@ -461,7 +236,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='firstQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'absences')}
                                                                     value={matter?.absences.firstQuarter}
                                                                     step='1'
@@ -475,7 +250,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='secondQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'absences')}
                                                                     value={matter?.absences.secondQuarter}
                                                                     step='1'
@@ -489,7 +264,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='thirdQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'absences')}
                                                                     value={matter?.absences.thirdQuarter}
                                                                     step='1'
@@ -503,7 +278,7 @@ export default function Home({ academicYear }: HomeProps) {
                                                                 <Input
                                                                     name='fourthQuarter'
                                                                     type='number'
-                                                                    className={`w-10 inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'absences')}
                                                                     value={matter?.absences.fourthQuarter}
                                                                     step='1'
@@ -516,7 +291,7 @@ export default function Home({ academicYear }: HomeProps) {
 
                                                     { hasConcept &&
                                                         <td className={`tableItens border ${schoolReportColors.border}`}>
-                                                            {hasConceptValues &&
+                                                            { hasConceptValues &&
                                                                 <Input
                                                                     name='concept'
                                                                     type='text'
@@ -586,13 +361,4 @@ export default function Home({ academicYear }: HomeProps) {
             </div>
         </div>
     )
-}
-
-export const getStaticProps: GetStaticProps = async () => {
-    const academicYear = new Date().getFullYear()
-
-    return {
-        props: { academicYear },
-        revalidate: 60 * 60 * 24 // 24 hours
-    }
 }

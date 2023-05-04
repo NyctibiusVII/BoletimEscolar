@@ -1,8 +1,23 @@
+export type ActiveQuarter = {
+    firstQuarter:  boolean
+    secondQuarter: boolean
+    thirdQuarter:  boolean
+    fourthQuarter: boolean
+}
 export type Bimester = {
     firstQuarter:  number
     secondQuarter: number
     thirdQuarter:  number
     fourthQuarter: number
+}
+export type SchoolReportColors = {
+    card:              string
+    border:            string
+    clippingBorder:    string
+    signatures:        string
+    text:              string
+    insufficientGrade: string
+    enoughGrade:       string
 }
 export type Matter =
   | 'Português'

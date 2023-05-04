@@ -23,8 +23,8 @@ export const Details = ({ summary = 'Title', children }: DetailsProps) => {
     }, [detailsId])
 
     return (
-        <details data-details-id={detailsId} open={detailsOpen} className='cursor-pointer'>
-            <summary className={`bg-gray-800 ${detailsOpen ? 'rounded-t-lg' : 'rounded-lg'} px-4 py-1`}>
+        <details data-details-id={detailsId} open={detailsOpen}>
+            <summary className={`bg-gray-800 ${detailsOpen ? 'rounded-t-lg' : 'rounded-lg'} px-4 py-1 cursor-pointer`}>
                 {summary}
             </summary>
             <div className='bg-gray-700 rounded-b-lg px-4 py-1'>
