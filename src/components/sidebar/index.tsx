@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { HiMenu, HiX } from 'react-icons/hi'
 
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
@@ -8,6 +10,7 @@ import { Input } from '@/components/input'
 export const Sidebar = () => {
     const {isOpen, toggleSidebar} = useSidebar()
     const {
+        setSchoolReportColors,
         minimumAttendancePercentageToPass,
         setMinimumAttendancePercentageToPass,
         minimumPassingGrade,
@@ -15,6 +18,31 @@ export const Sidebar = () => {
         minimumRecoveryGrade,
         setMinimumRecoveryGrade
     } = useSchoolReportConfig()
+
+    const [toggleColor, setToggleColor] = useState(true)
+
+    useEffect(() => {
+        toggleColor
+            ? setSchoolReportColors({
+                card:              `bg-white`,
+                border:            `border-gray-950`,
+                clippingBorder:    `border-red-600`,
+                signatures:        `bg-gray-950`,
+                text:              `text-gray-950`,
+                insufficientGrade: `text-red-600`,
+                enoughGrade:       `text-green-500`
+            })
+            : setSchoolReportColors({
+                card:              `bg-black`,
+                border:            `border-white`,
+                clippingBorder:    `border-red-600`,
+                signatures:        `bg-gray-100`,
+                text:              `text-gray-100`,
+                insufficientGrade: `text-red-600`,
+                enoughGrade:       `text-green-500`
+            })
+    }, [setSchoolReportColors, toggleColor])
+
 
     return (
         <aside className={
@@ -89,11 +117,13 @@ export const Sidebar = () => {
                         <p>content</p>
                     </Details>
                     <Details summary='Cores'>
-                        <select className='appearance-none'>
+                        {/* <select className='appearance-none'>
                             <option>cor1</option>
                             <option>cor2</option>
                             <option>cor2</option>
-                        </select>
+                        </select> */}
+                        <button className='w-full bg-gray-800 p-2 rounded-md' onClick={() => setToggleColor(!toggleColor)}>test: toggleColor</button>
+                        <div className={`${toggleColor ? 'bg-white' : 'bg-black'} w-full h-4 mt-2 rounded-md`} />
                     </Details>
                 </div>
             }

@@ -45,7 +45,7 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
     const [hasConceptValues,                   setHasConceptValues] = useState(true)
     const [hasFinalResultValues,           setHasFinalResultValues] = useState(true)
 
-    const [schoolReportColors, setSchoolReportColors] = useState<SchoolReportColors>({
+    const schoolReportColorsStartup: SchoolReportColors = {
         card:              `bg-white`,
         border:            `border-gray-950`,
         clippingBorder:    `border-red-600`,
@@ -53,7 +53,8 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
         text:              `text-gray-950`,
         insufficientGrade: `text-red-600`,
         enoughGrade:       `text-green-500`
-    })
+    }
+    const [schoolReportColors, setSchoolReportColors] = useState<SchoolReportColors>(schoolReportColorsStartup)
 
     const [activeQuarter, setActiveQuarter] = useState<ActiveQuarter>({
         firstQuarter:  true,

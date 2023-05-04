@@ -49,6 +49,7 @@ export default function Home() {
     return (
         <div className={`w-screen h-screen flex items-end lg:justify-end`}>
             <Sidebar/>
+            <title>Boletim Escolar</title>
 
             <div className={
                 `${isOpen
