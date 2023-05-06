@@ -6,7 +6,7 @@ import { InputProps } from '@/interfaces/types'
 export const Input = ({ withForm=true, ...props }: InputProps) => withForm ? <UnFormInput {...props}/> : <InputComponent {...props}/>
 
 const InputComponent = ({ name, label, labelPosition='before', container=false, className, ...props }: InputProps) => {
-    const Input = <input className={`inputNumberValues border border-dashed rounded-lg pl-1 ${className}`} {...props}/>
+    const Input = <input className={`border border-dashed border-violet-500 rounded-lg pl-1 ${className}`} {...props}/>
     const Label = <label htmlFor={name} className='max-w-[13rem]'>{label}</label>
 
     return <>{ container ?

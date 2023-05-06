@@ -72,7 +72,7 @@ export interface SchoolReport {
     student:               Student
     studentAcademicRecord: StudentAcademicRecord
 }
-/* Components/Form/Input */
+/* Components/Input */
 type InputType = {
     name:           string
     label?:         string
@@ -84,3 +84,9 @@ type InputType = {
  * Defines the types of native input properties.
  */
 export type InputProps = JSX.IntrinsicElements['input'] & InputType
+/* Components/Details */
+type DetailsType = { summary?: string }
+/**
+ * Defines the types of native details properties.
+ */
+export type DetailsProps = JSX.IntrinsicElements['details'] & DetailsType

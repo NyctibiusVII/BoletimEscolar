@@ -3,10 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-    body  { @apply antialiased bg-rose-100 text-gray-950 dark:bg-gray-950 dark:text-gray-100; }
+    body  { @apply antialiased bg-slate-200 text-gray-950 dark:bg-gray-950 dark:text-gray-100; }
     input { @apply truncate; }
-    aside { @apply bg-rose-50 dark:bg-gray-900; }
-    aside input { @apply bg-rose-50 dark:bg-gray-900; }
+    aside { @apply bg-slate-100 dark:bg-gray-900; }
+    aside input { @apply bg-slate-100 dark:bg-gray-900; }
+    summary { @apply bg-slate-300 dark:bg-gray-800; }
+    summary ~ div { @apply bg-slate-200 dark:bg-gray-700; }
 
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
@@ -19,7 +21,7 @@
     ::-webkit-scrollbar:horizontal { @apply h-2; }
     ::-webkit-scrollbar,
     ::-webkit-scrollbar:horizontal { @apply bg-shadow-15 rounded-lg; }
-    ::-webkit-scrollbar-thumb      { @apply bg-rose-400 dark:bg-violet-500 rounded-lg; }
+    ::-webkit-scrollbar-thumb      { @apply bg-violet-500 rounded-lg; }
     ::-webkit-scrollbar-corner     { @apply bg-transparent; }
 }
 @layer components {
