@@ -47,7 +47,7 @@ export default function Home() {
     }
 
     const schoolReportColors = {
-        card:              `bg-emerald-400`,
+        card:              `bg-white`,
         border:            `border-gray-950`,
         clippingBorder:    `border-red-600`,
         signatures:        `bg-gray-950`,
