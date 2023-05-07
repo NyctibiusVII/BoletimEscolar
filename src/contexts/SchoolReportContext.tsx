@@ -1,12 +1,14 @@
 import {
     createContext,
     ReactNode,
+    useEffect,
     useState
 } from 'react'
 
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 
 import {
+    ActiveQuarter,
     Bimester,
     Concept,
     Matter,
@@ -77,6 +79,46 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
     }
     const [schoolReport, setSchoolReport] = useState<SchoolReport>(schoolReportStartup)
 
+    const calculateAverageOfGrades = (grades: Bimester) => {
+        const gradesByQuarter = Object.values(grades)
+
+        const sumGradesByActiveQuarter = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
+            return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + gradesByQuarter[index] : acc
+        }, 0)
+        return sumGradesByActiveQuarter / noteWeight
+    }
+    const calculateOfTotalAbsences = (absences: Bimester) => {
+        const absencesByQuarter = Object.values(absences)
+
+        const newTotalAbsences = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
+            return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + absencesByQuarter[index] : acc
+        }, 0)
+        return newTotalAbsences
+    }
+    const calculateConcept = (average: number) => {
+        const concept =
+            average >= 7
+                ? Concept.A
+                : average >= 5
+                    ? Concept.B
+                    : average >= 3
+                        ? Concept.C
+                        : Concept.D
+        return concept
+    }
+    const calculateFinalResult = (average: number, totalClasses: number, newTotalAbsences: number) => {
+        const presencePercentage = totalClasses === 0 ? 0 : ((totalClasses - newTotalAbsences) / totalClasses) * 100
+        const finalResult =
+            average >= minimumPassingGrade
+                ? SubjectSituation.APPROVED
+                : presencePercentage < minimumAttendancePercentageToPass
+                    ? SubjectSituation.FAILED_FOR_ABSENCE
+                    : average >= minimumRecoveryGrade
+                        ? SubjectSituation.RECOVERY
+                        : SubjectSituation.DISAPPROVED
+        return finalResult
+    }
+
     const updateStudentAcademicRecord = (
         value:    number,
         subject:  Matter,
@@ -88,36 +130,10 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
             grades[bimester] = academicRecord === 'grades' ? value : grades[bimester]
             absences[bimester] = academicRecord === 'absences' ? value : absences[bimester]
 
-            const gradesByQuarter = Object.values(grades)
-            const absencesByQuarter = Object.values(absences)
-
-            const sumGradesByActiveQuarter = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
-                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + gradesByQuarter[index] : acc
-            }, 0)
-            const average = sumGradesByActiveQuarter / noteWeight
-
-            const concept =
-                average >= 7
-                    ? Concept.A
-                    : average >= 5
-                        ? Concept.B
-                        : average >= 3
-                            ? Concept.C
-                            : Concept.D
-
-            const newTotalAbsences = Object.keys(activeQuarter).reduce((acc, quarter, index) => {
-                return activeQuarter[quarter as keyof typeof activeQuarter] ? acc + absencesByQuarter[index] : acc
-            }, 0)
-            const presencePercentage = totalClasses === 0 ? 0 : ((totalClasses - newTotalAbsences) / totalClasses) * 100
-
-            const finalResult =
-                average >= minimumPassingGrade
-                    ? SubjectSituation.APPROVED
-                    : presencePercentage < minimumAttendancePercentageToPass
-                        ? SubjectSituation.FAILED_FOR_ABSENCE
-                        : average >= minimumRecoveryGrade
-                            ? SubjectSituation.RECOVERY
-                            : SubjectSituation.DISAPPROVED
+            const average = calculateAverageOfGrades(grades)
+            const concept = calculateConcept(average)
+            const newTotalAbsences = calculateOfTotalAbsences(absences)
+            const finalResult = calculateFinalResult(average, totalClasses, newTotalAbsences)
 
             return { absences, concept, finalResult, grades, newTotalAbsences }
         }
@@ -142,6 +158,51 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
             }
         })
     }
+
+    useEffect(() => {
+        const recalculatingComponentWithOwnValues = () => {
+            const updatedStudentAcademicRecord = { ...schoolReport.studentAcademicRecord }
+
+            subjects.forEach((subject: Matter) => {
+                const academicRecord = updatedStudentAcademicRecord[subject]
+                const grades = { ...academicRecord.grades }
+                const absences = { ...academicRecord.absences }
+
+                const activeQuarterKeys = Object.keys(activeQuarter) as (keyof ActiveQuarter)[]
+
+                activeQuarterKeys.forEach((quarter) => {
+                    if (activeQuarter[quarter]) {
+                        const activeQuarterGrade = grades[quarter]
+                        const activeQuarterAbsences = absences[quarter]
+
+                        grades[quarter] = activeQuarterGrade
+                        absences[quarter] = activeQuarterAbsences
+                    }
+                })
+
+                updatedStudentAcademicRecord[subject] = {
+                    ...academicRecord,
+                    grades,
+                    absences,
+                    concept: calculateConcept(calculateAverageOfGrades(grades)),
+                    totalAbsences: calculateOfTotalAbsences(absences),
+                    finalResult: calculateFinalResult(
+                        calculateAverageOfGrades(grades),
+                        academicRecord.totalClasses,
+                        calculateOfTotalAbsences(absences)
+                    )
+                }
+            })
+
+            setSchoolReport(prevState => ({
+                ...prevState,
+                studentAcademicRecord: updatedStudentAcademicRecord
+            }))
+        }
+
+        recalculatingComponentWithOwnValues()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activeQuarter, subjects])
 
     return(
         <SchoolReportContext.Provider

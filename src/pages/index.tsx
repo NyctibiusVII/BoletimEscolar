@@ -197,7 +197,7 @@ export default function Home() {
                                                             }
                                                         </td>
                                                         <td className={`tableItens border ${schoolReportColors.border}`}>
-                                                            { activeQuarter.firstQuarter &&
+                                                            { activeQuarter.secondQuarter &&
                                                                 <Input
                                                                     name='secondQuarter'
                                                                     type='number'
@@ -211,7 +211,7 @@ export default function Home() {
                                                             }
                                                         </td>
                                                         <td className={`tableItens border ${schoolReportColors.border}`}>
-                                                            { activeQuarter.firstQuarter &&
+                                                            { activeQuarter.thirdQuarter &&
                                                                 <Input
                                                                     name='thirdQuarter'
                                                                     type='number'
@@ -225,7 +225,7 @@ export default function Home() {
                                                             }
                                                         </td>
                                                         <td className={`tableItens border border-r-2 ${schoolReportColors.border}`}>
-                                                            { activeQuarter.firstQuarter &&
+                                                            { activeQuarter.fourthQuarter &&
                                                                 <Input
                                                                     name='fourthQuarter'
                                                                     type='number'
