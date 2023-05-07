@@ -11,6 +11,7 @@ export interface SchoolReportConfigContextData {
     setSubjects:          (value: Matter[]) => void
     activeQuarter:        ActiveQuarter
     setActiveQuarter      (value: ActiveQuarter): void
+    updateActiveQuarter   (quarterNumber: 1 | 2 | 3 | 4): void
     schoolReportColors:   SchoolReportColors
     setSchoolReportColors (value: SchoolReportColors): void
     minimumAttendancePercentageToPass: number
@@ -71,6 +72,20 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
         'Geografia'
     ])
 
+    const updateActiveQuarter = (quarterNumber: 1 | 2 | 3 | 4) => {
+        const quarterMap = {
+            1: 'firstQuarter',
+            2: 'secondQuarter',
+            3: 'thirdQuarter',
+            4: 'fourthQuarter'
+        }
+        const updatedQuarter = quarterMap[quarterNumber]
+
+        if (updatedQuarter) {
+            setActiveQuarter({...activeQuarter, [updatedQuarter]: !activeQuarter[updatedQuarter as keyof ActiveQuarter]})
+        }
+    }
+
     return(
         <SchoolReportConfigContext.Provider
             value={{
@@ -78,6 +93,7 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
                 setSubjects,
                 activeQuarter,
                 setActiveQuarter,
+                updateActiveQuarter,
                 schoolReportColors,
                 setSchoolReportColors,
                 minimumAttendancePercentageToPass,

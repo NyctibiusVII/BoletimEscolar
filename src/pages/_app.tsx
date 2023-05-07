@@ -15,6 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <SchoolReportConfigProvider>
                     <SchoolReportProvider>
                         <GenerateImageProvider>
+                            <title>Boletim Escolar</title>
                             <Component {...pageProps} />
                         </GenerateImageProvider>
                     </SchoolReportProvider>

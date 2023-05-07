@@ -1,11 +1,14 @@
 import { HiMenu, HiX } from 'react-icons/hi'
 import { MdOutlineLightMode, MdOutlineDarkMode } from 'react-icons/md'
+import { FaCircle } from 'react-icons/fa'
 import { useTheme } from 'next-themes'
 
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Details } from '@/components/details'
 import { Input } from '@/components/input'
+
+import { ActiveQuarter } from '@/interfaces/types'
 
 export const Sidebar = () => {
     const {isOpen, toggleSidebar} = useSidebar()
@@ -22,6 +25,30 @@ export const Sidebar = () => {
         minimumRecoveryGrade,
         setMinimumRecoveryGrade
     } = useSchoolReportConfig()
+    const {
+        activeQuarter,
+        hasResponsibleTeacherName,
+        hasSignatures,
+        hasConcept,
+        hasConceptValues,
+        hasFinalResultValues,
+        updateActiveQuarter,
+        setHasResponsibleTeacherName,
+        setHasSignatures,
+        setHasConcept,
+        setHasConceptValues,
+        setHasFinalResultValues
+    } = useSchoolReportConfig()
+
+    const getQuarterKey = (quarterNumber: 1 | 2 | 3 | 4): keyof ActiveQuarter => {
+        switch (quarterNumber) {
+            case 1: return 'firstQuarter'
+            case 2: return 'secondQuarter'
+            case 3: return 'thirdQuarter'
+            case 4: return 'fourthQuarter'
+            default: throw new Error(`Invalid quarter number: ${quarterNumber}`)
+        }
+    }
 
     return (
         <aside className={
@@ -84,7 +111,51 @@ export const Sidebar = () => {
                     />
 
                     <Details summary='Habilitar / Desabilitar'>
-                        <p>content</p>
+                        <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
+                            <p className='font-bold'>Dados</p>
+                            { [1, 2, 3, 4].map((quarterNumber) => {
+                                const quarterKey: keyof ActiveQuarter = getQuarterKey(quarterNumber as 1 | 2 | 3 | 4)
+
+                                return (
+                                    <button
+                                        key={quarterNumber}
+                                        onClick={() => updateActiveQuarter(quarterNumber as 1 | 2 | 3 | 4)}
+                                        className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'
+                                    >
+                                        {quarterNumber}° Bimestre
+                                        <FaCircle className={`${activeQuarter[quarterKey] ? 'text-green-400' : 'text-red-400'} text-lg`}/>
+                                    </button>
+                                )
+                            }) }
+                            <button
+                                onClick={() => setHasConceptValues(!hasConceptValues)}
+                                className={`${hasConcept ? 'hover:bg-shadow-5 hover:dark:bg-shadow-15' : 'cursor-not-allowed'} w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md disabled:opacity-40`}
+                                disabled={!hasConcept}
+                            >
+                                5° Conceito
+                                <FaCircle className={`${hasConceptValues ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                            <button onClick={() => setHasFinalResultValues(!hasFinalResultValues)} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Resultado final
+                                <FaCircle className={`${hasFinalResultValues ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                        </div>
+
+                        <div className='mt-2 divide-x divide-solid divide-transparent hover:divide-violet-500'>
+                            <p className='font-bold'>Componentes</p>
+                            <button onClick={() => setHasResponsibleTeacherName(!hasResponsibleTeacherName)} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Professor(a)
+                                <FaCircle className={`${hasResponsibleTeacherName ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                            <button onClick={() => setHasConcept(!hasConcept)} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                5° Conceito
+                                <FaCircle className={`${hasConcept ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                            <button onClick={() => setHasSignatures(!hasSignatures)} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Assinaturas
+                                <FaCircle className={`${hasSignatures ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                        </div>
                     </Details>
                     <Details summary='Manter dados'>
                         <p>content</p>

@@ -25,7 +25,7 @@ export default function Home() {
     const {
         subjects,
         activeQuarter,
-        schoolReportColors,
+        // schoolReportColors,
         minimumPassingGrade,
         hasResponsibleTeacherName,
         hasSignatures,
@@ -46,10 +46,19 @@ export default function Home() {
         // setSchoolReport(schoolReportStartup)
     }
 
+    const schoolReportColors = {
+        card:              `bg-emerald-400`,
+        border:            `border-gray-950`,
+        clippingBorder:    `border-red-600`,
+        signatures:        `bg-gray-950`,
+        text:              `text-gray-950`,
+        insufficientGrade: `text-red-600`,
+        enoughGrade:       `text-green-500`
+    }
+
     return (
         <div className={`w-screen h-screen flex items-end lg:justify-end`}>
             <Sidebar/>
-            <title>Boletim Escolar</title>
 
             <div className={
                 `${isOpen
