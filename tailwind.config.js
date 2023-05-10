@@ -11,6 +11,7 @@ module.exports = {
       transparent: 'transparent',
       'shadow-5' : '#0000000d',
       'shadow-15' : '#00000026',
+      'shadow-30' : '#0000004d',
       black: '#000000',
       white: '#ffffff',
       slate: {
@@ -307,6 +308,11 @@ module.exports = {
       '60': '0.6',
       '80': '0.8',
       '100': '1'
+    },
+    extend: {
+      backgroundImage: {
+        'cookie-texture': `url('/assets/cookie-texture.jpg')`
+      }
     }
   }
 }

@@ -56,11 +56,11 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
     const [hasFinalResultValues,           setHasFinalResultValues] = useState(true)
 
     const [maintainReportCardData, setMaintainReportCardData] = useState<MaintainReportCardData>({
-        school:       hasCookie('keepSchoolData')       ?? false,
-        teacher:      hasCookie('keepTeacherData')      ?? false,
-        name:         hasCookie('keepNameData')         ?? false,
-        number:       hasCookie('keepNumberData')       ?? false,
-        yearAndClass: hasCookie('keepYearAndClassData') ?? false
+        school:       hasCookie('keep_school_data')       ?? false,
+        teacher:      hasCookie('keep_teacher_data')      ?? false,
+        name:         hasCookie('keep_name_data')         ?? false,
+        number:       hasCookie('keep_number_data')       ?? false,
+        yearAndClass: hasCookie('keep_yearAndClass_data') ?? false
     })
 
     const schoolReportColorsStartup: SchoolReportColors = {

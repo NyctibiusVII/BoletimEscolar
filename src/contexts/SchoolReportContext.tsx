@@ -217,11 +217,11 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         const { school, teacher, name, number, yearAndClass } = maintainReportCardData
         const updatedCookies: Record<string, string> = {}
 
-        school       ? updatedCookies.keepSchoolData       = schoolReport.school                 : (hasCookie('keepSchoolData')       && deleteCookie('keepSchoolData'))
-        teacher      ? updatedCookies.keepTeacherData      = schoolReport.teacher                : (hasCookie('keepTeacherData')      && deleteCookie('keepTeacherData'))
-        name         ? updatedCookies.keepNameData         = schoolReport.student.name           : (hasCookie('keepNameData')         && deleteCookie('keepNameData'))
-        number       ? updatedCookies.keepNumberData       = String(schoolReport.student.number) : (hasCookie('keepNumberData')       && deleteCookie('keepNumberData'))
-        yearAndClass ? updatedCookies.keepYearAndClassData = schoolReport.student.yearAndClass   : (hasCookie('keepYearAndClassData') && deleteCookie('keepYearAndClassData'))
+        school       ? updatedCookies.keep_school__data       = schoolReport.school                 : (hasCookie('keep_school_data')       && deleteCookie('keep_school_data'))
+        teacher      ? updatedCookies.keep_teacher__data      = schoolReport.teacher                : (hasCookie('keep_teacher_data')      && deleteCookie('keep_teacher_data'))
+        name         ? updatedCookies.keep_name__data         = schoolReport.student.name           : (hasCookie('keep_name_data')         && deleteCookie('keep_name_data'))
+        number       ? updatedCookies.keep_number__data       = String(schoolReport.student.number) : (hasCookie('keep_number_data')       && deleteCookie('keep_number_data'))
+        yearAndClass ? updatedCookies.keep_yearAndClass__data = schoolReport.student.yearAndClass   : (hasCookie('keep_yearAndClass_data') && deleteCookie('keep_yearAndClass_data'))
 
         Object.entries(updatedCookies).forEach(([cookieName, value]) => setCookie(cookieName, value))
     }, [maintainReportCardData, schoolReport.school, schoolReport.student.name, schoolReport.student.number, schoolReport.student.yearAndClass, schoolReport.teacher])

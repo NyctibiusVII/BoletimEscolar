@@ -6,9 +6,9 @@ import { GenerateImageProvider } from '@/contexts/GenerateImageContext'
 import { SchoolReportConfigProvider } from '@/contexts/SchoolReportConfigContext'
 import { SchoolReportProvider } from '@/contexts/SchoolReportContext'
 
-import Head from 'next/head'
-
+import { CookieConcent } from '@/components/modal/cookieConcent'
 import BuildProviderTree from '@/utils/providerTree'
+import Head from 'next/head'
 import '@/styles/globals.css'
 
 const Providers = BuildProviderTree([
@@ -27,6 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 <title>Boletim Escolar</title>
             </Head>
             <Component {...pageProps} />
+            <CookieConcent />
         </Providers>
     )
 }
