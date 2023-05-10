@@ -76,13 +76,13 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         return newStudentAcademicRecord
     }
     const schoolReportStartup: SchoolReport = {
-        school:  maintainReportCardData.school  ? (getCookie('keepSchoolData')  ? String(getCookie('keepSchoolData'))  : '') : '',
-        teacher: maintainReportCardData.teacher ? (getCookie('keepTeacherData') ? String(getCookie('keepTeacherData')) : '') : '',
+        school:  maintainReportCardData.school  ? (getCookie('keep_school_data')  ? String(getCookie('keep_school_data'))  : '') : '',
+        teacher: maintainReportCardData.teacher ? (getCookie('keep_teacher_data') ? String(getCookie('keep_teacher_data')) : '') : '',
         academicYear: new Date().getFullYear(),
         student: {
-            name:         maintainReportCardData.name         ? (getCookie('keepNameData')         ? String(getCookie('keepNameData'))         : '') : '',
-            number:       maintainReportCardData.number       ? (getCookie('keepNumberData')       ? Number(getCookie('keepNumberData'))       : 0)  : 0,
-            yearAndClass: maintainReportCardData.yearAndClass ? (getCookie('keepYearAndClassData') ? String(getCookie('keepYearAndClassData')) : '') : ''
+            name:         maintainReportCardData.name         ? (getCookie('keep_name_data')           ? String(getCookie('keep_name_data'))           : '') : '',
+            number:       maintainReportCardData.number       ? (getCookie('keep_number_data')         ? Number(getCookie('keep_number_data'))         : 0)  : 0,
+            yearAndClass: maintainReportCardData.yearAndClass ? (getCookie('keep_year_and_class_data') ? String(getCookie('keep_year_and_class_data')) : '') : ''
         },
         studentAcademicRecord: studentAcademicRecord()
     }
@@ -217,11 +217,11 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         const { school, teacher, name, number, yearAndClass } = maintainReportCardData
         const updatedCookies: Record<string, string> = {}
 
-        school       ? updatedCookies.keep_school__data       = schoolReport.school                 : (hasCookie('keep_school_data')       && deleteCookie('keep_school_data'))
-        teacher      ? updatedCookies.keep_teacher__data      = schoolReport.teacher                : (hasCookie('keep_teacher_data')      && deleteCookie('keep_teacher_data'))
-        name         ? updatedCookies.keep_name__data         = schoolReport.student.name           : (hasCookie('keep_name_data')         && deleteCookie('keep_name_data'))
-        number       ? updatedCookies.keep_number__data       = String(schoolReport.student.number) : (hasCookie('keep_number_data')       && deleteCookie('keep_number_data'))
-        yearAndClass ? updatedCookies.keep_yearAndClass__data = schoolReport.student.yearAndClass   : (hasCookie('keep_yearAndClass_data') && deleteCookie('keep_yearAndClass_data'))
+        school       ? updatedCookies.keep_school_data         = schoolReport.school                 : (hasCookie('keep_school_data')         && deleteCookie('keep_school_data'))
+        teacher      ? updatedCookies.keep_teacher_data        = schoolReport.teacher                : (hasCookie('keep_teacher_data')        && deleteCookie('keep_teacher_data'))
+        name         ? updatedCookies.keep_name_data           = schoolReport.student.name           : (hasCookie('keep_name_data')           && deleteCookie('keep_name_data'))
+        number       ? updatedCookies.keep_number_data         = String(schoolReport.student.number) : (hasCookie('keep_number_data')         && deleteCookie('keep_number_data'))
+        yearAndClass ? updatedCookies.keep_year_and_class_data = schoolReport.student.yearAndClass   : (hasCookie('keep_year_and_class_data') && deleteCookie('keep_year_and_class_data'))
 
         Object.entries(updatedCookies).forEach(([cookieName, value]) => setCookie(cookieName, value))
     }, [maintainReportCardData, schoolReport.school, schoolReport.student.name, schoolReport.student.number, schoolReport.student.yearAndClass, schoolReport.teacher])
