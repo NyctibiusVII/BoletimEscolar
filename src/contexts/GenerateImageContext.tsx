@@ -1,14 +1,13 @@
 import {
     createContext,
-    ReactNode,
-    useState
+    ReactNode
 } from 'react'
 import domtoimage from 'dom-to-image'
 
 import { useSidebar } from '@/hooks/useSidebar'
 
 export interface GenerateImageContextData {
-    generateImage: () => void
+    generateImage: () => Promise<void>
 }
 interface GenerateImageProviderProps { children: ReactNode }
 
@@ -17,7 +16,7 @@ export const GenerateImageContext = createContext({} as GenerateImageContextData
 export function GenerateImageProvider({ children }: GenerateImageProviderProps) {
     const {toggleSidebar} = useSidebar()
 
-    const generateImage = () => {
+    const generateImage = async () => {
         const schoolReportNode: HTMLElement = document.getElementById('school-report') ?? document.body
         const buttonGenerateImage: HTMLElement | null = document.getElementById('generate-image')
 
@@ -25,7 +24,7 @@ export function GenerateImageProvider({ children }: GenerateImageProviderProps) 
         buttonGenerateImage.style.visibility = 'hidden'
         toggleSidebar(false)
 
-        domtoimage.toPng(schoolReportNode)
+        await domtoimage.toPng(schoolReportNode)
             .then(dataUrl => {
                 var img = new Image()
                 img.src = dataUrl

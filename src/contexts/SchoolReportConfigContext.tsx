@@ -4,16 +4,25 @@ import {
     useState
 } from 'react'
 
-import { ActiveQuarter, Matter, SchoolReportColors } from '@/interfaces/types'
+import {
+    ActiveQuarter,
+    MaintainReportCardData,
+    Matter,
+    SchoolReportColors
+} from '@/interfaces/types'
+
+import { hasCookie } from 'cookies-next'
 
 export interface SchoolReportConfigContextData {
-    subjects:             Matter[]
-    setSubjects:          (value: Matter[]) => void
-    activeQuarter:        ActiveQuarter
-    setActiveQuarter      (value: ActiveQuarter): void
-    updateActiveQuarter   (quarterNumber: 1 | 2 | 3 | 4): void
-    schoolReportColors:   SchoolReportColors
-    setSchoolReportColors (value: SchoolReportColors): void
+    subjects:                 Matter[]
+    setSubjects:              (value: Matter[]) => void
+    activeQuarter:            ActiveQuarter
+    setActiveQuarter          (value: ActiveQuarter): void
+    updateActiveQuarter       (quarterNumber: 1 | 2 | 3 | 4): void
+    schoolReportColors:       SchoolReportColors
+    setSchoolReportColors     (value: SchoolReportColors): void
+    maintainReportCardData:   MaintainReportCardData
+    setMaintainReportCardData (value: MaintainReportCardData): void
     minimumAttendancePercentageToPass: number
     minimumPassingGrade:               number
     minimumRecoveryGrade:              number
@@ -45,6 +54,14 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
     const [hasConcept,                               setHasConcept] = useState(true)
     const [hasConceptValues,                   setHasConceptValues] = useState(true)
     const [hasFinalResultValues,           setHasFinalResultValues] = useState(true)
+
+    const [maintainReportCardData, setMaintainReportCardData] = useState<MaintainReportCardData>({
+        school:       hasCookie('keepSchoolData')       ?? false,
+        teacher:      hasCookie('keepTeacherData')      ?? false,
+        name:         hasCookie('keepNameData')         ?? false,
+        number:       hasCookie('keepNumberData')       ?? false,
+        yearAndClass: hasCookie('keepYearAndClassData') ?? false
+    })
 
     const schoolReportColorsStartup: SchoolReportColors = {
         card:              `bg-white`,
@@ -96,6 +113,8 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
                 updateActiveQuarter,
                 schoolReportColors,
                 setSchoolReportColors,
+                maintainReportCardData,
+                setMaintainReportCardData,
                 minimumAttendancePercentageToPass,
                 minimumPassingGrade,
                 minimumRecoveryGrade,

@@ -26,6 +26,7 @@ export default function Home() {
         subjects,
         activeQuarter,
         // schoolReportColors,
+        maintainReportCardData,
         minimumPassingGrade,
         hasResponsibleTeacherName,
         hasSignatures,
@@ -37,13 +38,25 @@ export default function Home() {
     const {
         schoolReport,
         setSchoolReport,
+        schoolReportStartup,
         updateStudentAcademicRecord
     } = useSchoolReport()
 
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
-        console.log(data)
         generateImage()
-        // setSchoolReport(schoolReportStartup)
+            .then(() => console.info('Imagem gerada com sucesso!', { 'conteúdo': data }))
+            .then(() =>
+                setSchoolReport({
+                    ...schoolReportStartup,
+                    school:  maintainReportCardData.school  ? data.school  : '',
+                    teacher: maintainReportCardData.teacher ? data.teacher : '',
+                    student: {
+                        name:         maintainReportCardData.name         ? data.student.name         : '',
+                        number:       maintainReportCardData.number       ? data.student.number       : 0,
+                        yearAndClass: maintainReportCardData.yearAndClass ? data.student.yearAndClass : ''
+                    }
+                })
+            )
     }
 
     const schoolReportColors = {

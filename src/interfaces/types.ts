@@ -1,3 +1,10 @@
+export type MaintainReportCardData = {
+    school:       boolean
+    teacher:      boolean
+    name:         boolean
+    number:       boolean
+    yearAndClass: boolean
+}
 export type ActiveQuarter = {
     firstQuarter:  boolean
     secondQuarter: boolean

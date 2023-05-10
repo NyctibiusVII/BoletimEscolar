@@ -17,9 +17,17 @@ import {
     SubjectSituation
 } from '@/interfaces/types'
 
+import {
+    getCookie,
+    setCookie,
+    deleteCookie,
+    hasCookie
+} from 'cookies-next'
+
 export interface SchoolReportContextData {
-    schoolReport:    SchoolReport
-    setSchoolReport: (value: SchoolReport) => void
+    schoolReport:        SchoolReport
+    setSchoolReport:     (value: SchoolReport) => void
+    schoolReportStartup: SchoolReport
     updateStudentAcademicRecord: (
         value:    number,
         subject:  Matter,
@@ -35,6 +43,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
     const {
         subjects,
         activeQuarter,
+        maintainReportCardData,
         minimumAttendancePercentageToPass,
         minimumPassingGrade,
         minimumRecoveryGrade
@@ -67,13 +76,13 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         return newStudentAcademicRecord
     }
     const schoolReportStartup: SchoolReport = {
-        school: '',
-        teacher: '',
+        school:  maintainReportCardData.school  ? (getCookie('keepSchoolData')  ? String(getCookie('keepSchoolData'))  : '') : '',
+        teacher: maintainReportCardData.teacher ? (getCookie('keepTeacherData') ? String(getCookie('keepTeacherData')) : '') : '',
         academicYear: new Date().getFullYear(),
         student: {
-            name: '',
-            number: 0,
-            yearAndClass: ''
+            name:         maintainReportCardData.name         ? (getCookie('keepNameData')         ? String(getCookie('keepNameData'))         : '') : '',
+            number:       maintainReportCardData.number       ? (getCookie('keepNumberData')       ? Number(getCookie('keepNumberData'))       : 0)  : 0,
+            yearAndClass: maintainReportCardData.yearAndClass ? (getCookie('keepYearAndClassData') ? String(getCookie('keepYearAndClassData')) : '') : ''
         },
         studentAcademicRecord: studentAcademicRecord()
     }
@@ -204,11 +213,25 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeQuarter, subjects])
 
+    useEffect(() => {
+        const { school, teacher, name, number, yearAndClass } = maintainReportCardData
+        const updatedCookies: Record<string, string> = {}
+
+        school       ? updatedCookies.keepSchoolData       = schoolReport.school                 : (hasCookie('keepSchoolData')       && deleteCookie('keepSchoolData'))
+        teacher      ? updatedCookies.keepTeacherData      = schoolReport.teacher                : (hasCookie('keepTeacherData')      && deleteCookie('keepTeacherData'))
+        name         ? updatedCookies.keepNameData         = schoolReport.student.name           : (hasCookie('keepNameData')         && deleteCookie('keepNameData'))
+        number       ? updatedCookies.keepNumberData       = String(schoolReport.student.number) : (hasCookie('keepNumberData')       && deleteCookie('keepNumberData'))
+        yearAndClass ? updatedCookies.keepYearAndClassData = schoolReport.student.yearAndClass   : (hasCookie('keepYearAndClassData') && deleteCookie('keepYearAndClassData'))
+
+        Object.entries(updatedCookies).forEach(([cookieName, value]) => setCookie(cookieName, value))
+    }, [maintainReportCardData, schoolReport.school, schoolReport.student.name, schoolReport.student.number, schoolReport.student.yearAndClass, schoolReport.teacher])
+
     return(
         <SchoolReportContext.Provider
             value={{
                 schoolReport,
                 setSchoolReport,
+                schoolReportStartup,
                 updateStudentAcademicRecord
             }}>
             {children}

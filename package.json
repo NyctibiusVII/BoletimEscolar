@@ -16,6 +16,7 @@
     "@unform/core": "^2.1.6",
     "@unform/web": "^2.1.6",
     "autoprefixer": "10.4.14",
+    "cookies-next": "^2.1.1",
     "dom-to-image": "^2.6.0",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.1",
