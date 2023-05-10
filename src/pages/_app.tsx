@@ -6,21 +6,27 @@ import { GenerateImageProvider } from '@/contexts/GenerateImageContext'
 import { SchoolReportConfigProvider } from '@/contexts/SchoolReportConfigContext'
 import { SchoolReportProvider } from '@/contexts/SchoolReportContext'
 
+import Head from 'next/head'
+
+import BuildProviderTree from '@/utils/providerTree'
 import '@/styles/globals.css'
+
+const Providers = BuildProviderTree([
+    [ThemeProvider, { attribute: 'class' }],
+    [SidebarProvider],
+    [SchoolReportConfigProvider],
+    [SchoolReportProvider],
+    [GenerateImageProvider]
+])
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <ThemeProvider attribute='class'>
-            <SidebarProvider>
-                <SchoolReportConfigProvider>
-                    <SchoolReportProvider>
-                        <GenerateImageProvider>
-                            <title>Boletim Escolar</title>
-                            <Component {...pageProps} />
-                        </GenerateImageProvider>
-                    </SchoolReportProvider>
-                </SchoolReportConfigProvider>
-            </SidebarProvider>
-        </ThemeProvider>
+        <Providers>
+            <Head>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                <title>Boletim Escolar</title>
+            </Head>
+            <Component {...pageProps} />
+        </Providers>
     )
 }
