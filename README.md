@@ -2,11 +2,11 @@
     <img src=".github/modelo-boletim-escolar.png" width="400" alt="Logo BoletimEscolar">
 </h1>
 <p align="center">
-    <img alt="Plataforma" src="https://img.shields.io/static/v1?label=Plataforma&message=Web&color=000000&labelColor=C3E61E">
-    <img alt="BoletimEscolar" src="https://img.shields.io/static/v1?label=Version&message=1.0&color=000000&labelColor=C3E61E">
-    <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/NyctibiusVII/BoletimEscolar?color=000000&labelColor=C3E61E">
+    <img alt="Plataforma" src="https://img.shields.io/static/v1?label=Plataforma&message=Web&color=000000&labelColor=00E88F">
+    <img alt="BoletimEscolar" src="https://img.shields.io/static/v1?label=Version&message=1.0&color=000000&labelColor=00E88F">
+    <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/NyctibiusVII/BoletimEscolar?color=000000&labelColor=00E88F">
     <a href="https://github.com/NyctibiusVII/BoletimEscolar/blob/main/LICENSE">
-        <img alt="Licença" src="https://img.shields.io/static/v1?label=License&message=MIT&color=000000&labelColor=C3E61E">
+        <img alt="Licença" src="https://img.shields.io/static/v1?label=License&message=MIT&color=000000&labelColor=00E88F">
     </a>
 </p>
 <p align="center">
