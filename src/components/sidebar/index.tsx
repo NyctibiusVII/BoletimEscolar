@@ -1,8 +1,16 @@
-import { HiMenu, HiX } from 'react-icons/hi'
-import { MdOutlineLightMode, MdOutlineDarkMode } from 'react-icons/md'
-import { FaCircle } from 'react-icons/fa'
+import { useContext, useState } from 'react'
 import { useTheme } from 'next-themes'
 
+import {
+    MdOutlineLightMode,
+    MdOutlineDarkMode,
+    MdOutlineFileDownload
+} from 'react-icons/md'
+import { HiMenu, HiX, HiTrash } from 'react-icons/hi'
+import { FaCircle } from 'react-icons/fa'
+import { FcImageFile } from 'react-icons/fc'
+
+import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Details } from '@/components/details'
@@ -12,10 +20,12 @@ import { ActiveQuarter } from '@/interfaces/types'
 
 export const Sidebar = () => {
     const {isOpen, toggleSidebar} = useSidebar()
+    const [clickedIndex, setClickedIndex] = useState<number | null>(null)
 
-    const { systemTheme, theme, setTheme } = useTheme()
-    const currentTheme = theme === 'system' ? systemTheme : theme
-    const toggleTheme = () => currentTheme === 'dark' ? setTheme('light') : setTheme('dark')
+    const {
+        filesImage,
+        deleteImage
+    } = useContext(GenerateImageContext)
 
     const {
         minimumAttendancePercentageToPass,
@@ -25,6 +35,7 @@ export const Sidebar = () => {
         minimumRecoveryGrade,
         setMinimumRecoveryGrade
     } = useSchoolReportConfig()
+
     const {
         activeQuarter,
         maintainReportCardData,
@@ -41,6 +52,10 @@ export const Sidebar = () => {
         setHasConceptValues,
         setHasFinalResultValues
     } = useSchoolReportConfig()
+
+    const { systemTheme, theme, setTheme } = useTheme()
+    const currentTheme = theme === 'system' ? systemTheme : theme
+    const toggleTheme = () => currentTheme === 'dark' ? setTheme('light') : setTheme('dark')
 
     const getQuarterKey = (quarterNumber: 1 | 2 | 3 | 4): keyof ActiveQuarter => {
         switch (quarterNumber) {
@@ -191,8 +206,38 @@ export const Sidebar = () => {
                     </Details>
 
                     <Details summary='Imagens'>
-                        <p>content</p>
+                        { filesImage.length === 0
+                            ?   <div className='w-full hover:bg-shadow-5 flex flex-col items-center justify-center border border-dashed border-violet-500 rounded-lg py-4'>
+                                    <FcImageFile className='text-2xl' />
+                                    Sem imagens
+                                </div>
+                            :   <>
+                                    { filesImage.map((file, index) => {
+                                        return (
+                                            <div key={index} className='w-full flex items-center justify-between even:bg-shadow-5 dark:even:bg-shadow-15 rounded-md p-1 last:even:mb-3'>
+                                                <span className={`pl-1 truncate cursor-default ${clickedIndex === index ? 'underline underline-offset-4' : ''}`}>{file.name}</span>
+
+                                                <div className='flex flex-nowrap'>
+                                                    <a
+                                                        title={`Download do arquivo '${file.name}'`}
+                                                        href={file.imageData}
+                                                        download={file.name}
+                                                        className='aspect-square hover:bg-green-400 text-green-400 hover:text-white p-1 rounded-md'
+                                                        onClick={() => setClickedIndex(index)}
+                                                    >
+                                                        <MdOutlineFileDownload className='text-xl' />
+                                                    </a>
+                                                    <button title='Deletar imagem' onClick={() => deleteImage(index)} className='aspect-square hover:bg-red-400 text-red-400 hover:text-white p-1 rounded-md'>
+                                                        <HiTrash className='text-lg' />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )
+                                    }) }
+                                </>
+                        }
                     </Details>
+
                     <Details summary='Matérias'>
                         <p>content</p>
                     </Details>
@@ -203,120 +248,6 @@ export const Sidebar = () => {
                                 : <MdOutlineDarkMode className='text-xl' />
                             } Mudar Tema
                         </button>
-
-
-                        {/*
-
-    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>, component: string) => {
-        const selectedOption = event.target.value
-
-        // switch (component) {
-        //     case 'card': setSchoolReportColors({...schoolReportColors, card: selectedOption})
-        //         break;
-        //     case 'border': setSchoolReportColors({...schoolReportColors, border: selectedOption})
-        //         break;
-        //     case 'clippingBorder': setSchoolReportColors({...schoolReportColors, clippingBorder: selectedOption})
-        //         break;
-        //     case 'signatures': setSchoolReportColors({...schoolReportColors, signatures: selectedOption})
-        //         break;
-        //     case 'text': setSchoolReportColors({...schoolReportColors, text: selectedOption})
-        //         break;
-        //     case 'insufficientGrade': setSchoolReportColors({...schoolReportColors, insufficientGrade: selectedOption})
-        //         break;
-        //     case 'enoughGrade': setSchoolReportColors({...schoolReportColors, enoughGrade: selectedOption})
-        //         break;
-
-        //     default:
-        //         break;
-        // }
-    }
-
-
-    // const color = schoolReportColors.card.replace(/bg-(\w+)/, '$1')
-
-    type reportCardComponentsType =
-        | 'card'
-        | 'border'
-        | 'clippingBorder'
-        | 'signatures'
-        | 'text'
-        | 'insufficientGrade'
-        | 'enoughGrade'
-    type reportCardComponentsList = {
-        name:  reportCardComponentsType
-        type:  string
-        title: string
-    }
-    const reportCardComponents: reportCardComponentsList[]  = [
-        { name: 'card',              type: 'bg',     title: 'Cartão'               },
-        { name: 'border',            type: 'border', title: 'Borda'                },
-        { name: 'clippingBorder',    type: 'border', title: 'Borda de recorte'     },
-        { name: 'signatures',        type: 'bg',     title: 'Linha de assinaturas' },
-        { name: 'text',              type: 'text',   title: 'Texto'                },
-        { name: 'insufficientGrade', type: 'text',   title: 'Nota insuficiente'    },
-        { name: 'enoughGrade',       type: 'text',   title: 'Nota suficiente'      }
-      ]
-
-    const colors = [
-        'black',
-        'white',
-        'slate-500',
-        'gray-500',
-        'gray-950',
-        'zinc-500',
-        'neutral-500',
-        'stone-500',
-        'red-500',
-        'orange-500',
-        'red-600',
-        'amber-500',
-        'yellow-500',
-        'lime-500',
-        'green-500',
-        'emerald-500',
-        'teal-500',
-        'cyan-500',
-        'sky-500',
-        'blue-500',
-        'indigo-500',
-        'violet-500',
-        'purple-500',
-        'fuchsia-500',
-        'pink-500',
-        'rose-500'
-    ]
-
-                        */}
-                        {/* <div className='w-full flex items-center justify-between'>
-                            <p>Cartão</p>
-
-                            <select
-                                onChange={event => handleSelectChange(event, 'card')}
-                                className={`appearance-none ${schoolReportColors.card}`
-                            }>
-                                <option value='bg-white' className='bg-white'>color</option>
-                                <option value='bg-green-500' className='bg-green-500'>color</option>
-                            </select>
-                        </div> */}
-
-                        {/* { reportCardComponents.map((component: reportCardComponentsList) => {
-                            return (
-                                <div key={component.name} className='w-full flex items-center justify-between'>
-                                    <p>{component.title}</p>
-
-                                    <select
-                                        onChange={event => handleSelectChange(event, component.type)}
-                                        className={`appearance-none ${schoolReportColors[component.name]}`
-                                    }>
-                                        { colors.map(color => {
-                                            return (
-                                                <option key={color} value={component.type + '-' + color} className={`bg-${color}`}>{color}</option>
-                                            )
-                                        }) }
-                                    </select>
-                                </div>
-                            )
-                        })} */}
                     </Details>
                 </div>
             }

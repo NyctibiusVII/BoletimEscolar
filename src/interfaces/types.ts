@@ -67,7 +67,7 @@ interface AcademicRecord {
 export interface StudentAcademicRecord {
     [subject: Matter]: AcademicRecord
 }
-interface Student {
+export interface Student {
     name:         string
     number:       number
     yearAndClass: string
