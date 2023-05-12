@@ -1,0 +1,13 @@
+{
+  "name": "BoletimEscolar",
+  "short_name": "BoletimEscolar",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/svg",
+      "sizes": "24x24"
+    }
+  ]
+}
