@@ -25,7 +25,7 @@ export function GenerateImageProvider({ children }: GenerateImageProviderProps) 
 
     const generateImage = async () => {
         const schoolReportNode: HTMLElement = document.getElementById('school-report') ?? document.body
-        const buttonGenerateImage: HTMLElement | null = document.getElementById('generate-image')
+        const buttonGenerateImage = document.getElementById('generate-image') as HTMLButtonElement | null
 
         if(!buttonGenerateImage) return
         buttonGenerateImage.style.visibility = 'hidden'
