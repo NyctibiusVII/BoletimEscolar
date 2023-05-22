@@ -11,6 +11,8 @@ import { Sidebar } from '@/components/sidebar'
 import { Input } from '@/components/input'
 
 import { SchoolReport } from '@/interfaces/types'
+import { useTheme } from 'next-themes'
+import Swal from 'sweetalert2'
 
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
@@ -19,8 +21,9 @@ export default function Home() {
     const formRef = useRef<FormHandles>(null)
     const mainRef = useRef<HTMLDivElement>(null)
 
-    const {isOpen} = useSidebar()
-    const {generateImage} = useContext(GenerateImageContext)
+    const { theme } = useTheme()
+    const { isOpen } = useSidebar()
+    const { generateImage } = useContext(GenerateImageContext)
 
     const {
         subjects,
@@ -43,20 +46,70 @@ export default function Home() {
     } = useSchoolReport()
 
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
-        generateImage()
-            .then(() => console.info('Imagem gerada com sucesso!', { 'conteúdo': data }))
-            .then(() =>
-                setSchoolReport({
-                    ...schoolReportStartup,
-                    school:  maintainReportCardData.school  ? data.school  : '',
-                    teacher: maintainReportCardData.teacher ? data.teacher : '',
-                    student: {
-                        name:         maintainReportCardData.name         ? data.student.name         : '',
-                        number:       maintainReportCardData.number       ? data.student.number       : 0,
-                        yearAndClass: maintainReportCardData.yearAndClass ? data.student.yearAndClass : ''
-                    }
+        const swalColors = {
+            bg: theme === 'dark' ? '#111827' : '#ffffff',
+            fg: theme === 'dark' ? '#f3f4f6' : '#374151'
+        }
+        let timerInterval: NodeJS.Timer
+
+        Swal.fire({
+            title: 'Carregando...',
+            text: 'Gerando imagem do seu boletim escolar',
+            timer: 1000,
+            background: swalColors.bg,
+            color: swalColors.fg,
+            didOpen: () => Swal.showLoading(),
+            willClose: () => clearInterval(timerInterval)
+        })
+        .then(result => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+                generateImage()
+                .then(() => {
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: 'Acesse sua imagem gerada na barra lateral desta página.',
+                        icon: 'success',
+                        background: swalColors.bg,
+                        color: swalColors.fg,
+                        iconColor: '#4ade80'
+                    })
+                    .then(() => console.info('Imagem gerada com sucesso!', { 'conteúdo': data }))
                 })
-            )
+                .then(() =>
+                    setSchoolReport({
+                        ...schoolReportStartup,
+                        school:  maintainReportCardData.school  ? data.school  : '',
+                        teacher: maintainReportCardData.teacher ? data.teacher : '',
+                        student: {
+                            name:         maintainReportCardData.name         ? data.student.name         : '',
+                            number:       maintainReportCardData.number       ? data.student.number       : 0,
+                            yearAndClass: maintainReportCardData.yearAndClass ? data.student.yearAndClass : ''
+                        }
+                    })
+                )
+                .catch(error => {
+                    Swal.fire({
+                        title: 'Erro ao gerar imagem!',
+                        icon: 'error',
+                        background: swalColors.bg,
+                        color: swalColors.fg,
+                        iconColor: '#f87171',
+                        confirmButtonText: 'Tentar novamente',
+                        confirmButtonColor: '#2778c4',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancelar',
+                        cancelButtonColor: '#f87171'
+                    })
+                    .then(result => {
+                        if (result.isConfirmed) {
+                            const SubmitHandler = document.getElementById('generate-image') as HTMLButtonElement | null
+                            if (SubmitHandler) SubmitHandler.click()
+                        }
+                    })
+                    .finally(() => console.error('Erro ao gerar imagem!', error))
+                })
+            }
+        })
     }
 
     const schoolReportColors = {
