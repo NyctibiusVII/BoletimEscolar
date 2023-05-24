@@ -150,7 +150,7 @@ export default function Home() {
                                     name='school'
                                     label='Escola:'
                                     type='text'
-                                    className={`w-full lg:min-w-[24rem] ${schoolReportColors.card}`}
+                                    className={`w-full lg:min-w-[24rem]`}
                                     onChange={event => setSchoolReport({...schoolReport, school: event.target.value})}
                                     value={schoolReport.school}
                                     container
@@ -161,7 +161,7 @@ export default function Home() {
                                         name='teacher'
                                         label='Prof:'
                                         type='text'
-                                        className={`w-full ${schoolReportColors.card}`}
+                                        className={`w-full`}
                                         onChange={event => setSchoolReport({...schoolReport, teacher: event.target.value})}
                                         value={schoolReport.teacher}
                                         container
@@ -178,7 +178,7 @@ export default function Home() {
                                         name='name'
                                         label='Nome:'
                                         type='text'
-                                        className={`w-full lg:min-w-[24rem] ${schoolReportColors.card}`}
+                                        className={`w-full lg:min-w-[24rem]`}
                                         onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, name: event.target.value}})}
                                         value={schoolReport.student.name}
                                         container
@@ -190,7 +190,7 @@ export default function Home() {
                                             name='number'
                                             label='N°:'
                                             type='number'
-                                            className={`w-full sm:w-9 inputNumberValues ${schoolReportColors.card}`}
+                                            className={`w-full sm:w-9 inputNumberValues`}
                                             onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, number: Number(event.target.value)}})}
                                             value={schoolReport.student.number}
                                             step='1'
@@ -203,7 +203,7 @@ export default function Home() {
                                             name='yearAndClass'
                                             label='Ano:'
                                             type='text'
-                                            className={`w-full ${schoolReportColors.card}`}
+                                            className={`w-full`}
                                             onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, yearAndClass: event.target.value}})}
                                             value={schoolReport.student.yearAndClass}
                                             minLength={1}
@@ -253,7 +253,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='firstQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${matter?.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                                     value={matter?.grades.firstQuarter}
                                                                     step='0.1'
@@ -267,7 +267,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='secondQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${matter?.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                                     value={matter?.grades.secondQuarter}
                                                                     step='0.1'
@@ -281,7 +281,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='thirdQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${matter?.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                                     value={matter?.grades.thirdQuarter}
                                                                     step='0.1'
@@ -295,7 +295,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='fourthQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card} ${matter?.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                                    className={`w-[2.6rem] inputNumberValues ${matter?.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                                     value={matter?.grades.fourthQuarter}
                                                                     step='0.1'
@@ -312,7 +312,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='firstQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'absences')}
                                                                     value={matter?.absences.firstQuarter}
                                                                     step='1'
@@ -326,7 +326,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='secondQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'absences')}
                                                                     value={matter?.absences.secondQuarter}
                                                                     step='1'
@@ -340,7 +340,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='thirdQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'absences')}
                                                                     value={matter?.absences.thirdQuarter}
                                                                     step='1'
@@ -354,7 +354,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='fourthQuarter'
                                                                     type='number'
-                                                                    className={`w-[2.6rem] inputNumberValues ${schoolReportColors.card}`}
+                                                                    className={`w-[2.6rem] inputNumberValues`}
                                                                     onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'absences')}
                                                                     value={matter?.absences.fourthQuarter}
                                                                     step='1'
@@ -371,7 +371,7 @@ export default function Home() {
                                                                 <Input
                                                                     name='concept'
                                                                     type='text'
-                                                                    className='w-8 disabled:bg-transparent text-center'
+                                                                    className='w-8 text-center'
                                                                     value={matter?.concept}
                                                                     maxLength={1}
                                                                     minLength={1}
@@ -385,7 +385,7 @@ export default function Home() {
                                                         <Input
                                                             name='totalAbsences'
                                                             type='number'
-                                                            className='w-16 disabled:bg-transparent'
+                                                            className='w-16'
                                                             value={matter?.totalAbsences}
                                                             readOnly
                                                             disabled
@@ -396,7 +396,7 @@ export default function Home() {
                                                             <Input
                                                                 name='finalResult'
                                                                 type='text'
-                                                                className='w-30 disabled:bg-transparent text-sm text-center'
+                                                                className='w-30 text-sm text-center'
                                                                 value={matter?.finalResult}
                                                                 readOnly
                                                                 disabled

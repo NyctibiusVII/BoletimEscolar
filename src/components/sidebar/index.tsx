@@ -86,7 +86,7 @@ export const Sidebar = () => {
                         label='Nota de aprovação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues disabled:bg-transparent cursor-not-allowed`}
+                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
                         onChange={event => setMinimumPassingGrade(Number(event.target.value))}
                         value={minimumPassingGrade}
                         step='1'
@@ -101,7 +101,7 @@ export const Sidebar = () => {
                         label='Nota de recuperação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues disabled:bg-transparent cursor-not-allowed`}
+                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
                         onChange={event => setMinimumRecoveryGrade(Number(event.target.value))}
                         value={minimumRecoveryGrade}
                         step='1'
@@ -116,7 +116,7 @@ export const Sidebar = () => {
                         label='Porcentagem minima de frequência para aprovação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues disabled:bg-transparent cursor-not-allowed`}
+                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
                         onChange={event => setMinimumAttendancePercentageToPass(Number(event.target.value))}
                         value={minimumAttendancePercentageToPass}
                         step='1'
