@@ -31,7 +31,7 @@ Geração de Boletim escolar automatizado e personalizável, para escolas / prof
     * __Modelo do nome do arquivo__:
         <p>{nome}__n°{numero}__{ano}__{hora}h-{minuto}m-{segundos}s.png</p>
         <p>matheus-de-oliveira-vidigal-peixoto-dias__n°27__3°-a__19h-45m-36s.png</p>
-* ❌ Matérias podem ser adicionadas e removidas
+* Matérias podem ser adicionadas e removidas
 * Mudança de cores do tema da aplicação e do (❌ boletim escolar)
 
 ## Tecnologias 🚀
