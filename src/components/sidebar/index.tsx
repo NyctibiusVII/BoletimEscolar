@@ -15,17 +15,15 @@ import {
     MdOutlineDarkMode,
     MdOutlineFileDownload,
     MdKeyboardArrowLeft,
-    MdKeyboardArrowRight
-} from 'react-icons/md'
-import {
+    MdKeyboardArrowRight,
     HiX,
     HiMenu,
     HiTrash,
     HiPlusSm,
-    HiInformationCircle
-} from 'react-icons/hi'
-import { FaCircle } from 'react-icons/fa'
-import { FcImageFile } from 'react-icons/fc'
+    HiInformationCircle,
+    FaCircle,
+    FcImageFile
+} from '@/utils/reactIconsImports'
 
 import { ActiveQuarter } from '@/interfaces/types'
 
