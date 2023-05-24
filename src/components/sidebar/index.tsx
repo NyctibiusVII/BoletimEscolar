@@ -1,26 +1,50 @@
-import { useContext, useState } from 'react'
+import {
+    useContext,
+    useState
+} from 'react'
 import { useTheme } from 'next-themes'
+import {
+    getCookie,
+    setCookie
+} from 'cookies-next'
+import { convertToPascalCase } from '@/utils/converterText'
+import Swal from 'sweetalert2'
 
 import {
     MdOutlineLightMode,
     MdOutlineDarkMode,
-    MdOutlineFileDownload
+    MdOutlineFileDownload,
+    MdKeyboardArrowLeft,
+    MdKeyboardArrowRight
 } from 'react-icons/md'
-import { HiMenu, HiX, HiTrash } from 'react-icons/hi'
+import {
+    HiX,
+    HiMenu,
+    HiTrash,
+    HiPlusSm,
+    HiInformationCircle
+} from 'react-icons/hi'
 import { FaCircle } from 'react-icons/fa'
 import { FcImageFile } from 'react-icons/fc'
 
+import { ActiveQuarter } from '@/interfaces/types'
+
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
+import { useSchoolReport } from '@/hooks/useSchoolReport'
+import { useSwalTheme } from '@/hooks/useSwalTheme'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Details } from '@/components/details'
 import { Input } from '@/components/input'
 
-import { ActiveQuarter } from '@/interfaces/types'
-
 export const Sidebar = () => {
-    const {isOpen, toggleSidebar} = useSidebar()
+    const { isOpen, toggleSidebar } = useSidebar()
+    const swalColors = useSwalTheme()
+
+    const [swalInfoTotalClassesShown, setSwalInfoTotalClassesShown] = useState(getCookie('swal_info_ttl_clss_shown') === true ?? false)
     const [clickedIndex, setClickedIndex] = useState<number | null>(null)
+    const [activeSubjectIndex, setActiveSubjectIndex] = useState(0)
+    const [otherSubject, setOtherSubject] = useState('')
 
     const {
         filesImage,
@@ -37,6 +61,8 @@ export const Sidebar = () => {
     } = useSchoolReportConfig()
 
     const {
+        subjects,
+        inactiveSubjects,
         activeQuarter,
         maintainReportCardData,
         hasResponsibleTeacherName,
@@ -52,6 +78,13 @@ export const Sidebar = () => {
         setHasConceptValues,
         setHasFinalResultValues
     } = useSchoolReportConfig()
+
+    const {
+        schoolReport,
+        setSchoolReport,
+        addSubjects,
+        removeSubjects
+    } = useSchoolReport()
 
     const { systemTheme, theme, setTheme } = useTheme()
     const currentTheme = theme === 'system' ? systemTheme : theme
@@ -239,8 +272,116 @@ export const Sidebar = () => {
                     </Details>
 
                     <Details summary='Matérias'>
-                        <p>content</p>
+                        <div className='bg-shadow-5 dark:bg-shadow-15 mb-2 flex flex-col gap-1 rounded-md'>
+                            <div className='w-full bg-slate-200 dark:bg-gray-700 border border-shadow-5 dark:border-shadow-15 flex items-center justify-between gap-2 p-1 rounded-md'>
+                                <button
+                                    onClick={() => setActiveSubjectIndex(activeSubjectIndex - 1)}
+                                    className='hover:bg-shadow-5 hover:dark:bg-shadow-15 border border-transparent p-1 rounded-md disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:dark:bg-transparent disabled:cursor-not-allowed'
+                                    disabled={activeSubjectIndex === 0}
+                                >
+                                    <MdKeyboardArrowLeft className='text-xl' />
+                                </button>
+                                <p>{subjects[activeSubjectIndex]}</p>
+                                <button
+                                    onClick={() => setActiveSubjectIndex(activeSubjectIndex + 1)}
+                                    className='hover:bg-shadow-5 hover:dark:bg-shadow-15 border border-transparent p-1 rounded-md disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:dark:bg-transparent disabled:cursor-not-allowed'
+                                    disabled={activeSubjectIndex === subjects.length - 1}
+                                >
+                                    <MdKeyboardArrowRight className='text-xl' />
+                                </button>
+                            </div>
+
+                            <div className='w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                <p className='relative'>
+                                    Aulas dadas
+
+                                    { swalInfoTotalClassesShown === false
+                                        && <span className='w-4 h-4 bg-violet-500 absolute top-0 right-[-1.2rem] rounded-full animate-ping opacity-75' />
+                                    }
+                                    <HiInformationCircle
+                                        title={`O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. \nEste item é importante porque entra no cálculo da porcentagem de faltas do aluno, \no que consequentemente pode determinar uma reprovação por falta.`}
+                                        className=' text-black dark:text-white absolute top-0 right-[-1.2rem] cursor-help'
+                                        onClick={() => {
+                                            Swal.fire({
+                                                title: 'Informação',
+                                                text: 'O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. Este item é importante porque entra no cálculo da porcentagem de faltas do aluno, o que consequentemente pode determinar uma reprovação por falta.',
+                                                icon: 'info',
+                                                background: swalColors.bg,
+                                                color: swalColors.fg,
+                                                iconColor: swalColors.info.icon
+                                            })
+                                            .finally(() => {
+                                                getCookie('swal_info_ttl_clss_shown') !== true && setCookie('swal_info_ttl_clss_shown', true)
+                                                setSwalInfoTotalClassesShown(true)
+                                            })
+                                        }}
+                                    />
+                                </p>
+                                <Input
+                                    name='totalClasses'
+                                    withForm={false}
+                                    type='number'
+                                    className={`w-12 inputNumberValues`}
+                                    onChange={event => {
+                                        setSchoolReport({
+                                            ...schoolReport,
+                                            studentAcademicRecord: {
+                                                ...schoolReport.studentAcademicRecord,
+                                                [subjects[activeSubjectIndex]]: {
+                                                    ...schoolReport.studentAcademicRecord[subjects[activeSubjectIndex]],
+                                                    totalClasses: Number(event.target.value)
+                                                }
+                                            }
+                                        })
+                                    }}
+                                    value={schoolReport.studentAcademicRecord[subjects[activeSubjectIndex]].totalClasses}
+                                    step='1'
+                                    min='1'
+                                    max='248'
+                                />
+                            </div>
+
+                            <button
+                                onClick={() => {
+                                    if(activeSubjectIndex !== 0 && activeSubjectIndex === subjects.length - 1) setActiveSubjectIndex(activeSubjectIndex - 1)
+                                    removeSubjects(subjects[activeSubjectIndex])
+                                }}
+                                className='w-fit bg-red-400 dark:bg-red-500 hover:bg-red-500 hover:dark:bg-red-400 mx-auto mb-2 px-6 flex items-center justify-center gap-2 py-1 rounded-md disabled:opacity-40 disabled:hover:bg-red-400 disabled:hover:dark:bg-red-500 disabled:cursor-not-allowed'
+                                disabled={subjects.length === 1}
+                            >
+                                Remover matéria
+                            </button>
+                        </div>
+
+                        <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
+                            <p className='font-bold'>Adicionar</p>
+                            { inactiveSubjects.map((subject, index) => {
+                                return (
+                                    <div key={index} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>{subject}</p>
+                                        <button onClick={() => addSubjects(subject)} className='bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 p-1 rounded-md' title={`Adicionar a matéria ${subject}`} aria-label={`Adicionar a matéria ${subject}`}>
+                                            <HiPlusSm className='text-xl text-green-400' />
+                                        </button>
+                                    </div>
+                                )
+                            }) }
+
+                            <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                <input
+                                    name='otherSubject'
+                                    type='text'
+                                    className={`w-full h-7 bg-shadow-5 dark:bg-shadow-15 px-2 rounded-md`}
+                                    onChange={event => setOtherSubject(convertToPascalCase(event.target.value))}
+                                    value={otherSubject}
+                                    placeholder='Outra matéria'
+                                />
+                                <button onClick={() => addSubjects(otherSubject, true)} className='bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 p-1 rounded-md' title='Adicionar matéria' aria-label='Adicionar matéria'>
+                                    <HiPlusSm className='text-xl text-green-400' />
+                                </button>
+                            </div>
+                        </div>
                     </Details>
+
                     <Details summary='Cores'>
                         <button onClick={toggleTheme} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 border border-shadow-15 flex items-center justify-center gap-2 py-1 rounded-md'>
                             { currentTheme === 'dark'

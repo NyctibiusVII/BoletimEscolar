@@ -3,6 +3,7 @@ import {
     ReactNode,
     useState
 } from 'react'
+import { hasCookie } from 'cookies-next'
 
 import {
     ActiveQuarter,
@@ -11,11 +12,11 @@ import {
     SchoolReportColors
 } from '@/interfaces/types'
 
-import { hasCookie } from 'cookies-next'
-
 export interface SchoolReportConfigContextData {
     subjects:                 Matter[]
+    inactiveSubjects:         Matter[]
     setSubjects:              (value: Matter[]) => void
+    setInactiveSubjects:      (value: Matter[]) => void
     activeQuarter:            ActiveQuarter
     setActiveQuarter          (value: ActiveQuarter): void
     updateActiveQuarter       (quarterNumber: 1 | 2 | 3 | 4): void
@@ -80,15 +81,6 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
         thirdQuarter:  true,
         fourthQuarter: true
     })
-
-    const [subjects, setSubjects] = useState<Matter[]>([
-        'Português',
-        'Matemática',
-        'Ciências',
-        'História',
-        'Geografia'
-    ])
-
     const updateActiveQuarter = (quarterNumber: 1 | 2 | 3 | 4) => {
         const quarterMap = {
             1: 'firstQuarter',
@@ -99,15 +91,39 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
         const updatedQuarter = quarterMap[quarterNumber]
 
         if (updatedQuarter) {
-            setActiveQuarter({...activeQuarter, [updatedQuarter]: !activeQuarter[updatedQuarter as keyof ActiveQuarter]})
+            setActiveQuarter({
+                ...activeQuarter,
+                [updatedQuarter]: !activeQuarter[updatedQuarter as keyof ActiveQuarter]
+            })
         }
     }
+
+    const [subjects, setSubjects] = useState<Matter[]>([
+        'Português',
+        'Matemática',
+        'Ciências',
+        'História',
+        'Geografia'
+    ])
+    const [inactiveSubjects, setInactiveSubjects] = useState<Matter[]>([
+        'Física',
+        'Química',
+        'Biologia',
+        'Filosofia',
+        'Sociologia',
+        'Inglês',
+        'Educação Física',
+        'Artes',
+        'Ensino Religioso'
+    ])
 
     return(
         <SchoolReportConfigContext.Provider
             value={{
                 subjects,
+                inactiveSubjects,
                 setSubjects,
+                setInactiveSubjects,
                 activeQuarter,
                 setActiveQuarter,
                 updateActiveQuarter,

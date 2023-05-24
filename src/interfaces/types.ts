@@ -34,15 +34,13 @@ export type Matter =
   | 'Física'
   | 'Química'
   | 'Biologia'
+  | 'Ciências'
   | 'Filosofia'
   | 'Sociologia'
   | 'Inglês'
-  | 'Espanhol'
   | 'Educação Física'
   | 'Artes'
   | 'Ensino Religioso'
-  | 'Tecnologia'
-  | 'Convivência'
   | string
 export enum SubjectSituation {
     APPROVED           = 'Aprovado',
@@ -56,7 +54,7 @@ export enum Concept {
     C = 'C',
     D = 'D'
 }
-interface AcademicRecord {
+export interface AcademicRecord {
     grades:   Bimester
     absences: Bimester
     concept:  Concept

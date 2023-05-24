@@ -8,6 +8,7 @@ import {
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 
 import {
+    AcademicRecord,
     ActiveQuarter,
     Bimester,
     Concept,
@@ -34,6 +35,9 @@ export interface SchoolReportContextData {
         bimester: keyof Bimester,
         academicRecord: 'grades' | 'absences'
     ) => void
+    newAcademicRecord:   AcademicRecord
+    addSubjects:         (subject: string, custom?: boolean) => void
+    removeSubjects:      (subject: string) => void
 }
 interface SchoolReportProviderProps { children: ReactNode }
 
@@ -42,6 +46,9 @@ export const SchoolReportContext = createContext({} as SchoolReportContextData)
 export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
     const {
         subjects,
+        setSubjects,
+        inactiveSubjects,
+        setInactiveSubjects,
         activeQuarter,
         maintainReportCardData,
         minimumAttendancePercentageToPass,
@@ -53,27 +60,26 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
 
     const studentAcademicRecord = () => {
         const newStudentAcademicRecord: StudentAcademicRecord = {}
-        subjects.forEach(subject => {
-            newStudentAcademicRecord[subject] = {
-                grades: {
-                    firstQuarter:  0,
-                    secondQuarter: 0,
-                    thirdQuarter:  0,
-                    fourthQuarter: 0
-                },
-                absences: {
-                    firstQuarter:  0,
-                    secondQuarter: 0,
-                    thirdQuarter:  0,
-                    fourthQuarter: 0
-                },
-                concept: Concept.D,
-                totalClasses: 1, // pegar esse valor com o usuário e avisa-lo. valor min é 1, max é 248
-                totalAbsences: 0,
-                finalResult: SubjectSituation.DISAPPROVED
-            }
-        })
+        subjects.forEach(subject => newStudentAcademicRecord[subject] = newAcademicRecord)
         return newStudentAcademicRecord
+    }
+    const newAcademicRecord: AcademicRecord = {
+        grades: {
+            firstQuarter:  0,
+            secondQuarter: 0,
+            thirdQuarter:  0,
+            fourthQuarter: 0
+        },
+        absences: {
+            firstQuarter:  0,
+            secondQuarter: 0,
+            thirdQuarter:  0,
+            fourthQuarter: 0
+        },
+        concept: Concept.D,
+        totalClasses: 56, /* Min = Dois meses de 28 dias | Max = Oito meses ou 248 aulas */
+        totalAbsences: 0,
+        finalResult: SubjectSituation.DISAPPROVED
     }
     const schoolReportStartup: SchoolReport = {
         school:  maintainReportCardData.school  ? (getCookie('keep_school_data')  ? String(getCookie('keep_school_data'))  : '') : '',
@@ -87,6 +93,30 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         studentAcademicRecord: studentAcademicRecord()
     }
     const [schoolReport, setSchoolReport] = useState<SchoolReport>(schoolReportStartup)
+
+    const addSubjects = (subject: string, custom=false) => {
+        if (custom) {
+            if (subject.length === 0) return
+            if (subjects.includes(subject)) return
+        }
+
+        setSubjects([...subjects, subject])
+        setSchoolReport({
+            ...schoolReport,
+            studentAcademicRecord: {
+                ...schoolReport.studentAcademicRecord,
+                [subject]: newAcademicRecord
+            }
+        })
+        setInactiveSubjects(inactiveSubjects.filter(item => item !== subject))
+    }
+    const removeSubjects = (subject: string) => {
+        if (subjects.length === 1) return
+        if (subjects.includes(subject)) {
+            setSubjects(subjects.filter(item => item !== subject))
+            setInactiveSubjects([...inactiveSubjects, subject])
+        }
+    }
 
     const calculateAverageOfGrades = (grades: Bimester) => {
         const gradesByQuarter = Object.values(grades)
@@ -232,7 +262,10 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
                 schoolReport,
                 setSchoolReport,
                 schoolReportStartup,
-                updateStudentAcademicRecord
+                updateStudentAcademicRecord,
+                newAcademicRecord,
+                addSubjects,
+                removeSubjects
             }}>
             {children}
         </SchoolReportContext.Provider>
