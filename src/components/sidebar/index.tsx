@@ -79,7 +79,7 @@ export const Sidebar = () => {
 
     const {
         schoolReport,
-        setSchoolReport,
+        updateTotalClasses,
         addSubjects,
         removeSubjects
     } = useSchoolReport()
@@ -117,45 +117,39 @@ export const Sidebar = () => {
                         label='Nota de aprovação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
+                        className={`w-[2.6rem] inputNumberValues`}
                         onChange={event => setMinimumPassingGrade(Number(event.target.value))}
                         value={minimumPassingGrade}
                         step='1'
                         min='1'
                         max='10'
                         container
-                        readOnly
-                        disabled
                     />
                     <Input
                         name='insufficientGrade'
                         label='Nota de recuperação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
+                        className={`w-[2.6rem] inputNumberValues`}
                         onChange={event => setMinimumRecoveryGrade(Number(event.target.value))}
                         value={minimumRecoveryGrade}
                         step='1'
                         min='1'
                         max='10'
                         container
-                        readOnly
-                        disabled
                     />
                     <Input
                         name='frequencyPercentage'
                         label='Porcentagem minima de frequência para aprovação:'
                         withForm={false}
                         type='number'
-                        className={`w-[2.6rem] inputNumberValues cursor-not-allowed`}
+                        className={`w-[2.9rem] inputNumberValues`}
                         onChange={event => setMinimumAttendancePercentageToPass(Number(event.target.value))}
                         value={minimumAttendancePercentageToPass}
                         step='1'
                         min='1'
                         max='100'
                         container
-                        readOnly
-                        disabled
                     />
 
                     <Details summary='Habilitar / Desabilitar'>
@@ -320,18 +314,7 @@ export const Sidebar = () => {
                                     withForm={false}
                                     type='number'
                                     className={`w-12 inputNumberValues`}
-                                    onChange={event => {
-                                        setSchoolReport({
-                                            ...schoolReport,
-                                            studentAcademicRecord: {
-                                                ...schoolReport.studentAcademicRecord,
-                                                [subjects[activeSubjectIndex]]: {
-                                                    ...schoolReport.studentAcademicRecord[subjects[activeSubjectIndex]],
-                                                    totalClasses: Number(event.target.value)
-                                                }
-                                            }
-                                        })
-                                    }}
+                                    onChange={event => updateTotalClasses(Number(event.target.value), subjects[activeSubjectIndex])}
                                     value={schoolReport.studentAcademicRecord[subjects[activeSubjectIndex]].totalClasses}
                                     step='1'
                                     min='1'

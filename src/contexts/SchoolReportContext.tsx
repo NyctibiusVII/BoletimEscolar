@@ -35,6 +35,7 @@ export interface SchoolReportContextData {
         bimester: keyof Bimester,
         academicRecord: 'grades' | 'absences'
     ) => void
+    updateTotalClasses:  (value: number, subject: Matter) => void
     newAcademicRecord:   AcademicRecord
     addSubjects:         (subject: string, custom?: boolean) => void
     removeSubjects:      (subject: string) => void
@@ -51,6 +52,8 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         setInactiveSubjects,
         activeQuarter,
         maintainReportCardData,
+        updateTotalClassesRecalculatedComponents,
+        setUpdateTotalClassesRecalculatedComponents,
         minimumAttendancePercentageToPass,
         minimumPassingGrade,
         minimumRecoveryGrade
@@ -101,11 +104,13 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         }
 
         setSubjects([...subjects, subject])
-        setSchoolReport({
-            ...schoolReport,
-            studentAcademicRecord: {
-                ...schoolReport.studentAcademicRecord,
-                [subject]: newAcademicRecord
+        setSchoolReport(prevState => {
+            return {
+                ...prevState,
+                studentAcademicRecord: {
+                    ...prevState.studentAcademicRecord,
+                    [subject]: newAcademicRecord
+                }
             }
         })
         setInactiveSubjects(inactiveSubjects.filter(item => item !== subject))
@@ -197,6 +202,21 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
             }
         })
     }
+    const updateTotalClasses = (value: number, subject: Matter) => {
+        setSchoolReport(prevState => {
+            return {
+                ...prevState,
+                studentAcademicRecord: {
+                    ...prevState.studentAcademicRecord,
+                    [subject]: {
+                        ...prevState.studentAcademicRecord[subject],
+                        totalClasses: value
+                    }
+                }
+            }
+        })
+        setUpdateTotalClassesRecalculatedComponents(updateTotalClassesRecalculatedComponents + 1)
+    }
 
     useEffect(() => {
         const recalculatingComponentWithOwnValues = () => {
@@ -241,7 +261,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
 
         recalculatingComponentWithOwnValues()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeQuarter, subjects])
+    }, [activeQuarter, subjects, minimumPassingGrade, minimumRecoveryGrade, minimumAttendancePercentageToPass, updateTotalClassesRecalculatedComponents])
 
     useEffect(() => {
         const { school, teacher, name, number, yearAndClass } = maintainReportCardData
@@ -263,6 +283,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
                 setSchoolReport,
                 schoolReportStartup,
                 updateStudentAcademicRecord,
+                updateTotalClasses,
                 newAcademicRecord,
                 addSubjects,
                 removeSubjects

@@ -24,6 +24,8 @@ export interface SchoolReportConfigContextData {
     setSchoolReportColors     (value: SchoolReportColors): void
     maintainReportCardData:   MaintainReportCardData
     setMaintainReportCardData (value: MaintainReportCardData): void
+    updateTotalClassesRecalculatedComponents:   number
+    setUpdateTotalClassesRecalculatedComponents (value: number): void
     minimumAttendancePercentageToPass: number
     minimumPassingGrade:               number
     minimumRecoveryGrade:              number
@@ -46,6 +48,8 @@ interface SchoolReportConfigProviderProps { children: ReactNode }
 export const SchoolReportConfigContext = createContext({} as SchoolReportConfigContextData)
 
 export function SchoolReportConfigProvider({ children }: SchoolReportConfigProviderProps) {
+    const [updateTotalClassesRecalculatedComponents,   setUpdateTotalClassesRecalculatedComponents] = useState(0)
+
     const [minimumAttendancePercentageToPass, setMinimumAttendancePercentageToPass] = useState(25)
     const [minimumPassingGrade,                             setMinimumPassingGrade] = useState(6)
     const [minimumRecoveryGrade,                           setMinimumRecoveryGrade] = useState(4)
@@ -131,6 +135,8 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
                 setSchoolReportColors,
                 maintainReportCardData,
                 setMaintainReportCardData,
+                updateTotalClassesRecalculatedComponents,
+                setUpdateTotalClassesRecalculatedComponents,
                 minimumAttendancePercentageToPass,
                 minimumPassingGrade,
                 minimumRecoveryGrade,
