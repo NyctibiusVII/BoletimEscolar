@@ -1,4 +1,10 @@
-import { useContext, useRef } from 'react'
+import {
+    useContext,
+    useRef
+} from 'react'
+import Swal from 'sweetalert2'
+
+import { SchoolReport } from '@/interfaces/types'
 
 import { FormHandles, Scope, SubmitHandler } from '@unform/core'
 import { Form } from '@unform/web'
@@ -6,13 +12,10 @@ import { Form } from '@unform/web'
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport } from '@/hooks/useSchoolReport'
+import { useSwalTheme } from '@/hooks/useSwalTheme'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Sidebar } from '@/components/sidebar'
 import { Input } from '@/components/input'
-
-import { SchoolReport } from '@/interfaces/types'
-import { useTheme } from 'next-themes'
-import Swal from 'sweetalert2'
 
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
@@ -21,9 +24,9 @@ export default function Home() {
     const formRef = useRef<FormHandles>(null)
     const mainRef = useRef<HTMLDivElement>(null)
 
-    const { theme } = useTheme()
     const { isOpen } = useSidebar()
     const { generateImage } = useContext(GenerateImageContext)
+    const swalColors = useSwalTheme()
 
     const {
         subjects,
@@ -46,10 +49,6 @@ export default function Home() {
     } = useSchoolReport()
 
     const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
-        const swalColors = {
-            bg: theme === 'dark' ? '#111827' : '#ffffff',
-            fg: theme === 'dark' ? '#f3f4f6' : '#374151'
-        }
         let timerInterval: NodeJS.Timer
 
         Swal.fire({
@@ -71,9 +70,9 @@ export default function Home() {
                         icon: 'success',
                         background: swalColors.bg,
                         color: swalColors.fg,
-                        iconColor: '#4ade80'
+                        iconColor: swalColors.success.icon
                     })
-                    .then(() => console.info('Imagem gerada com sucesso!', { 'conteúdo': data }))
+                    .then(() => console.info('Imagem gerada com sucesso!', { 'data': schoolReport }))
                 })
                 .then(() =>
                     setSchoolReport({
@@ -93,12 +92,12 @@ export default function Home() {
                         icon: 'error',
                         background: swalColors.bg,
                         color: swalColors.fg,
-                        iconColor: '#f87171',
+                        iconColor: swalColors.error.icon,
                         confirmButtonText: 'Tentar novamente',
-                        confirmButtonColor: '#2778c4',
+                        confirmButtonColor: swalColors.button.confirm,
                         showCancelButton: true,
                         cancelButtonText: 'Cancelar',
-                        cancelButtonColor: '#f87171'
+                        cancelButtonColor: swalColors.button.cancel
                     })
                     .then(result => {
                         if (result.isConfirmed) {
