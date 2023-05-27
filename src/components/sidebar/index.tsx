@@ -3,12 +3,7 @@ import {
     useState
 } from 'react'
 import { useTheme } from 'next-themes'
-import {
-    getCookie,
-    setCookie
-} from 'cookies-next'
 import { convertToPascalCase } from '@/utils/converterText'
-import Swal from 'sweetalert2'
 
 import {
     MdOutlineLightMode,
@@ -20,7 +15,6 @@ import {
     HiMenu,
     HiTrash,
     HiPlusSm,
-    HiInformationCircle,
     FaCircle,
     FcImageFile
 } from '@/utils/reactIconsImports'
@@ -30,16 +24,14 @@ import { ActiveQuarter } from '@/interfaces/types'
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport } from '@/hooks/useSchoolReport'
-import { useSwalTheme } from '@/hooks/useSwalTheme'
 import { useSidebar } from '@/hooks/useSidebar'
+import { InfoIcon } from '@/components/infoIcon'
 import { Details } from '@/components/details'
 import { Input } from '@/components/input'
 
 export const Sidebar = () => {
     const { isOpen, toggleSidebar } = useSidebar()
-    const swalColors = useSwalTheme()
 
-    const [swalInfoTotalClassesShown, setSwalInfoTotalClassesShown] = useState(getCookie('swal_info_ttl_clss_shown') === true ?? false)
     const [clickedIndex, setClickedIndex] = useState<number | null>(null)
     const [activeSubjectIndex, setActiveSubjectIndex] = useState(0)
     const [otherSubject, setOtherSubject] = useState('')
@@ -154,7 +146,10 @@ export const Sidebar = () => {
 
                     <Details summary='Habilitar / Desabilitar'>
                         <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
-                            <p className='font-bold'>Dados</p>
+                            <p className='w-fit font-bold relative'>
+                                Dados
+                                <InfoIcon topic='Habilitar / Desabilitar - Dados' description='Os itens de "Dados" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os resultados dos respectivos campos do boletim escolar.' />
+                            </p>
                             { [1, 2, 3, 4].map((quarterNumber) => {
                                 const quarterKey: keyof ActiveQuarter = getQuarterKey(quarterNumber as 1 | 2 | 3 | 4)
 
@@ -184,7 +179,10 @@ export const Sidebar = () => {
                         </div>
 
                         <div className='mt-2 divide-x divide-solid divide-transparent hover:divide-violet-500'>
-                            <p className='font-bold'>Componentes</p>
+                            <p className='w-fit font-bold relative'>
+                                Componentes
+                                <InfoIcon topic='Habilitar / Desabilitar - Componentes' description='Os itens de "Componentes" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os respectivos campos do boletim escolar.' />
+                            </p>
                             <button onClick={() => setHasResponsibleTeacherName(!hasResponsibleTeacherName)} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 Professor(a)
                                 <FaCircle className={`${hasResponsibleTeacherName ? 'text-green-400' : 'text-red-400'} text-lg`} />
@@ -202,7 +200,10 @@ export const Sidebar = () => {
 
                     <Details summary='Manter dados'>
                         <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
-                            <p className='font-bold'>Cabeçalho</p>
+                            <p className='w-fit font-bold relative'>
+                                Cabeçalho
+                                <InfoIcon topic='Manter dados' description='Os itens providos de "Manter Dados" refere-se à salvar os dados digitados dos respectivos campos nos Cookies, assim, a página poderá ser recarregada e a informação não se perderá!' />
+                            </p>
                             <button onClick={() => setMaintainReportCardData({...maintainReportCardData, school: !maintainReportCardData.school})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 Escola
                                 <FaCircle className={`${maintainReportCardData.school ? 'text-green-400' : 'text-red-400'} text-lg`} />
@@ -286,28 +287,7 @@ export const Sidebar = () => {
                             <div className='w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 <p className='relative'>
                                     Aulas dadas
-
-                                    { swalInfoTotalClassesShown === false
-                                        && <span className='w-4 h-4 bg-violet-500 absolute top-0 right-[-1.2rem] rounded-full animate-ping opacity-75' />
-                                    }
-                                    <HiInformationCircle
-                                        title={`O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. \nEste item é importante porque entra no cálculo da porcentagem de faltas do aluno, \no que consequentemente pode determinar uma reprovação por falta.`}
-                                        className=' text-black dark:text-white absolute top-0 right-[-1.2rem] cursor-help'
-                                        onClick={() => {
-                                            Swal.fire({
-                                                title: 'Informação',
-                                                text: 'O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. Este item é importante porque entra no cálculo da porcentagem de faltas do aluno, o que consequentemente pode determinar uma reprovação por falta.',
-                                                icon: 'info',
-                                                background: swalColors.bg,
-                                                color: swalColors.fg,
-                                                iconColor: swalColors.info.icon
-                                            })
-                                            .finally(() => {
-                                                getCookie('swal_info_ttl_clss_shown') !== true && setCookie('swal_info_ttl_clss_shown', true)
-                                                setSwalInfoTotalClassesShown(true)
-                                            })
-                                        }}
-                                    />
+                                    <InfoIcon topic='Matérias' description='O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. Este item é importante porque entra no cálculo da porcentagem de faltas do aluno, o que consequentemente pode determinar uma reprovação por falta.' />
                                 </p>
                                 <Input
                                     name='totalClasses'

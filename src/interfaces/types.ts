@@ -77,6 +77,12 @@ export interface SchoolReport {
     student:               Student
     studentAcademicRecord: StudentAcademicRecord
 }
+/* Components/InfoIcon */
+type InfoIconType = {
+    topic:       string
+    description: string
+}
+export type InfoIconProps = JSX.IntrinsicElements['svg'] & InfoIconType
 /* Components/Input */
 type InputType = {
     name:           string
