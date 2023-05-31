@@ -202,7 +202,7 @@ export const Sidebar = () => {
                         <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
                             <p className='w-fit font-bold relative'>
                                 Cabeçalho
-                                <InfoIcon topic='Manter dados' description='Os itens providos de "Manter Dados" refere-se à salvar os dados digitados dos respectivos campos nos Cookies, assim, a página poderá ser recarregada e a informação não se perderá!' />
+                                <InfoIcon topic='Manter dados' description='Os itens de "Cabeçalho" providos de "Manter Dados" refere-se à salvar os dados digitados dos respectivos campos no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
                             </p>
                             <button onClick={() => setMaintainReportCardData({...maintainReportCardData, school: !maintainReportCardData.school})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 Escola
@@ -216,17 +216,36 @@ export const Sidebar = () => {
                                 Professor(a)
                                 <FaCircle className={`${maintainReportCardData.teacher ? 'text-green-400' : 'text-red-400'} text-lg`} />
                             </button>
-                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, name: !maintainReportCardData.name})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, studentName: !maintainReportCardData.studentName})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 Nome
-                                <FaCircle className={`${maintainReportCardData.name ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                                <FaCircle className={`${maintainReportCardData.studentName ? 'text-green-400' : 'text-red-400'} text-lg`} />
                             </button>
-                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, number: !maintainReportCardData.number})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, studentNumber: !maintainReportCardData.studentNumber})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 N°
-                                <FaCircle className={`${maintainReportCardData.number ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                                <FaCircle className={`${maintainReportCardData.studentNumber ? 'text-green-400' : 'text-red-400'} text-lg`} />
                             </button>
-                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, yearAndClass: !maintainReportCardData.yearAndClass})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, studentYearAndClass: !maintainReportCardData.studentYearAndClass})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                 Ano
-                                <FaCircle className={`${maintainReportCardData.yearAndClass ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                                <FaCircle className={`${maintainReportCardData.studentYearAndClass ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                        </div>
+
+                        <div className='mt-2 divide-x divide-solid divide-transparent hover:divide-violet-500'>
+                            <p className='w-fit font-bold relative'>
+                                Grade curricular
+                                <InfoIcon topic='Grade curricular' description='Os itens de "Grade curricular" providos de "Manter Dados" refere-se à salvar as notas, faltas e o total de aulas dadas em determinada matéria no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
+                            </p>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, academicRecordGrades: !maintainReportCardData.academicRecordGrades})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Notas
+                                <FaCircle className={`${maintainReportCardData.academicRecordGrades ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, academicRecordAbsences: !maintainReportCardData.academicRecordAbsences})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Faltas
+                                <FaCircle className={`${maintainReportCardData.academicRecordAbsences ? 'text-green-400' : 'text-red-400'} text-lg`} />
+                            </button>
+                            <button onClick={() => setMaintainReportCardData({...maintainReportCardData, academicRecordTotalClasses: !maintainReportCardData.academicRecordTotalClasses})} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                Aulas dadas
+                                <FaCircle className={`${maintainReportCardData.academicRecordTotalClasses ? 'text-green-400' : 'text-red-400'} text-lg`} />
                             </button>
                         </div>
                     </Details>

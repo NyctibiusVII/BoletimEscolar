@@ -5,12 +5,14 @@ import {
 } from 'react'
 import domtoimage from 'dom-to-image'
 
-import { Student } from '@/interfaces/types'
+import { FilesImage, Student } from '@/interfaces/types'
+
 import { useSidebar } from '@/hooks/useSidebar'
 import { useSchoolReport } from '@/hooks/useSchoolReport'
 
 export interface GenerateImageContextData {
     filesImage:    { name: string; imageData: string }[]
+    setFilesImage: (value: FilesImage) => void
     generateImage: () => Promise<void>
     deleteImage:   (index: number) => void
 }
@@ -21,7 +23,7 @@ export const GenerateImageContext = createContext({} as GenerateImageContextData
 export function GenerateImageProvider({ children }: GenerateImageProviderProps) {
     const { schoolReport } = useSchoolReport()
     const { toggleSidebar } = useSidebar()
-    const [filesImage, setFilesImage] = useState<{ name: string; imageData: string }[]>([])
+    const [filesImage, setFilesImage] = useState<FilesImage>([])
 
     const generateImage = async () => {
         const schoolReportNode: HTMLElement = document.getElementById('school-report') ?? document.body
@@ -64,6 +66,7 @@ export function GenerateImageProvider({ children }: GenerateImageProviderProps) 
         <GenerateImageContext.Provider
             value={{
                 filesImage,
+                setFilesImage,
                 generateImage,
                 deleteImage
             }}>

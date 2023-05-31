@@ -3,7 +3,6 @@ import {
     ReactNode,
     useState
 } from 'react'
-import { hasCookie } from 'cookies-next'
 
 import {
     ActiveQuarter,
@@ -24,8 +23,8 @@ export interface SchoolReportConfigContextData {
     setSchoolReportColors     (value: SchoolReportColors): void
     maintainReportCardData:   MaintainReportCardData
     setMaintainReportCardData (value: MaintainReportCardData): void
-    updateTotalClassesRecalculatedComponents:   number
-    setUpdateTotalClassesRecalculatedComponents (value: number): void
+    recalculateValues:   number
+    setRecalculateValues (value: number): void
     minimumAttendancePercentageToPass: number
     minimumPassingGrade:               number
     minimumRecoveryGrade:              number
@@ -48,11 +47,11 @@ interface SchoolReportConfigProviderProps { children: ReactNode }
 export const SchoolReportConfigContext = createContext({} as SchoolReportConfigContextData)
 
 export function SchoolReportConfigProvider({ children }: SchoolReportConfigProviderProps) {
-    const [updateTotalClassesRecalculatedComponents,   setUpdateTotalClassesRecalculatedComponents] = useState(0)
+    const [recalculateValues, setRecalculateValues] = useState(0)
 
-    const [minimumAttendancePercentageToPass, setMinimumAttendancePercentageToPass] = useState(25)
     const [minimumPassingGrade,                             setMinimumPassingGrade] = useState(6)
     const [minimumRecoveryGrade,                           setMinimumRecoveryGrade] = useState(4)
+    const [minimumAttendancePercentageToPass, setMinimumAttendancePercentageToPass] = useState(25)
 
     const [hasResponsibleTeacherName, setHasResponsibleTeacherName] = useState(true)
     const [hasSignatures,                         setHasSignatures] = useState(true)
@@ -61,11 +60,14 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
     const [hasFinalResultValues,           setHasFinalResultValues] = useState(true)
 
     const [maintainReportCardData, setMaintainReportCardData] = useState<MaintainReportCardData>({
-        school:       hasCookie('keep_school_data')         ?? false,
-        teacher:      hasCookie('keep_teacher_data')        ?? false,
-        name:         hasCookie('keep_name_data')           ?? false,
-        number:       hasCookie('keep_number_data')         ?? false,
-        yearAndClass: hasCookie('keep_year_and_class_data') ?? false
+        school:                     true,
+        teacher:                    true,
+        studentName:                false,
+        studentNumber:              false,
+        studentYearAndClass:        false,
+        academicRecordGrades:       false,
+        academicRecordAbsences:     false,
+        academicRecordTotalClasses: true
     })
 
     const schoolReportColorsStartup: SchoolReportColors = {
@@ -135,8 +137,8 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
                 setSchoolReportColors,
                 maintainReportCardData,
                 setMaintainReportCardData,
-                updateTotalClassesRecalculatedComponents,
-                setUpdateTotalClassesRecalculatedComponents,
+                recalculateValues,
+                setRecalculateValues,
                 minimumAttendancePercentageToPass,
                 minimumPassingGrade,
                 minimumRecoveryGrade,

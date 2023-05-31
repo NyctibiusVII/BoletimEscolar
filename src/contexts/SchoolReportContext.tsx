@@ -6,6 +6,7 @@ import {
 } from 'react'
 
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
+import { useLoading } from '@/hooks/useLoading'
 
 import {
     AcademicRecord,
@@ -17,13 +18,6 @@ import {
     StudentAcademicRecord,
     SubjectSituation
 } from '@/interfaces/types'
-
-import {
-    getCookie,
-    setCookie,
-    deleteCookie,
-    hasCookie
-} from 'cookies-next'
 
 export interface SchoolReportContextData {
     schoolReport:        SchoolReport
@@ -45,15 +39,15 @@ interface SchoolReportProviderProps { children: ReactNode }
 export const SchoolReportContext = createContext({} as SchoolReportContextData)
 
 export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
+    const { isLoading } = useLoading()
     const {
         subjects,
         setSubjects,
         inactiveSubjects,
         setInactiveSubjects,
         activeQuarter,
-        maintainReportCardData,
-        updateTotalClassesRecalculatedComponents,
-        setUpdateTotalClassesRecalculatedComponents,
+        recalculateValues,
+        setRecalculateValues,
         minimumAttendancePercentageToPass,
         minimumPassingGrade,
         minimumRecoveryGrade
@@ -85,13 +79,13 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         finalResult: SubjectSituation.DISAPPROVED
     }
     const schoolReportStartup: SchoolReport = {
-        school:  maintainReportCardData.school  ? (getCookie('keep_school_data')  ? String(getCookie('keep_school_data'))  : '') : '',
-        teacher: maintainReportCardData.teacher ? (getCookie('keep_teacher_data') ? String(getCookie('keep_teacher_data')) : '') : '',
+        school:  '',
+        teacher: '',
         academicYear: new Date().getFullYear(),
         student: {
-            name:         maintainReportCardData.name         ? (getCookie('keep_name_data')           ? String(getCookie('keep_name_data'))           : '') : '',
-            number:       maintainReportCardData.number       ? (getCookie('keep_number_data')         ? Number(getCookie('keep_number_data'))         : 0)  : 0,
-            yearAndClass: maintainReportCardData.yearAndClass ? (getCookie('keep_year_and_class_data') ? String(getCookie('keep_year_and_class_data')) : '') : ''
+            name:         '',
+            number:       0,
+            yearAndClass: ''
         },
         studentAcademicRecord: studentAcademicRecord()
     }
@@ -120,6 +114,9 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         if (subjects.includes(subject)) {
             setSubjects(subjects.filter(item => item !== subject))
             setInactiveSubjects([...inactiveSubjects, subject])
+        }
+        if (inactiveSubjects.includes(subject)) {
+            setInactiveSubjects(inactiveSubjects.filter(item => item !== subject))
         }
     }
 
@@ -163,12 +160,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         return finalResult
     }
 
-    const updateStudentAcademicRecord = (
-        value:    number,
-        subject:  Matter,
-        bimester: keyof Bimester,
-        academicRecord: 'grades' | 'absences'
-    ) => {
+    const updateStudentAcademicRecord = (value: number, subject: Matter, bimester: keyof Bimester, academicRecord: 'grades' | 'absences') => {
         const dataUpdate = (prevState: SchoolReport) => {
             const { grades, absences, totalClasses } = { ...prevState.studentAcademicRecord[subject] }
             grades[bimester] = academicRecord === 'grades' ? value : grades[bimester]
@@ -181,6 +173,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
 
             return { absences, concept, finalResult, grades, newTotalAbsences }
         }
+
         setSchoolReport(prevState => {
             const { absences, concept, finalResult, grades, newTotalAbsences } = dataUpdate(prevState)
 
@@ -215,10 +208,12 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
                 }
             }
         })
-        setUpdateTotalClassesRecalculatedComponents(updateTotalClassesRecalculatedComponents + 1)
+        setRecalculateValues(recalculateValues + 1)
     }
 
     useEffect(() => {
+        if (isLoading) return
+
         const recalculatingComponentWithOwnValues = () => {
             const updatedStudentAcademicRecord = { ...schoolReport.studentAcademicRecord }
 
@@ -261,20 +256,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
 
         recalculatingComponentWithOwnValues()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeQuarter, subjects, minimumPassingGrade, minimumRecoveryGrade, minimumAttendancePercentageToPass, updateTotalClassesRecalculatedComponents])
-
-    useEffect(() => {
-        const { school, teacher, name, number, yearAndClass } = maintainReportCardData
-        const updatedCookies: Record<string, string> = {}
-
-        school       ? updatedCookies.keep_school_data         = schoolReport.school                 : (hasCookie('keep_school_data')         && deleteCookie('keep_school_data'))
-        teacher      ? updatedCookies.keep_teacher_data        = schoolReport.teacher                : (hasCookie('keep_teacher_data')        && deleteCookie('keep_teacher_data'))
-        name         ? updatedCookies.keep_name_data           = schoolReport.student.name           : (hasCookie('keep_name_data')           && deleteCookie('keep_name_data'))
-        number       ? updatedCookies.keep_number_data         = String(schoolReport.student.number) : (hasCookie('keep_number_data')         && deleteCookie('keep_number_data'))
-        yearAndClass ? updatedCookies.keep_year_and_class_data = schoolReport.student.yearAndClass   : (hasCookie('keep_year_and_class_data') && deleteCookie('keep_year_and_class_data'))
-
-        Object.entries(updatedCookies).forEach(([cookieName, value]) => setCookie(cookieName, value))
-    }, [maintainReportCardData, schoolReport.school, schoolReport.student.name, schoolReport.student.number, schoolReport.student.yearAndClass, schoolReport.teacher])
+    }, [activeQuarter, subjects, minimumPassingGrade, minimumRecoveryGrade, minimumAttendancePercentageToPass, recalculateValues])
 
     return(
         <SchoolReportContext.Provider

@@ -4,11 +4,24 @@ import {
 } from 'react'
 import Swal from 'sweetalert2'
 
-import { SchoolReport } from '@/interfaces/types'
+import {
+    Bimester,
+    Concept,
+    DefaultValues,
+    SchoolReport,
+    StudentAcademicRecord,
+    SubjectSituation
+} from '@/interfaces/types'
 
-import { FormHandles, Scope, SubmitHandler } from '@unform/core'
+import {
+    FormHandles,
+    Scope,
+    SubmitHandler
+} from '@unform/core'
 import { Form } from '@unform/web'
+import { Inter } from 'next/font/google'
 
+import { LocalStorageContext } from '@/contexts/LocalStorageContext'
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport } from '@/hooks/useSchoolReport'
@@ -17,7 +30,6 @@ import { useSidebar } from '@/hooks/useSidebar'
 import { Sidebar } from '@/components/sidebar'
 import { Input } from '@/components/input'
 
-import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
@@ -26,6 +38,7 @@ export default function Home() {
 
     const { isOpen } = useSidebar()
     const { generateImage } = useContext(GenerateImageContext)
+    const { getItemsLocalStorage } = useContext(LocalStorageContext)
     const swalColors = useSwalTheme()
 
     const {
@@ -45,6 +58,7 @@ export default function Home() {
         schoolReport,
         setSchoolReport,
         schoolReportStartup,
+        newAcademicRecord,
         updateStudentAcademicRecord
     } = useSchoolReport()
 
@@ -74,18 +88,40 @@ export default function Home() {
                     })
                     .then(() => console.info('Imagem gerada com sucesso!', { 'data': schoolReport }))
                 })
-                .then(() =>
+                .then(() => {
+                    const subjectsLocalStorage = getItemsLocalStorage().active_subjects as string[]
+                    const academicRecordData = subjectsLocalStorage.reduce((record, subject, index) => {
+                        const gradesLocalStorage        = getItemsLocalStorage().academic_record_grades         as { [key: number]: Bimester }
+                        const absencesLocalStorage      = getItemsLocalStorage().academic_record_absences       as { [key: number]: Bimester }
+                        const totalClassesLocalStorage  = getItemsLocalStorage().academic_record_total_classes  as { [key: number]: number }
+                        const totalAbsencesLocalStorage = getItemsLocalStorage().academic_record_total_absences as { [key: number]: number }
+                        const conceptLocalStorage       = getItemsLocalStorage().academic_record_concept        as { [key: number]: Concept }
+                        const finalResultLocalStorage   = getItemsLocalStorage().academic_record_final_result   as { [key: number]: SubjectSituation }
+
+                        return {
+                            ...record, [subject]: {
+                                grades:        maintainReportCardData.academicRecordGrades       ? gradesLocalStorage[index]        : newAcademicRecord.grades,
+                                absences:      maintainReportCardData.academicRecordAbsences     ? absencesLocalStorage[index]      : newAcademicRecord.absences,
+                                totalClasses:  maintainReportCardData.academicRecordTotalClasses ? totalClassesLocalStorage[index]  : newAcademicRecord.totalClasses,
+                                totalAbsences: maintainReportCardData.academicRecordAbsences     ? totalAbsencesLocalStorage[index] : newAcademicRecord.totalAbsences,
+                                concept:       maintainReportCardData.academicRecordGrades       ? conceptLocalStorage[index]       : newAcademicRecord.concept,
+                                finalResult:   maintainReportCardData.academicRecordGrades       ? finalResultLocalStorage[index]   : newAcademicRecord.finalResult
+                            }
+                        }
+                    }, {} as StudentAcademicRecord)
+
                     setSchoolReport({
                         ...schoolReportStartup,
-                        school:  maintainReportCardData.school  ? data.school  : '',
-                        teacher: maintainReportCardData.teacher ? data.teacher : '',
+                        school:  maintainReportCardData.school  ? data.school  : DefaultValues.INPUT_TEXT,
+                        teacher: maintainReportCardData.teacher ? data.teacher : DefaultValues.INPUT_TEXT,
                         student: {
-                            name:         maintainReportCardData.name         ? data.student.name         : '',
-                            number:       maintainReportCardData.number       ? data.student.number       : 0,
-                            yearAndClass: maintainReportCardData.yearAndClass ? data.student.yearAndClass : ''
-                        }
+                            name:         maintainReportCardData.studentName         ? data.student.name         : DefaultValues.INPUT_TEXT,
+                            number:       maintainReportCardData.studentNumber       ? data.student.number       : DefaultValues.INPUT_NUMBER,
+                            yearAndClass: maintainReportCardData.studentYearAndClass ? data.student.yearAndClass : DefaultValues.INPUT_TEXT
+                        },
+                        studentAcademicRecord: { ...academicRecordData }
                     })
-                )
+                })
                 .catch(error => {
                     Swal.fire({
                         title: 'Erro ao gerar imagem!',

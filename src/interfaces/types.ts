@@ -1,9 +1,16 @@
+export type FilesImage = {
+    name: string
+    imageData: string
+}[]
 export type MaintainReportCardData = {
-    school:       boolean
-    teacher:      boolean
-    name:         boolean
-    number:       boolean
-    yearAndClass: boolean
+    school:                     boolean
+    teacher:                    boolean
+    studentName:                boolean
+    studentNumber:              boolean
+    studentYearAndClass:        boolean
+    academicRecordGrades:       boolean
+    academicRecordAbsences:     boolean
+    academicRecordTotalClasses: boolean
 }
 export type ActiveQuarter = {
     firstQuarter:  boolean
@@ -101,3 +108,42 @@ type DetailsType = { summary?: string }
  * Defines the types of native details properties.
  */
 export type DetailsProps = JSX.IntrinsicElements['details'] & DetailsType
+/* Contexts/LocalStorageContext */
+export type GetLocalStorage = Record<
+    string,
+    | string
+    | number
+    | boolean
+    | object
+    | MaintainReportCardData
+    | ActiveQuarter
+    | FilesImage
+    | Matter[]
+    | Bimester
+>
+export type LocalStorage_AcademicRecordType =
+    | 'academic_record_total_classes'
+    | 'academic_record_total_absences'
+    | 'academic_record_concept'
+    | 'academic_record_final_result'
+/**
+ * Defines the default values.
+ */
+export enum DefaultValues {
+    INPUT_TEXT   = '',
+    INPUT_NUMBER = 0,
+    MINIMUM_PASSING_GRADE                 = 6,
+    MINIMUM_RECOVERY_GRADE                = 4,
+    MINIMUM_ATTENDANCE_PERCENTAGE_TO_PASS = 25,
+    KEEP_VALUES       = '{"school":true,"teacher":true,"studentName":false,"studentNumber":false,"studentYearAndClass":false,"academicRecordGrades":false,"academicRecordAbsences":false,"academicRecordTotalClasses":true}',
+    BIMESTER          = '{"firstQuarter":0,"secondQuarter":0,"thirdQuarter":0,"fourthQuarter":0}',
+    ACTIVE_QUARTER    = '{"firstQuarter":true,"secondQuarter":true,"thirdQuarter":true,"fourthQuarter":true}',
+    ACTIVE_SUBJECTS   = '["Português","Matemática","Ciências","História","Geografia"]',
+    INACTIVE_SUBJECTS = '["Física","Química","Biologia","Filosofia","Sociologia","Inglês","Educação Física","Artes","Ensino Religioso"]',
+    MATTER            = '["Português","Matemática","Ciências","História","Geografia","Física","Química","Biologia","Filosofia","Sociologia","Inglês","Educação Física","Artes","Ensino Religioso"]',
+    FILES_IMAGE       = '[]',
+    TOTAL_CLASSES  = 56,
+    TOTAL_ABSENCES = 0,
+    CONCEPT      = Concept.D,
+    FINAL_RESULT = SubjectSituation.DISAPPROVED
+}

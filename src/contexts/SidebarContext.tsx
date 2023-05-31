@@ -6,6 +6,7 @@ import {
 
 export interface SidebarContextData {
     isOpen:        boolean
+    setIsOpen:     (state: boolean) => void
     toggleSidebar: (state?: boolean) => void
 }
 interface SidebarProviderProps { children: ReactNode }
@@ -25,6 +26,7 @@ export function SidebarProvider({ children }: SidebarProviderProps) {
         <SidebarContext.Provider
             value={{
                 isOpen,
+                setIsOpen,
                 toggleSidebar
             }}>
             {children}
