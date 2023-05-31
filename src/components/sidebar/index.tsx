@@ -19,7 +19,10 @@ import {
     FcImageFile
 } from '@/utils/reactIconsImports'
 
-import { ActiveQuarter } from '@/interfaces/types'
+import {
+    ActiveQuarter,
+    DefaultValues
+} from '@/interfaces/types'
 
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
@@ -336,12 +339,21 @@ export const Sidebar = () => {
                         <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
                             <p className='font-bold'>Adicionar</p>
                             { inactiveSubjects.map((subject, index) => {
+                                const isCustomSubject = !JSON.parse(DefaultValues.MATTER).includes(subject)
+
                                 return (
                                     <div key={index} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                         <p>{subject}</p>
-                                        <button onClick={() => addSubjects(subject)} className='bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 p-1 rounded-md' title={`Adicionar a matéria ${subject}`} aria-label={`Adicionar a matéria ${subject}`}>
-                                            <HiPlusSm className='text-xl text-green-400' />
-                                        </button>
+                                        <div className='flex gap-2'>
+                                            { isCustomSubject &&
+                                                <button onClick={() => removeSubjects(subject)} className='w-8 h-8 bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 flex items-center justify-center p-1 rounded-md' title={`Adicionar a matéria ${subject}`} aria-label={`Adicionar a matéria ${subject}`}>
+                                                    <HiTrash className='text-lg text-red-400' />
+                                                </button>
+                                            }
+                                            <button onClick={() => addSubjects(subject)} className='w-8 h-8 bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 flex items-center justify-center p-1 rounded-md' title={`Adicionar a matéria ${subject}`} aria-label={`Adicionar a matéria ${subject}`}>
+                                                <HiPlusSm className='text-xl text-green-400' />
+                                            </button>
+                                        </div>
                                     </div>
                                 )
                             }) }
