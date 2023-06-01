@@ -3,7 +3,8 @@ import {
     MdOutlineDarkMode,
     MdOutlineFileDownload,
     MdKeyboardArrowLeft,
-    MdKeyboardArrowRight
+    MdKeyboardArrowRight,
+    MdFolderZip
 } from 'react-icons/md'
 import {
     HiX,
@@ -21,6 +22,7 @@ export {
     MdOutlineFileDownload,
     MdKeyboardArrowLeft,
     MdKeyboardArrowRight,
+    MdFolderZip,
     HiX,
     HiMenu,
     HiTrash,

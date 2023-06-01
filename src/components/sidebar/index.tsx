@@ -16,7 +16,8 @@ import {
     HiTrash,
     HiPlusSm,
     FaCircle,
-    FcImageFile
+    FcImageFile,
+    MdFolderZip
 } from '@/utils/reactIconsImports'
 
 import {
@@ -41,6 +42,7 @@ export const Sidebar = () => {
 
     const {
         filesImage,
+        generateZipImages,
         deleteImage
     } = useContext(GenerateImageContext)
 
@@ -260,6 +262,19 @@ export const Sidebar = () => {
                                     Sem imagens
                                 </div>
                             :   <>
+                                    { filesImage.length > 1 &&
+                                        <button
+                                            title='Baixar todas as imagens em um arquivo .zip'
+                                            className={`w-full bg-shadow-5 font-bold text-violet-500 hover:text-green-500 dark:text-violet-400 dark:hover:text-green-400 border border-dashed hover:border-solid border-violet-500 hover:border-green-500 dark:border-violet-400 dark:hover:border-green-400 ${clickedIndex === -1 ? 'underline' : ''} flex items-center justify-center gap-2 mt-1 mb-2 rounded-lg`}
+                                            onClick={() => {
+                                                setClickedIndex(-1)
+                                                generateZipImages(filesImage)
+                                            }}
+                                        >
+                                            Baixar tudo
+                                            <MdFolderZip className='text-lg' />
+                                        </button>
+                                    }
                                     { filesImage.map((file, index) => {
                                         return (
                                             <div key={index} className='w-full flex items-center justify-between even:bg-shadow-5 dark:even:bg-shadow-15 rounded-md p-1 last:even:mb-3'>
@@ -270,12 +285,12 @@ export const Sidebar = () => {
                                                         title={`Download do arquivo '${file.name}'`}
                                                         href={file.imageData}
                                                         download={file.name}
-                                                        className='aspect-square hover:bg-green-400 text-green-400 hover:text-white p-1 rounded-md'
+                                                        className='w-7 h-7 hover:bg-green-400 text-green-400 hover:text-white flex items-center justify-center p-1 rounded-md'
                                                         onClick={() => setClickedIndex(index)}
                                                     >
                                                         <MdOutlineFileDownload className='text-xl' />
                                                     </a>
-                                                    <button title='Deletar imagem' onClick={() => deleteImage(index)} className='aspect-square hover:bg-red-400 text-red-400 hover:text-white p-1 rounded-md'>
+                                                    <button title='Deletar imagem' onClick={() => deleteImage(index)} className='w-7 h-7 hover:bg-red-400 text-red-400 hover:text-white p-1 flex items-center justify-center rounded-md'>
                                                         <HiTrash className='text-lg' />
                                                     </button>
                                                 </div>
@@ -367,8 +382,8 @@ export const Sidebar = () => {
                                     value={otherSubject}
                                     placeholder='Outra matéria'
                                 />
-                                <button onClick={() => addSubjects(otherSubject, true)} className='bg-shadow-5 dark:bg-shadow-15 border border-transparent hover:border-violet-500 p-1 rounded-md' title='Adicionar matéria' aria-label='Adicionar matéria'>
-                                    <HiPlusSm className='text-xl text-green-400' />
+                                <button onClick={() => addSubjects(otherSubject, true)} className='w-14 h-7 bg-green-400 hover:bg-green-500 focus:bg-green-600 flex items-center justify-center p-1 rounded-md' title={`Adicionar matéria ${otherSubject}`} aria-label={`Adicionar matéria ${otherSubject}`}>
+                                    <HiPlusSm className='text-xl text-white' />
                                 </button>
                             </div>
                         </div>

@@ -108,6 +108,22 @@ type DetailsType = { summary?: string }
  * Defines the types of native details properties.
  */
 export type DetailsProps = JSX.IntrinsicElements['details'] & DetailsType
+/* Contexts/GenerateImageContext */
+export type DownloadableDataTypes =
+    | string
+    | ArrayBuffer
+    | number[]
+    | Uint8Array
+    | Blob
+    | NodeJS.ReadableStream
+    | Promise<
+        | string
+        | ArrayBuffer
+        | number[]
+        | Uint8Array
+        | Blob
+        | NodeJS.ReadableStream
+    >
 /* Contexts/LocalStorageContext */
 export type GetLocalStorage = Record<
     string,
