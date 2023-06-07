@@ -142,6 +142,8 @@ export type LocalStorage_AcademicRecordType =
     | 'academic_record_total_absences'
     | 'academic_record_concept'
     | 'academic_record_final_result'
+/* Theme */
+type Theme = 'light' | 'dark'
 /**
  * Defines the default values.
  */
@@ -158,8 +160,44 @@ export enum DefaultValues {
     INACTIVE_SUBJECTS = '["Física","Química","Biologia","Filosofia","Sociologia","Inglês","Educação Física","Artes","Ensino Religioso"]',
     MATTER            = '["Português","Matemática","Ciências","História","Geografia","Física","Química","Biologia","Filosofia","Sociologia","Inglês","Educação Física","Artes","Ensino Religioso"]',
     FILES_IMAGE       = '[]',
+    SKELETON_STYLE    = 'mx-auto rounded-lg animate-pulse',
     TOTAL_CLASSES  = 56,
     TOTAL_ABSENCES = 0,
     CONCEPT      = Concept.D,
     FINAL_RESULT = SubjectSituation.DISAPPROVED
+}
+/* Component/Skeleton */
+type ChildrenProps = { children: React.ReactNode }
+type OptionalChildrenProps = { children?: React.ReactNode }
+type OptionalClassNameProps = { className?: string }
+type SkeletonSimpleComponentsTypes = 'card' | 'avatar'
+type SkeletonComplexComponentsTypes = 'container' | 'item' | 'list'
+type SkeletonComponentsTypes = SkeletonSimpleComponentsTypes & SkeletonComplexComponentsTypes
+type SkeletonSizeOption = 'fit' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
+type OptionalSkeletonSize = { size?: SkeletonSizeOption }
+type SkeletonSize = { size: SkeletonSizeOption }
+type OptionalSkeletonSizeWH = {
+    width?:  SkeletonSizeOption
+    height?: SkeletonSizeOption
+}
+type SkeletonSizeWH = {
+    width:  SkeletonSizeOption
+    height: SkeletonSizeOption
+}
+export type SizeResolverProps = SkeletonSizeWH & { ComponentType: SkeletonComplexComponentsTypes }
+export type SizeMappingType = Record<SkeletonSizeOption, string>
+export type ComponentMappingType = Record<SkeletonComplexComponentsTypes, string>
+export type ProportionalSizeResolverProps = SkeletonSizeOption
+export type ProportionalSizeMappingType = Record<SkeletonSizeOption, string>
+export type SkeletonComponentsProps = OptionalSkeletonSizeWH & OptionalClassNameProps
+export type SkeletonProportionalComponentsProps = OptionalSkeletonSize & OptionalClassNameProps
+export type SkeletonContainerProps = SkeletonComponentsProps & ChildrenProps
+export type SkeletonListProps = SkeletonComponentsProps & { count?: number }
+export type SkeletonSidebarProps = { isOpen: boolean, theme: Theme }
+export interface SkeletonProps {
+    Container: (props: SkeletonContainerProps) => JSX.Element
+    Card:      (props: SkeletonProportionalComponentsProps) => JSX.Element
+    Item:      (props: SkeletonComponentsProps) => JSX.Element
+    List:      (props: SkeletonListProps) => JSX.Element
+    Avatar:    (props: SkeletonProportionalComponentsProps) => JSX.Element
 }
