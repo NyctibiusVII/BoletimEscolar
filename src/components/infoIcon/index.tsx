@@ -10,12 +10,12 @@ import { InfoIconProps } from '@/interfaces/types'
 import { HiInformationCircle } from '@/utils/reactIconsImports'
 
 /**
- * @param topic - Nome do tópico da informação. Usado como identificador único.
- * @param description - Descrição da informação.
- * @returns Um ícone de informação que ao ser clicado mostra uma caixa de diálogo com a descrição da informação.
+ * @param topic - Name of the information topic. Used as a unique identifier.
+ * @param description - Description of the information.
+ * @returns An information icon that, when clicked, displays a dialog box with the information description.
  * @example
- * <InfoIcon topic='Tópico' description='Descrição da informação' />
- * @observation O componente pai deve ter 'posição relativa' para que o ícone fique posicionado corretamente.
+ * <InfoIcon topic='Topic' description='Information description' />
+ * @observation The parent component must have 'relative position' for the icon to be correctly positioned.
 */
 export const InfoIcon = ({ topic, description, ...rest }: InfoIconProps) => {
     const swalColors = useSwalTheme()
