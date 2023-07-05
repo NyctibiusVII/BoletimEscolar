@@ -42,121 +42,20 @@ export default function Home() {
     const { getItemsLocalStorage } = useContext(LocalStorageContext)
     const swalColors = useSwalTheme()
 
-    const {
-        subjects,
-        activeQuarter,
-        // schoolReportColors,
-        maintainReportCardData,
-        minimumPassingGrade,
-        hasResponsibleTeacherName,
-        hasSignatures,
-        hasConcept,
-        hasConceptValues,
-        hasFinalResultValues
-    } = useSchoolReportConfig()
+    useEffect(() => {
+        const body = document.getElementsByTagName('body') as HTMLCollectionOf<HTMLBodyElement>
+        if (!body) return
 
-    const {
-        schoolReport,
-        setSchoolReport,
-        schoolReportStartup,
-        newAcademicRecord,
-        updateStudentAcademicRecord
-    } = useSchoolReport()
-
-    const handleFormSubmit: SubmitHandler<SchoolReport> = data => {
-        let timerInterval: NodeJS.Timer
-
-        Swal.fire({
-            title: 'Carregando...',
-            text: 'Gerando imagem do seu boletim escolar',
-            timer: 1000,
-            background: swalColors.bg,
-            color: swalColors.fg,
-            didOpen: () => Swal.showLoading(),
-            willClose: () => clearInterval(timerInterval)
-        })
-        .then(result => {
-            if (result.dismiss === Swal.DismissReason.timer) {
-                generateImage()
-                .then(() => {
-                    Swal.fire({
-                        title: 'Sucesso!',
-                        text: 'Acesse sua imagem gerada na barra lateral desta página.',
-                        icon: 'success',
-                        background: swalColors.bg,
-                        color: swalColors.fg,
-                        iconColor: swalColors.success.icon
-                    })
-                    .then(() => console.info('Imagem gerada com sucesso!', { 'data': schoolReport }))
-                })
-                .then(() => {
-                    const subjectsLocalStorage = getItemsLocalStorage().active_subjects as string[]
-                    const academicRecordData = subjectsLocalStorage.reduce((record, subject, index) => {
-                        const gradesLocalStorage        = getItemsLocalStorage().academic_record_grades         as { [key: number]: Bimester }
-                        const absencesLocalStorage      = getItemsLocalStorage().academic_record_absences       as { [key: number]: Bimester }
-                        const totalClassesLocalStorage  = getItemsLocalStorage().academic_record_total_classes  as { [key: number]: number }
-                        const totalAbsencesLocalStorage = getItemsLocalStorage().academic_record_total_absences as { [key: number]: number }
-                        const conceptLocalStorage       = getItemsLocalStorage().academic_record_concept        as { [key: number]: Concept }
-                        const finalResultLocalStorage   = getItemsLocalStorage().academic_record_final_result   as { [key: number]: SubjectSituation }
-
-                        return {
-                            ...record, [subject]: {
-                                grades:        maintainReportCardData.academicRecordGrades       ? gradesLocalStorage[index]        : newAcademicRecord.grades,
-                                absences:      maintainReportCardData.academicRecordAbsences     ? absencesLocalStorage[index]      : newAcademicRecord.absences,
-                                totalClasses:  maintainReportCardData.academicRecordTotalClasses ? totalClassesLocalStorage[index]  : newAcademicRecord.totalClasses,
-                                totalAbsences: maintainReportCardData.academicRecordAbsences     ? totalAbsencesLocalStorage[index] : newAcademicRecord.totalAbsences,
-                                concept:       maintainReportCardData.academicRecordGrades       ? conceptLocalStorage[index]       : newAcademicRecord.concept,
-                                finalResult:   maintainReportCardData.academicRecordGrades       ? finalResultLocalStorage[index]   : newAcademicRecord.finalResult
-                            }
+        const backgroundImage = {
+            bg: currentTheme === 'dark' ? '#030712' : '#e2e8f0',
+            fg: currentTheme === 'dark' ? '#111827' : '#cbd5e1'
+        }
                         }
                     }, {} as StudentAcademicRecord)
 
-                    setSchoolReport({
-                        ...schoolReportStartup,
-                        school:  maintainReportCardData.school  ? data.school  : DefaultValues.INPUT_TEXT,
-                        teacher: maintainReportCardData.teacher ? data.teacher : DefaultValues.INPUT_TEXT,
-                        student: {
-                            name:         maintainReportCardData.studentName         ? data.student.name         : DefaultValues.INPUT_TEXT,
-                            number:       maintainReportCardData.studentNumber       ? data.student.number       : DefaultValues.INPUT_NUMBER,
-                            yearAndClass: maintainReportCardData.studentYearAndClass ? data.student.yearAndClass : DefaultValues.INPUT_TEXT
-                        },
-                        studentAcademicRecord: { ...academicRecordData }
-                    })
-                })
-                .catch(error => {
-                    Swal.fire({
-                        title: 'Erro ao gerar imagem!',
-                        icon: 'error',
-                        background: swalColors.bg,
-                        color: swalColors.fg,
-                        iconColor: swalColors.error.icon,
-                        confirmButtonText: 'Tentar novamente',
-                        confirmButtonColor: swalColors.button.confirm,
-                        showCancelButton: true,
-                        cancelButtonText: 'Cancelar',
-                        cancelButtonColor: swalColors.button.cancel
-                    })
-                    .then(result => {
-                        if (result.isConfirmed) {
-                            const SubmitHandler = document.getElementById('generate-image') as HTMLButtonElement | null
-                            if (SubmitHandler) SubmitHandler.click()
-                        }
-                    })
-                    .finally(() => console.error('Erro ao gerar imagem!', error))
-                })
-            }
-        })
-    }
-
-    const schoolReportColors = {
-        card:              `bg-white`,
-        border:            `border-gray-950`,
-        clippingBorder:    `border-red-600`,
-        signatures:        `bg-gray-950`,
-        text:              `text-gray-950`,
-        insufficientGrade: `text-red-600`,
-        enoughGrade:       `text-green-500`
-    }
+        body[0].style.backgroundImage = `radial-gradient(${backgroundImage.fg} 2px, ${backgroundImage.bg} 2px)`
+        body[0].style.backgroundSize = '40px 40px'
+    }, [currentTheme])
 
     return isLoading
         ? <SkeletonHome />
