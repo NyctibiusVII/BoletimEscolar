@@ -27,8 +27,9 @@ import {
 
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
-import { useSchoolReport } from '@/hooks/useSchoolReport'
-import { useSidebar } from '@/hooks/useSidebar'
+import { useSchoolReport }       from '@/hooks/useSchoolReport'
+import { useSidebar }            from '@/hooks/useSidebar'
+import { useTheme }              from '@/hooks/useTheme'
 import { InfoIcon } from '@/components/infoIcon'
 import { Details } from '@/components/details'
 import { Input } from '@/components/input'
@@ -81,8 +82,7 @@ export const Sidebar = () => {
         removeSubjects
     } = useSchoolReport()
 
-    const { systemTheme, theme, setTheme } = useTheme()
-    const currentTheme = theme === 'system' ? systemTheme : theme
+    const { currentTheme, setTheme } = useTheme()
     const toggleTheme = () => currentTheme === 'dark' ? setTheme('light') : setTheme('dark')
 
     const getQuarterKey = (quarterNumber: 1 | 2 | 3 | 4): keyof ActiveQuarter => {

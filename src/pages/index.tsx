@@ -32,12 +32,10 @@ import { SkeletonHome } from '@/components/Skeleton/pages/SkeletonHome'
 import { Sidebar }      from '@/components/sidebar'
 import { Input }        from '@/components/input'
 
-const inter = Inter({ subsets: ['latin'] })
+import { useTheme }   from '@/hooks/useTheme'
 
 export default function Home() {
-    const formRef = useRef<FormHandles>(null)
-    const mainRef = useRef<HTMLDivElement>(null)
-
+    const { currentTheme } = useTheme()
     const { isLoading } = useLoading()
     const { isOpen } = useSidebar()
     const { generateImage } = useContext(GenerateImageContext)
