@@ -1,6 +1,9 @@
 # visual studio code
 /.vscode
 
+# local files
+trash-code.txt
+
 # dependencies
 /node_modules
 /.pnp
