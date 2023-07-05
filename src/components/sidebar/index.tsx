@@ -95,6 +95,21 @@ export const Sidebar = () => {
         }
     }
 
+    useEffect(() => {
+        const asideContent = document.getElementById('aside-content')
+
+        if (asideContent) {
+            const handleScroll = () => asideContent.scrollTop > 0
+                ? asideContent.classList.add('asideContentInsetShadow')
+                : asideContent.classList.remove('asideContentInsetShadow')
+
+            handleScroll()
+            asideContent.addEventListener('scroll', handleScroll)
+
+            return () => asideContent.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+
     return (
         <aside className={
             `${isOpen
