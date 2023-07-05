@@ -1,48 +1,8 @@
-import {
-    useEffect,
-    useRef,
-    useState
-} from 'react'
 import { useSidebar } from '@/hooks/useSidebar'
 import { Skeleton } from '@/components/Skeleton'
 
 export const SkeletonHome = () => {
     const { isOpen } = useSidebar()
-
-    const mainRef = useRef<HTMLDivElement>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
-
-    const [mainWidth, setMainWidth] = useState(0)
-
-    useEffect(() => {
-        const handleResize = () => {
-            mainRef.current && (mainRef.current.style.opacity = '0')
-            setMainWidth(0)
-        }
-        const handleResizeWithMainWidth = () => {
-            if (mainRef.current && containerRef.current) {
-                const containerWidth = containerRef.current.offsetWidth
-                const containerHeight = containerRef.current.offsetHeight
-                const desiredHeight = (containerWidth / 16) * 9
-
-                if (containerHeight > desiredHeight) setMainWidth((containerHeight / 9) * 16)
-                else setMainWidth(containerWidth)
-            }
-
-            setTimeout(() => mainRef.current && (mainRef.current.style.opacity = '1'), 1)
-        }
-
-        handleResize()
-        handleResizeWithMainWidth()
-
-        window.addEventListener('resize', handleResize)
-        window.addEventListener('resize', handleResizeWithMainWidth)
-
-        return () => {
-            window.removeEventListener('resize', handleResize)
-            window.removeEventListener('resize', handleResizeWithMainWidth)
-        }
-    }, [])
 
     return (
         <div className={`w-screen h-screen flex items-end lg:justify-end`}>
@@ -88,8 +48,8 @@ export const SkeletonHome = () => {
                     ${!isOpen ? 'lg:w-[calc(98%-2rem)]' : 'lg:max-w-[calc(100%-18rem)]'}`
                 }
             >
-                <div ref={containerRef} className='max-w-fit m-auto'>
-                    <main ref={mainRef} style={{ width: `${mainWidth}px` }}>
+                <div className='max-w-fit m-auto'>
+                    <main className='w-72 sm:w-[35rem] md:w-[40rem]'>
                         <Skeleton.Container className='skeleton-school-report'>
                             <Skeleton.Item height='md' className='my-2 sm:h-9 sm:mb-4' />
 
