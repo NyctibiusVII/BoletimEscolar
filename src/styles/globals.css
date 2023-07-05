@@ -3,29 +3,31 @@
 @tailwind utilities;
 
 @layer base {
-    body  { @apply antialiased bg-slate-200 text-gray-950 dark:bg-gray-950 dark:text-gray-100; }
-    input { @apply truncate; }
-    aside { @apply bg-slate-100 dark:bg-gray-900; }
-    input { @apply bg-transparent disabled:bg-transparent; }
-    summary { @apply bg-slate-300 dark:bg-gray-800; }
-    summary ~ div { @apply bg-slate-200 dark:bg-gray-700; }
+    body  { @apply antialiased bg-slate-200 text-gray-950 dark:bg-gray-950 dark:text-gray-100 }
+    p, span, input { @apply truncate }
+    label { @apply self-center }
+    aside { @apply bg-slate-100 dark:bg-gray-900 }
+    input { @apply bg-transparent disabled:bg-transparent }
+    summary { @apply bg-slate-300 dark:bg-gray-800 }
+    summary ~ div { @apply bg-slate-200 dark:bg-gray-700 }
 
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
     select:-webkit-autofill,
     select:-webkit-autofill:hover,
-    select:-webkit-autofill:focus { @apply shadow-[0_0_0_5rem_rgba(0,0,0,0.0)_inset] transition-colors duration-[5000s] ease-in-out; }
+    select:-webkit-autofill:focus { @apply shadow-[0_0_0_5rem_rgba(0,0,0,0.0)_inset] transition-colors duration-[5000s] ease-in-out }
 
-    ::-webkit-scrollbar            { @apply w-2; }
-    ::-webkit-scrollbar:horizontal { @apply h-2; }
+    ::-webkit-scrollbar            { @apply w-2 }
+    ::-webkit-scrollbar:horizontal { @apply h-2 }
     ::-webkit-scrollbar,
-    ::-webkit-scrollbar:horizontal { @apply bg-shadow-15 rounded-lg; }
-    ::-webkit-scrollbar-thumb      { @apply bg-violet-500 rounded-lg; }
-    ::-webkit-scrollbar-corner     { @apply bg-transparent; }
+    ::-webkit-scrollbar:horizontal { @apply bg-shadow-15 rounded-lg }
+    ::-webkit-scrollbar-thumb      { @apply bg-violet-500 rounded-lg }
+    ::-webkit-scrollbar-corner     { @apply bg-transparent }
 }
 @layer components {
-    .tableItens { @apply text-center align-middle px-1.5 py-1; }
+    .tableItens { @apply text-center align-middle border px-[0.1rem] }
     .inputNumberValues { @apply out-of-range:focus-visible:outline-red-600 }
-    .skeleton-sidebar, .skeleton-school-report { @apply bg-slate-300 dark:bg-gray-900; }
+    .asideContentInsetShadow { @apply shadow-[inset_0_2.5rem_2rem_-1.5rem_rgba(0,0,0,0.1)] }
+    .skeleton-sidebar, .skeleton-school-report { @apply bg-slate-300 dark:bg-gray-900 }
 }
