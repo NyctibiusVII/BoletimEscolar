@@ -77,7 +77,7 @@ export interface Student {
     number:       number
     yearAndClass: string
 }
-export interface SchoolReport {
+export interface SchoolReportType {
     school:       string
     teacher:      string
     academicYear: number

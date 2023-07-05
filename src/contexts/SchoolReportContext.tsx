@@ -14,15 +14,15 @@ import {
     Bimester,
     Concept,
     Matter,
-    SchoolReport,
+    SchoolReportType,
     StudentAcademicRecord,
     SubjectSituation
 } from '@/interfaces/types'
 
 export interface SchoolReportContextData {
-    schoolReport:        SchoolReport
-    setSchoolReport:     (value: SchoolReport) => void
-    schoolReportStartup: SchoolReport
+    schoolReport:        SchoolReportType
+    setSchoolReport:     (value: SchoolReportType) => void
+    schoolReportStartup: SchoolReportType
     updateStudentAcademicRecord: (
         value:    number,
         subject:  Matter,
@@ -78,7 +78,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         totalAbsences: 0,
         finalResult: SubjectSituation.DISAPPROVED
     }
-    const schoolReportStartup: SchoolReport = {
+    const schoolReportStartup: SchoolReportType = {
         school:  '',
         teacher: '',
         academicYear: new Date().getFullYear(),
@@ -89,7 +89,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
         },
         studentAcademicRecord: studentAcademicRecord()
     }
-    const [schoolReport, setSchoolReport] = useState<SchoolReport>(schoolReportStartup)
+    const [schoolReport, setSchoolReport] = useState<SchoolReportType>(schoolReportStartup)
 
     const addSubjects = (subject: string, custom=false) => {
         if (custom) {
@@ -161,7 +161,7 @@ export function SchoolReportProvider({ children }: SchoolReportProviderProps) {
     }
 
     const updateStudentAcademicRecord = (value: number, subject: Matter, bimester: keyof Bimester, academicRecord: 'grades' | 'absences') => {
-        const dataUpdate = (prevState: SchoolReport) => {
+        const dataUpdate = (prevState: SchoolReportType) => {
             const { grades, absences, totalClasses } = { ...prevState.studentAcademicRecord[subject] }
             grades[bimester] = academicRecord === 'grades' ? value : grades[bimester]
             absences[bimester] = academicRecord === 'absences' ? value : absences[bimester]
