@@ -1,8 +1,7 @@
-import { useTheme } from 'next-themes'
+import { useTheme } from '@/hooks/useTheme'
 
 export const useSwalTheme = () => {
-    const { systemTheme, theme } = useTheme()
-    const currentTheme = theme === 'system' ? systemTheme : theme
+    const { currentTheme } = useTheme()
 
     const swalColors = {
         bg: currentTheme === 'dark' ? '#111827' : '#ffffff',
