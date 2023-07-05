@@ -112,10 +112,11 @@ export const Sidebar = () => {
 
     return (
         <aside className={
-            `${isOpen
-                ? 'min-w-[20rem] lg:w-1/12 2xl:w-1/6 h-full'
-                : 'lg:w-[4.10%] lg:h-full'
-            } w-full px-2 fixed top-0 left-0 z-20 transition-all duration-300 ease-in-out`
+            `w-full px-2 shadow-[0_0.5rem_2rem_0_rgba(0,0,0,0.2)] lg:shadow-[0.5rem_0_2rem_0_rgba(0,0,0,0.2)] fixed top-0 left-0 z-20
+            ${ !isOpen
+                ? 'lg:w-[calc(2%+2rem)] h-[calc(2%+2rem)] lg:h-full flex items-center lg:items-start'
+                : 'min-w-[220px] lg:w-[18rem] h-full'
+            }`
         }>
             <button className={`w-full flex items-center justify-center gap-2 py-8`} onClick={() => toggleSidebar()}>
                 { isOpen ? <HiX className='text-2xl' /> : <HiMenu className='text-2xl' /> }
