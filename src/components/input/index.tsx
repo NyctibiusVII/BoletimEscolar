@@ -5,12 +5,12 @@ import { InputProps } from '@/interfaces/types'
 
 export const Input = ({ withForm=true, ...props }: InputProps) => withForm ? <UnFormInput {...props}/> : <InputComponent {...props}/>
 
-const InputComponent = ({ name, label, labelPosition='before', container=false, className, ...props }: InputProps) => {
-    const Input = <input className={`border border-dashed border-violet-500 rounded-lg pl-1 ${className}`} {...props}/>
-    const Label = <label htmlFor={name} className='max-w-[13rem]'>{label}</label>
+const InputComponent = ({ name, label, labelPosition='before', container=false, labelStyle='', containerStyle='', className, ...props }: InputProps) => {
+    const Input = <input className={`text-center border border-dashed border-violet-500 rounded-lg pl-1 ${className}`} {...props}/>
+    const Label = <label htmlFor={name} className={labelStyle}>{label}</label>
 
     return <>{ container ?
-        <div className={'flex flex-nowrap gap-1'}>
+        <div className={`${containerStyle} flex flex-nowrap gap-2`}>
             {
                 (label && labelPosition === 'after') && <>{Input}{Label}</>
                 ||
@@ -27,7 +27,7 @@ const InputComponent = ({ name, label, labelPosition='before', container=false, 
         }</>
     }</>
 }
-const UnFormInput = ({ name, label, labelPosition='before', container=false, ...props }: InputProps) => {
+const UnFormInput = ({ name, label, labelPosition='before', container=false, labelStyle='', containerStyle='', ...props }: InputProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const {
         fieldName,
@@ -38,7 +38,7 @@ const UnFormInput = ({ name, label, labelPosition='before', container=false, ...
     const Input =
         <input id={fieldName} ref={inputRef} defaultValue={defaultValue} {...props}/>
     const Label =
-        <label htmlFor={fieldName}>{label}</label>
+        <label htmlFor={fieldName} className={labelStyle}>{label}</label>
 
     useEffect(() => {
         return registerField({
@@ -51,7 +51,7 @@ const UnFormInput = ({ name, label, labelPosition='before', container=false, ...
     }, [fieldName, registerField])
 
     return <>{ container ?
-        <div className={'flex flex-nowrap gap-1'}>
+        <div className={`${containerStyle} flex flex-nowrap gap-1`}>
             {
                 (label && labelPosition === 'after') && <>{Input}{Label}</>
                 ||
