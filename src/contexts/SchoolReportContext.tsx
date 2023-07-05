@@ -5,9 +5,6 @@ import {
     useState
 } from 'react'
 
-import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
-import { useLoading } from '@/hooks/useLoading'
-
 import {
     AcademicRecord,
     ActiveQuarter,
@@ -18,6 +15,9 @@ import {
     StudentAcademicRecord,
     SubjectSituation
 } from '@/interfaces/types'
+
+import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
+import { useLoading }            from '@/hooks/useLoading'
 
 export interface SchoolReportContextData {
     schoolReport:        SchoolReportType

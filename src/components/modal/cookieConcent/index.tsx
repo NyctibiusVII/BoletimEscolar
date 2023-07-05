@@ -1,5 +1,11 @@
-import { useEffect, useState } from 'react'
-import { getCookie, setCookie } from 'cookies-next'
+import {
+    useEffect,
+    useState
+} from 'react'
+import {
+    getCookie,
+    setCookie
+} from 'cookies-next'
 
 export const CookieConcent = () => {
     const [showCookieConcent, setShowCookieConcent] = useState(false)

@@ -25,9 +25,9 @@ import {
 
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
-import { useSchoolReport } from '@/hooks/useSchoolReport'
-import { useLoading } from '@/hooks/useLoading'
-import { useSidebar } from '@/hooks/useSidebar'
+import { useSchoolReport }       from '@/hooks/useSchoolReport'
+import { useLoading }            from '@/hooks/useLoading'
+import { useSidebar }            from '@/hooks/useSidebar'
 
 interface LocalStorageContextData {
     getItemsLocalStorage: () => GetLocalStorage

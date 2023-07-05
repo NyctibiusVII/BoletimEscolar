@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
+import {
+    useEffect,
+    useRef
+} from 'react'
 import { useField } from '@unform/core'
-
 import { InputProps } from '@/interfaces/types'
 
 export const Input = ({ withForm=true, ...props }: InputProps) => withForm ? <UnFormInput {...props}/> : <InputComponent {...props}/>

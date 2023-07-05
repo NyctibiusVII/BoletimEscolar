@@ -3,7 +3,6 @@ import {
     useEffect,
     useState
 } from 'react'
-import { convertToPascalCase } from '@/utils/converterText'
 
 import {
     MdOutlineLightMode,
@@ -25,6 +24,7 @@ import {
     DefaultValues
 } from '@/interfaces/types'
 
+import { convertToPascalCase } from '@/utils/converterText'
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport }       from '@/hooks/useSchoolReport'
