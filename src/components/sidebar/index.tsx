@@ -255,29 +255,29 @@ export const Sidebar = () => {
                         </div>
                     </Details>
 
-                    <Details summary='Imagens'>
-                        { filesImage.length === 0
-                            ?   <div className='w-full hover:bg-shadow-5 flex flex-col items-center justify-center border border-dashed border-violet-500 rounded-lg py-4'>
-                                    <FcImageFile className='text-2xl' />
-                                    Sem imagens
-                                </div>
-                            :   <>
-                                    { filesImage.length > 1 &&
-                                        <button
-                                            title='Baixar todas as imagens em um arquivo .zip'
-                                            className={`w-full bg-shadow-5 font-bold text-violet-500 hover:text-green-500 dark:text-violet-400 dark:hover:text-green-400 border border-dashed hover:border-solid border-violet-500 hover:border-green-500 dark:border-violet-400 dark:hover:border-green-400 ${clickedIndex === -1 ? 'underline' : ''} flex items-center justify-center gap-2 mt-1 mb-2 rounded-lg`}
-                                            onClick={() => {
-                                                setClickedIndex(-1)
-                                                generateZipImages(filesImage)
-                                            }}
-                                        >
-                                            Baixar tudo
-                                            <MdFolderZip className='text-lg' />
-                                        </button>
-                                    }
-                                    { filesImage.map((file, index) => {
-                                        return (
-                                            <div key={index} className='w-full flex items-center justify-between even:bg-shadow-5 dark:even:bg-shadow-15 rounded-md p-1 last:even:mb-3'>
+                        <Details summary='Imagens' containerClassName='max-h-[11.6rem]'>
+                            { filesImage.length === 0
+                                ?   <div className='w-full hover:bg-shadow-5 flex flex-col items-center justify-center border border-dashed border-violet-500 rounded-lg py-4'>
+                                        <FcImageFile className='text-2xl' />
+                                        Sem imagens
+                                    </div>
+                                :   <>
+                                        { filesImage.length > 1 &&
+                                            <button
+                                                title='Baixar todas as imagens em um arquivo .zip'
+                                                className={`w-full bg-shadow-5 font-bold text-violet-500 hover:text-green-500 dark:text-violet-400 dark:hover:text-green-400 border border-dashed hover:border-solid border-violet-500 hover:border-green-500 dark:border-violet-400 dark:hover:border-green-400 ${clickedIndex === -1 ? 'underline' : ''} flex items-center justify-center gap-2 mt-1 mb-2 rounded-lg`}
+                                                onClick={() => {
+                                                    setClickedIndex(-1)
+                                                    generateZipImages(filesImage)
+                                                }}
+                                            >
+                                                Baixar tudo
+                                                <MdFolderZip className='text-lg' />
+                                            </button>
+                                        }
+                                        { filesImage.map((file, index) => {
+                                            return (
+                                                <div key={index} className='w-full flex items-center justify-between even:bg-shadow-5 dark:even:bg-shadow-15 rounded-md p-1 last:even:mb-3'>
                                                 <span className={`pl-1 truncate cursor-default ${clickedIndex === index ? 'underline underline-offset-4' : ''}`}>{file.name}</span>
 
                                                 <div className='flex flex-nowrap'>

@@ -103,7 +103,7 @@ type InputType = {
  */
 export type InputProps = JSX.IntrinsicElements['input'] & InputType
 /* Components/Details */
-type DetailsType = { summary?: string }
+type DetailsType = { summary?: string, containerClassName?: string }
 /**
  * Defines the types of native details properties.
  */

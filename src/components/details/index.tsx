@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid'
 
 import { DetailsProps } from '@/interfaces/types'
 
-export const Details = ({ summary = 'Title', children }: DetailsProps) => {
+export const Details = ({ summary = 'Title', children, containerClassName }: DetailsProps) => {
     const [detailsOpen, setDetailsOpen] = useState(false)
     const [detailsId, setDetailsId] = useState('')
 
@@ -21,10 +21,10 @@ export const Details = ({ summary = 'Title', children }: DetailsProps) => {
 
     return (
         <details data-details-id={detailsId} open={detailsOpen}>
-            <summary className={`${detailsOpen ? 'rounded-t-lg' : 'rounded-lg'} px-4 py-1 cursor-pointer`}>
+            <summary className={`${detailsOpen ? 'rounded-t-lg' : 'rounded-lg'} text-center px-4 py-1 cursor-pointer`}>
                 {summary}
             </summary>
-            <div className='rounded-b-lg px-4 py-1'>
+            <div className={`${containerClassName} rounded-b-lg px-4 py-1 overflow-auto`}>
                 {children}
             </div>
         </details>
