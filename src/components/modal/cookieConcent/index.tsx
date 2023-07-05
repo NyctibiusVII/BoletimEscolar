@@ -26,7 +26,7 @@ export const CookieConcent = () => {
                         <div className='backdrop-blur-[4px] p-2 flex flex-col gap-4 md:p-4 md:flex-row md:items-center md:justify-between md:gap-8 lg:px-8'>
                             <div className='text-amber-200'>
                                 <h1 className='text-center text-lg font-bold md:text-left'>Cookies</h1>
-                                <p>Ao usar este site, você concorda com o uso de cookies. Usamos cookies para lhe proporcionar uma ótima experiência e para ajudar o nosso site a funcionar de forma eficaz.</p>
+                                <p className='whitespace-normal'>Ao usar este site, você concorda com o uso de cookies. Usamos cookies para lhe proporcionar uma ótima experiência e para ajudar o nosso site a funcionar de forma eficaz.</p>
                             </div>
 
                             <button
