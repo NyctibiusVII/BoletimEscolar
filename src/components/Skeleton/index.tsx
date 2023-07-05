@@ -1,6 +1,5 @@
 import {
     ComponentMappingType,
-    DefaultValues,
     ProportionalSizeMappingType,
     ProportionalSizeResolverProps,
     SizeResolverProps,
@@ -15,7 +14,7 @@ import {
 const Skeleton: SkeletonProps = () => <></>
 
 const Component = (className: string) =>
-    <div className={`${className} ${DefaultValues.SKELETON_STYLE} bg-shadow-15`} />
+    <div className={`${className} bg-shadow-15 mx-auto rounded-lg animate-pulse`} />
 
 const sizeResolver = ({ width: w, height: h, ComponentType: type }: SizeResolverProps) => {
     const sizeTypeValue = {

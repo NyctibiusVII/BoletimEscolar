@@ -92,11 +92,13 @@ type InfoIconType = {
 export type InfoIconProps = JSX.IntrinsicElements['svg'] & InfoIconType
 /* Components/Input */
 type InputType = {
-    name:           string
-    label?:         string
-    labelPosition?: 'before' | 'after'
-    container?:     boolean
-    withForm?:      boolean
+    name:            string
+    label?:          string
+    labelStyle?:     string
+    labelPosition?:  'before' | 'after'
+    container?:      boolean
+    containerStyle?: string
+    withForm?:       boolean
 }
 /**
  * Defines the types of native input properties.
@@ -160,7 +162,6 @@ export enum DefaultValues {
     INACTIVE_SUBJECTS = '["Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
     MATTER            = '["Português","Matemática","Artes","Ciências","História","Geografia","Educação Física","Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
     FILES_IMAGE       = '[]',
-    SKELETON_STYLE    = 'mx-auto rounded-lg animate-pulse',
     TOTAL_CLASSES  = 56,
     TOTAL_ABSENCES = 0,
     CONCEPT      = Concept.D,
