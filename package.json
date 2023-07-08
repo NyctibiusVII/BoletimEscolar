@@ -1,7 +1,7 @@
 {
 	"name": "boletimescolar",
 	"description": "Geração de Boletim escolar automatizado e personalizável, para escolas / professores.",
-	"version": "1.0.0",
+	"version": "3.24.65",
 	"author": "NyctibiusVII",
 	"license": "MIT",
 	"homepage": "https://boletim-escolar.vercel.app/",
