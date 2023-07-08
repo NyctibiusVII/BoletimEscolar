@@ -24,7 +24,6 @@ import {
 import { Form }  from '@unform/web'
 import { Inter } from 'next/font/google'
 
-import { generateUniqueRandomNumber } from '@/utils/generateUniqueRandomNumber'
 import { GenerateImageContext } from '@/contexts/GenerateImageContext'
 import { LocalStorageContext }  from '@/contexts/LocalStorageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
@@ -40,9 +39,8 @@ export const SchoolReport = () => {
     const containerRef = useRef<HTMLDivElement>(null)
 
     const [mainWidth, setMainWidth] = useState(0)
-    const [isHandleResizeExecuted, setIsHandleResizeExecuted] = useState(false)
+    const [handleResizeTimeout, setHandleResizeTimeout] = useState(100)
     const [paddingYTableItems, setPaddingYTableItems] = useState('py-[0.35rem]')
-    const [updateLayout, setUpdateLayout] = useState(generateUniqueRandomNumber)
 
     const { generateImage } = useContext(GenerateImageContext)
     const { getItemsLocalStorage } = useContext(LocalStorageContext)
@@ -176,42 +174,19 @@ export const SchoolReport = () => {
 
     useLayoutEffect(() => {
         const handleResize = () => {
-            if (!mainRef.current) return
-
-            mainRef.current && (mainRef.current.style.opacity = '0')
-            setMainWidth(0)
-        }
-
-        handleResize()
-        window.addEventListener('resize', handleResize)
-
-        return () => {
-            window.removeEventListener('resize', handleResize)
-            setIsHandleResizeExecuted(true)
-            setUpdateLayout(generateUniqueRandomNumber)
-        }
-    }, [subjects, hasSignatures])
-
-    useLayoutEffect(() => {
-        if(!isHandleResizeExecuted) return
-
-        const handleResizeWithMainWidth = () => {
             if (!(mainRef.current && containerRef.current)) return
-
-            const containerWidth = containerRef.current.offsetWidth
-            const containerHeight = containerRef.current.offsetHeight
-            const desiredHeight = (containerWidth / 16) * 9
-
-            if (containerHeight > desiredHeight) setMainWidth((containerHeight / 9) * 16)
-            else setMainWidth(containerWidth)
-
-            setTimeout(() => mainRef.current && (mainRef.current.style.opacity = '1'), 1)
+            setMainWidth((containerRef.current.offsetHeight / 9) * 16)
+            if (handleResizeTimeout > 1) setHandleResizeTimeout(0)
+            mainRef.current.style.opacity = '1'
         }
-        handleResizeWithMainWidth()
-        window.addEventListener('resize', handleResizeWithMainWidth)
 
-        return () => window.removeEventListener('resize', handleResizeWithMainWidth)
-    }, [updateLayout, isHandleResizeExecuted])
+        setTimeout(() => {
+            handleResize()
+            window.addEventListener('resize', handleResize)
+        }, handleResizeTimeout)
+
+        return () => window.removeEventListener('resize', handleResize)
+    }, [subjects, hasSignatures, handleResizeTimeout])
 
     return (
         <div ref={containerRef} className='max-w-fit m-auto'>
