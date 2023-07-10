@@ -11,6 +11,7 @@ import {
     Bimester,
     Concept,
     DefaultValues,
+    SchoolReportStyles,
     SchoolReportType,
     StudentAcademicRecord,
     SubjectSituation
@@ -39,6 +40,7 @@ export const SchoolReport = () => {
     const containerRef = useRef<HTMLDivElement>(null)
 
     const [mainWidth, setMainWidth] = useState(0)
+    const [isMainHovered, setIsMainHovered] = useState(false)
     const [handleResizeTimeout, setHandleResizeTimeout] = useState(100)
     const [paddingYTableItems, setPaddingYTableItems] = useState('py-[0.35rem]')
 
@@ -49,7 +51,7 @@ export const SchoolReport = () => {
     const {
         subjects,
         activeQuarter,
-        // schoolReportColors,
+        schoolReportColors,
         maintainReportCardData,
         minimumPassingGrade,
         hasResponsibleTeacherName,
@@ -152,14 +154,15 @@ export const SchoolReport = () => {
         })
     }
 
-    const schoolReportColors = {
-        card:              `bg-white`,
-        border:            `border-gray-950`,
-        clippingBorder:    `hover:border-red-600`,
-        signatures:        `border-gray-950`,
-        text:              `text-gray-950`,
-        insufficientGrade: `text-red-600`,
-        enoughGrade:       `text-green-500`
+    const styles: SchoolReportStyles = {
+        card: {
+            width: `${mainWidth}px`,
+            backgroundColor: schoolReportColors.card,
+            color: schoolReportColors.text,
+            ...(isMainHovered && { borderColor: schoolReportColors.clippingBorder })
+        },
+        border: { borderColor: schoolReportColors.border },
+        signatures: { borderColor: schoolReportColors.signatures },
     }
 
     useEffect(() => {
@@ -193,18 +196,16 @@ export const SchoolReport = () => {
             <main
                 id='school-report'
                 ref={mainRef}
-                className={
-                    `${schoolReportColors.text} ${schoolReportColors.card} opacity-0
-                    font-bold ${inter.className} line-clamp-2 text-[0.5rem] xl:text-[0.7rem] 2xl:text-[1rem]
-                    border-2 border-transparent border-dashed ${schoolReportColors.clippingBorder}
-                    p-3 flex flex-col items-center justify-center gap-3 xl:gap-4 2xl:gap-6 overflow-visible z-10`
-                }
-                style={{ width: `${mainWidth}px` }}
+                onMouseEnter={() => setIsMainHovered(true)}
+                onMouseLeave={() => setIsMainHovered(false)}
+                className={`font-bold ${inter.className} line-clamp-2 text-[0.5rem] xl:text-[0.7rem] 2xl:text-[1rem] border-2 border-transparent border-dashed p-3 opacity-0 flex flex-col items-center justify-center gap-3 xl:gap-4 2xl:gap-6 overflow-visible z-10`}
+                style={styles.card}
             >
                 <Form
                     ref={formRef}
                     onSubmit={handleFormSubmit}
-                    className={`w-full border border-b-0 ${schoolReportColors.border}`}
+                    className='w-full border border-b-0'
+                    style={styles.border}
                 >
                     <section>
                         <h1 className='text-center uppercase my-4 xl:my-6 2xl:my-8'>
@@ -212,14 +213,14 @@ export const SchoolReport = () => {
                             <span>{schoolReport.academicYear}</span>
                         </h1>
 
-                        <hr className={schoolReportColors.border} />
+                        <hr style={styles.border} />
 
                         <div className={`min-h-[1rem] xl:min-h-[1.5rem] 2xl:min-h-[2rem] flex justify-between gap-8 px-2 ${paddingYTableItems}`}>
                             <Input
                                 name='school'
                                 label='Escola:'
                                 type='text'
-                                className={`w-full`}
+                                className='w-full'
                                 onChange={event => setSchoolReport({...schoolReport, school: event.target.value})}
                                 value={schoolReport.school}
                                 containerStyle={`${hasResponsibleTeacherName ? 'w-[70%]' : 'w-full'}`}
@@ -231,7 +232,7 @@ export const SchoolReport = () => {
                                     name='teacher'
                                     label='Prof:'
                                     type='text'
-                                    className={`w-full`}
+                                    className='w-full'
                                     onChange={event => setSchoolReport({...schoolReport, teacher: event.target.value})}
                                     value={schoolReport.teacher}
                                     containerStyle='w-[30%]'
@@ -241,7 +242,7 @@ export const SchoolReport = () => {
                             }
                         </div>
 
-                        <hr className={schoolReportColors.border} />
+                        <hr style={styles.border} />
 
                         <div className={`min-h-[1rem] xl:min-h-[1.5rem] 2xl:min-h-[2rem] flex justify-between gap-8 px-2 ${paddingYTableItems}`}>
                             <Scope path='student'>
@@ -249,7 +250,7 @@ export const SchoolReport = () => {
                                     name='name'
                                     label='Nome:'
                                     type='text'
-                                    className={`w-full`}
+                                    className='w-full'
                                     onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, name: event.target.value}})}
                                     value={schoolReport.student.name}
                                     containerStyle='w-[70%]'
@@ -262,7 +263,7 @@ export const SchoolReport = () => {
                                         name='number'
                                         label='N°:'
                                         type='number'
-                                        className={`w-12 inputNumberValues`}
+                                        className='w-12 inputNumberValues'
                                         onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, number: Number(event.target.value)}})}
                                         value={schoolReport.student.number}
                                         step='1'
@@ -275,7 +276,7 @@ export const SchoolReport = () => {
                                         name='yearAndClass'
                                         label='Ano:'
                                         type='text'
-                                        className={`w-full`}
+                                        className='w-full'
                                         onChange={event => setSchoolReport({...schoolReport, student: {...schoolReport.student, yearAndClass: event.target.value}})}
                                         value={schoolReport.student.yearAndClass}
                                         minLength={1}
@@ -292,22 +293,22 @@ export const SchoolReport = () => {
                         <table className='w-full border-collapse border-spacing-0'>
                             <thead>
                                 <tr>
-                                    <th className={`tableItens border-l-0 px-2 ${schoolReportColors.border}`} rowSpan={2}>Disciplina</th>
-                                    <th className={`tableItens py-1 ${schoolReportColors.border}`} colSpan={4}>Notas</th>
-                                    <th className={`tableItens py-1 ${schoolReportColors.border}`} colSpan={4}>Faltas</th>
-                                    { hasConcept && <th className={`tableItens px-2 ${schoolReportColors.border}`} rowSpan={2}>5°<br />Conceito</th> }
-                                    <th className={`tableItens px-2 ${schoolReportColors.border}`} rowSpan={2}>Total de faltas</th>
-                                    <th className={`tableItens border-r-0 px-2 ${schoolReportColors.border}`} rowSpan={2}>Resultado final</th>
+                                    <th className='tableItens border-l-0 px-2' style={styles.border} rowSpan={2}>Disciplina</th>
+                                    <th className='tableItens py-1' style={styles.border} colSpan={4}>Notas</th>
+                                    <th className='tableItens py-1' style={styles.border} colSpan={4}>Faltas</th>
+                                    { hasConcept && <th className='tableItens px-2' style={styles.border} rowSpan={2}>5°<br />Conceito</th> }
+                                    <th className='tableItens px-2' style={styles.border} rowSpan={2}>Total de faltas</th>
+                                    <th className='tableItens border-r-0 px-2' style={styles.border} rowSpan={2}>Resultado final</th>
                                 </tr>
                                 <tr>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>1°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>2°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>3°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>4°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>1°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>2°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>3°<br />Bim</th>
-                                    <th className={`tableItens w-14 2xl:w-16 py-2 ${schoolReportColors.border}`}>4°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>1°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>2°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>3°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>4°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>1°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>2°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>3°<br />Bim</th>
+                                    <th className='tableItens w-14 2xl:w-16 py-2' style={styles.border}>4°<br />Bim</th>
                                 </tr>
                             </thead>
 
@@ -318,7 +319,7 @@ export const SchoolReport = () => {
                                 return (
                                     <Scope path={`${subject}`} key={subject}>
                                         <tr key={subject}>
-                                            <td className={`tableItens border-l-0 px-2 ${paddingYTableItems} ${schoolReportColors.border}`}>
+                                            <td className={`tableItens border-l-0 px-2 ${paddingYTableItems}`} style={styles.border}>
                                                 <Input
                                                     name='subject'
                                                     type='text'
@@ -330,12 +331,13 @@ export const SchoolReport = () => {
                                             </td>
 
                                             <Scope path='grades'>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.firstQuarter &&
                                                         <Input
                                                             name='firstQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues ${matter.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            style={{ color: matter.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                             value={matter.grades.firstQuarter}
                                                             step='0.1'
@@ -344,12 +346,13 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.secondQuarter &&
                                                         <Input
                                                             name='secondQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues ${matter.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            style={{ color: matter.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                             value={matter.grades.secondQuarter}
                                                             step='0.1'
@@ -358,12 +361,13 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.thirdQuarter &&
                                                         <Input
                                                             name='thirdQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues ${matter.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            style={{ color: matter.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                             value={matter.grades.thirdQuarter}
                                                             step='0.1'
@@ -372,12 +376,13 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.fourthQuarter &&
                                                         <Input
                                                             name='fourthQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues ${matter.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade}`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            style={{ color: matter.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                             value={matter.grades.fourthQuarter}
                                                             step='0.1'
@@ -389,12 +394,12 @@ export const SchoolReport = () => {
                                             </Scope>
 
                                             <Scope path='absences'>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.firstQuarter &&
                                                         <Input
                                                             name='firstQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'absences')}
                                                             value={matter.absences.firstQuarter}
                                                             step='1'
@@ -403,12 +408,12 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.secondQuarter &&
                                                         <Input
                                                             name='secondQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'absences')}
                                                             value={matter.absences.secondQuarter}
                                                             step='1'
@@ -417,12 +422,12 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.thirdQuarter &&
                                                         <Input
                                                             name='thirdQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'absences')}
                                                             value={matter.absences.thirdQuarter}
                                                             step='1'
@@ -431,12 +436,12 @@ export const SchoolReport = () => {
                                                         />
                                                     }
                                                 </td>
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { activeQuarter.fourthQuarter &&
                                                         <Input
                                                             name='fourthQuarter'
                                                             type='number'
-                                                            className={`w-full text-center pl-3 inputNumberValues`}
+                                                            className='w-full text-center pl-3 inputNumberValues'
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'absences')}
                                                             value={matter.absences.fourthQuarter}
                                                             step='1'
@@ -448,7 +453,7 @@ export const SchoolReport = () => {
                                             </Scope>
 
                                             { hasConcept &&
-                                                <td className={`tableItens ${schoolReportColors.border}`}>
+                                                <td className='tableItens' style={styles.border}>
                                                     { hasConceptValues &&
                                                         <Input
                                                             name='concept'
@@ -463,7 +468,7 @@ export const SchoolReport = () => {
                                                     }
                                                 </td>
                                             }
-                                            <td className={`tableItens ${schoolReportColors.border}`}>
+                                            <td className='tableItens' style={styles.border}>
                                                 <Input
                                                     name='totalAbsences'
                                                     type='text'
@@ -473,7 +478,7 @@ export const SchoolReport = () => {
                                                     disabled
                                                 />
                                             </td>
-                                            <td className={`tableItens border-r-0 px-2 ${schoolReportColors.border}`}>
+                                            <td className='tableItens border-r-0 px-2' style={styles.border}>
                                                 { hasFinalResultValues &&
                                                     <Input
                                                         name='finalResult'
@@ -505,12 +510,12 @@ export const SchoolReport = () => {
                 { hasSignatures &&
                     <div className='w-full'>
                         <div className='flex justify-between gap-10 xl:gap-12'>
-                            <p className={`w-full border-b-[0.07rem] border-solid ${schoolReportColors.signatures}`}>1° Bim:</p>
-                            <p className={`w-full border-b-[0.07rem] border-solid ${schoolReportColors.signatures}`}>2° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>1° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>2° Bim:</p>
                         </div>
                         <div className='flex justify-between gap-10 xl:gap-12 mt-3 xl:mt-4 2xl:mt-6'>
-                            <p className={`w-full border-b-[0.07rem] border-solid ${schoolReportColors.signatures}`}>3° Bim:</p>
-                            <p className={`w-full border-b-[0.07rem] border-solid ${schoolReportColors.signatures}`}>4° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>3° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>4° Bim:</p>
                         </div>
                     </div>
                 }

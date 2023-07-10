@@ -12,17 +12,18 @@ import {
 } from '@/interfaces/types'
 
 export interface SchoolReportConfigContextData {
-    subjects:                 Matter[]
-    inactiveSubjects:         Matter[]
-    setSubjects:              (value: Matter[]) => void
-    setInactiveSubjects:      (value: Matter[]) => void
-    activeQuarter:            ActiveQuarter
-    setActiveQuarter          (value: ActiveQuarter): void
-    updateActiveQuarter       (quarterNumber: 1 | 2 | 3 | 4): void
-    schoolReportColors:       SchoolReportColors
-    setSchoolReportColors     (value: SchoolReportColors): void
-    maintainReportCardData:   MaintainReportCardData
-    setMaintainReportCardData (value: MaintainReportCardData): void
+    subjects:                  Matter[]
+    inactiveSubjects:          Matter[]
+    setSubjects:               (value: Matter[]) => void
+    setInactiveSubjects:       (value: Matter[]) => void
+    activeQuarter:             ActiveQuarter
+    setActiveQuarter           (value: ActiveQuarter): void
+    updateActiveQuarter        (quarterNumber: 1 | 2 | 3 | 4): void
+    schoolReportColorsStartup: SchoolReportColors
+    schoolReportColors:        SchoolReportColors
+    setSchoolReportColors      (value: SchoolReportColors): void
+    maintainReportCardData:    MaintainReportCardData
+    setMaintainReportCardData  (value: MaintainReportCardData): void
     recalculateValues:   number
     setRecalculateValues (value: number): void
     minimumAttendancePercentageToPass: number
@@ -71,13 +72,13 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
     })
 
     const schoolReportColorsStartup: SchoolReportColors = {
-        card:              `bg-white`,
-        border:            `border-gray-950`,
-        clippingBorder:    `border-red-600`,
-        signatures:        `bg-gray-950`,
-        text:              `text-gray-950`,
-        insufficientGrade: `text-red-600`,
-        enoughGrade:       `text-green-500`
+        card:              '#ffffff',
+        border:            '#030712',
+        clippingBorder:    '#dc2626',
+        signatures:        '#030712',
+        text:              '#030712',
+        enoughGrade:       '#22c55e',
+        insufficientGrade: '#dc2626'
     }
     const [schoolReportColors, setSchoolReportColors] = useState<SchoolReportColors>(schoolReportColorsStartup)
 
@@ -133,6 +134,7 @@ export function SchoolReportConfigProvider({ children }: SchoolReportConfigProvi
                 activeQuarter,
                 setActiveQuarter,
                 updateActiveQuarter,
+                schoolReportColorsStartup,
                 schoolReportColors,
                 setSchoolReportColors,
                 maintainReportCardData,

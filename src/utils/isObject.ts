@@ -2,7 +2,8 @@ import {
     ActiveQuarter,
     FilesImage,
     MaintainReportCardData,
-    Matter
+    Matter,
+    SchoolReportColors
 } from '@/interfaces/types'
 
 export const isActiveQuarter = (obj: any): obj is ActiveQuarter => {
@@ -30,4 +31,14 @@ export const isMaintainReportCardData = (obj: any): obj is MaintainReportCardDat
 }
 export const isSubjects = (obj: any): obj is Matter[] => {
     return Array.isArray(obj) && obj.every(item => typeof item === 'string')
+}
+export const isSchoolReportColors = (obj: any): obj is SchoolReportColors => {
+    return typeof obj === 'object'
+        && 'card'              in obj
+        && 'border'            in obj
+        && 'clippingBorder'    in obj
+        && 'signatures'        in obj
+        && 'text'              in obj
+        && 'insufficientGrade' in obj
+        && 'enoughGrade'       in obj
 }

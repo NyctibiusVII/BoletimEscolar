@@ -15,6 +15,7 @@ import {
 } from 'react-icons/hi'
 import { FaCircle } from 'react-icons/fa'
 import { FcImageFile } from 'react-icons/fc'
+import { VscDebugRestart as VscReset } from 'react-icons/vsc'
 
 export {
     MdOutlineLightMode,
@@ -29,5 +30,6 @@ export {
     HiPlusSm,
     HiInformationCircle,
     FaCircle,
-    FcImageFile
+    FcImageFile,
+    VscReset
 }

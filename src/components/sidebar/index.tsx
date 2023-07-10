@@ -16,7 +16,8 @@ import {
     HiPlusSm,
     FaCircle,
     FcImageFile,
-    MdFolderZip
+    MdFolderZip,
+    VscReset
 } from '@/utils/reactIconsImports'
 
 import {
@@ -30,9 +31,10 @@ import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport }       from '@/hooks/useSchoolReport'
 import { useSidebar }            from '@/hooks/useSidebar'
 import { useTheme }              from '@/hooks/useTheme'
-import { InfoIcon } from '@/components/infoIcon'
-import { Details }  from '@/components/details'
-import { Input }    from '@/components/input'
+import { ColorPicker } from '@/components/colorPicker'
+import { InfoIcon }    from '@/components/infoIcon'
+import { Details }     from '@/components/details'
+import { Input }       from '@/components/input'
 
 export const Sidebar = () => {
     const { isOpen, toggleSidebar } = useSidebar()
@@ -66,13 +68,15 @@ export const Sidebar = () => {
         hasConcept,
         hasConceptValues,
         hasFinalResultValues,
+        schoolReportColorsStartup,
         updateActiveQuarter,
         setMaintainReportCardData,
         setHasResponsibleTeacherName,
         setHasSignatures,
         setHasConcept,
         setHasConceptValues,
-        setHasFinalResultValues
+        setHasFinalResultValues,
+        setSchoolReportColors
     } = useSchoolReportConfig()
 
     const {
@@ -510,13 +514,61 @@ export const Sidebar = () => {
                             </div>
                         </Details>
 
-                        <Details summary='Cores'>
-                            <button onClick={toggleTheme} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 border border-shadow-15 flex items-center justify-center gap-2 py-1 rounded-md'>
-                                { currentTheme === 'dark'
-                                    ? <MdOutlineLightMode className='text-xl' />
-                                    : <MdOutlineDarkMode className='text-xl' />
-                                } Mudar Tema
-                            </button>
+                        <Details summary='Cores' containerClassName='flex flex-col gap-2'>
+                            <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
+                                <p className='w-full font-bold flex items-center justify-between'>
+                                    Boletim
+
+                                    <button
+                                        title='Restaurar cores'
+                                        onClick={() => setSchoolReportColors(schoolReportColorsStartup)}
+                                        className='w-7 h-7 hover:bg-red-400 dark:text-white hover:text-white p-1 flex items-center justify-center rounded-md'
+                                    >
+                                        <VscReset className='text-lg' />
+                                    </button>
+                                </p>
+
+                                <div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Cartão</p>
+                                        <ColorPicker item='card' />
+                                    </div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Texto</p>
+                                        <ColorPicker item='text' />
+                                    </div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Borda</p>
+                                        <ColorPicker item='border' />
+                                    </div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Borda de recorte</p>
+                                        <ColorPicker item='clippingBorder' />
+                                    </div>
+                                    <div className={`${hasSignatures ? 'hover:bg-shadow-5 hover:dark:bg-shadow-15' : 'opacity-40 cursor-not-allowed'} w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md`}>
+                                        <p>Assinatura</p>
+                                        <ColorPicker item='signatures' disabled={!hasSignatures} />
+                                    </div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Notas positivas</p>
+                                        <ColorPicker item='enoughGrade' />
+                                    </div>
+                                    <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
+                                        <p>Notas negativas</p>
+                                        <ColorPicker item='insufficientGrade' />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className='w-fit font-bold mb-1'>Aplicação</p>
+                                <button onClick={toggleTheme} className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 border border-shadow-15 flex items-center justify-center gap-2 py-1 rounded-md'>
+                                    { currentTheme === 'dark'
+                                        ? <MdOutlineLightMode className='text-xl' />
+                                        : <MdOutlineDarkMode className='text-xl' />
+                                    } Mudar Tema
+                                </button>
+                            </div>
                         </Details>
                     </div>
                 </>

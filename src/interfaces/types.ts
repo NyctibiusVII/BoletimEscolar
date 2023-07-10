@@ -33,6 +33,7 @@ export type SchoolReportColors = {
     insufficientGrade: string
     enoughGrade:       string
 }
+export type SchoolReportStyles = { [key: string]: React.CSSProperties }
 export type Matter =
   | 'Português'
   | 'Matemática'
@@ -84,6 +85,13 @@ export interface SchoolReportType {
     student:               Student
     studentAcademicRecord: StudentAcademicRecord
 }
+/* Components/ColorPicker */
+type SchoolReportKeys = keyof SchoolReportColors
+type ColorPickerType = { item: SchoolReportKeys }
+/**
+ * Defines the types of native input properties.
+ */
+export type ColorPickerProps = JSX.IntrinsicElements['button'] & ColorPickerType
 /* Components/InfoIcon */
 type InfoIconType = {
     topic:       string
@@ -155,13 +163,14 @@ export enum DefaultValues {
     MINIMUM_PASSING_GRADE                 = 6,
     MINIMUM_RECOVERY_GRADE                = 4,
     MINIMUM_ATTENDANCE_PERCENTAGE_TO_PASS = 25,
-    KEEP_VALUES       = '{"school":true,"teacher":true,"studentName":false,"studentNumber":false,"studentYearAndClass":false,"academicRecordGrades":false,"academicRecordAbsences":false,"academicRecordTotalClasses":true}',
-    BIMESTER          = '{"firstQuarter":0,"secondQuarter":0,"thirdQuarter":0,"fourthQuarter":0}',
-    ACTIVE_QUARTER    = '{"firstQuarter":true,"secondQuarter":true,"thirdQuarter":true,"fourthQuarter":true}',
-    ACTIVE_SUBJECTS   = '["Português","Matemática","Artes","Ciências","História","Geografia","Educação Física"]',
-    INACTIVE_SUBJECTS = '["Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
-    MATTER            = '["Português","Matemática","Artes","Ciências","História","Geografia","Educação Física","Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
-    FILES_IMAGE       = '[]',
+    KEEP_VALUES          = '{"school":true,"teacher":true,"studentName":false,"studentNumber":false,"studentYearAndClass":false,"academicRecordGrades":false,"academicRecordAbsences":false,"academicRecordTotalClasses":true}',
+    BIMESTER             = '{"firstQuarter":0,"secondQuarter":0,"thirdQuarter":0,"fourthQuarter":0}',
+    ACTIVE_QUARTER       = '{"firstQuarter":true,"secondQuarter":true,"thirdQuarter":true,"fourthQuarter":true}',
+    ACTIVE_SUBJECTS      = '["Português","Matemática","Artes","Ciências","História","Geografia","Educação Física"]',
+    INACTIVE_SUBJECTS    = '["Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
+    MATTER               = '["Português","Matemática","Artes","Ciências","História","Geografia","Educação Física","Inglês","Física","Química","Biologia","Filosofia","Sociologia","Ensino Religioso"]',
+    SCHOOL_REPORT_COLORS = '{card:"#ffffff",border:"#030712",clippingBorder:"#dc2626",signatures:"#030712",text:"#030712",enoughGrade:"#22c55e",insufficientGrade:"#dc2626"}',
+    FILES_IMAGE          = '[]',
     TOTAL_CLASSES  = 56,
     TOTAL_ABSENCES = 0,
     CONCEPT      = Concept.D,

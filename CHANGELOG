@@ -176,8 +176,7 @@ Check [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) for recommenda
 - `context/GenerateImageContext.tsx`
 - `context/SchoolReportConfigContext.tsx`
 - `context/SchoolReportContext.tsx`
-- Custom subjects can be
-deleted in inactiveSubjects in `context/SidebarContext.tsx` file
+- Custom subjects can be deleted in inactiveSubjects in `context/SidebarContext.tsx` file
 - System theme in `useSwalTheme.tsx` file
 - `types.ts`
 - `_app.tsx`
@@ -240,3 +239,19 @@ deleted in inactiveSubjects in `context/SidebarContext.tsx` file
 - `HomePage-1366x768.png`
 - `package.json`
 - `README.md`
+
+## [3.24.66] - 2023-07-10
+### Added
+-  Created color picker component in `components/colorPicker/index.tsx` file
+### Changed
+- `components/schoolReport/index.tsx`
+- Added color picker for report card in `components/sidebar/index.tsx` file
+- Saving colors - `contexts/LocalStorageContext`
+- `contexts/SchoolReportConfigContext`
+- `utils/isObject.ts`
+- `utils/reactIconsImports.ts`
+- `types.ts`
+- `CHANGELOG`
+- Added dependencies - `package.json`
+- `README.md`
+- Added dependencies - `yarn.lock`

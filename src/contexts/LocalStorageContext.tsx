@@ -9,6 +9,7 @@ import {
     isActiveQuarter,
     isFilesImage,
     isMaintainReportCardData,
+    isSchoolReportColors,
     isSubjects
 } from '@/utils/isObject'
 import {
@@ -40,7 +41,7 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
     const { isOpen, setIsOpen } = useSidebar()
     const { isLoading, setIsLoading } = useLoading()
     const { filesImage, setFilesImage } = useContext(GenerateImageContext)
-    const { schoolReport, setSchoolReport, newAcademicRecord } = useSchoolReport()
+    const { schoolReport, setSchoolReport } = useSchoolReport()
     const {
         maintainReportCardData,
         minimumPassingGrade,
@@ -53,7 +54,8 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
         hasFinalResultValues,
         activeQuarter,
         subjects,
-        inactiveSubjects
+        inactiveSubjects,
+        schoolReportColors
     } = useSchoolReportConfig()
     const {
         setMaintainReportCardData,
@@ -67,7 +69,8 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
         setHasFinalResultValues,
         setActiveQuarter,
         setSubjects,
-        setInactiveSubjects
+        setInactiveSubjects,
+        setSchoolReportColors
     } = useSchoolReportConfig()
 
     const getItemsLocalStorage = () => {
@@ -84,11 +87,12 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
         getLocalStorage.has_final_result_values      = localStorage.getItem('has_final_result_values')      === 'false' ? false : true
         getLocalStorage.sidebar_open                 = localStorage.getItem('sidebar_open')                 === 'true'  ? true : false
 
-        getLocalStorage.keep_values       = localStorage.getItem('keep_values')       ? JSON.parse(localStorage.getItem('keep_values')       as string) : JSON.parse(DefaultValues.KEEP_VALUES)
-        getLocalStorage.active_quarter    = localStorage.getItem('active_quarter')    ? JSON.parse(localStorage.getItem('active_quarter')    as string) : JSON.parse(DefaultValues.ACTIVE_QUARTER)
-        getLocalStorage.files_image       = localStorage.getItem('files_image')       ? JSON.parse(localStorage.getItem('files_image')       as string) : JSON.parse(DefaultValues.FILES_IMAGE)
-        getLocalStorage.active_subjects   = localStorage.getItem('active_subjects')   ? JSON.parse(localStorage.getItem('active_subjects')   as string) : JSON.parse(DefaultValues.ACTIVE_SUBJECTS)
-        getLocalStorage.inactive_subjects = localStorage.getItem('inactive_subjects') ? JSON.parse(localStorage.getItem('inactive_subjects') as string) : JSON.parse(DefaultValues.INACTIVE_SUBJECTS)
+        getLocalStorage.keep_values          = localStorage.getItem('keep_values')          ? JSON.parse(localStorage.getItem('keep_values')          as string) : JSON.parse(DefaultValues.KEEP_VALUES)
+        getLocalStorage.active_quarter       = localStorage.getItem('active_quarter')       ? JSON.parse(localStorage.getItem('active_quarter')       as string) : JSON.parse(DefaultValues.ACTIVE_QUARTER)
+        getLocalStorage.files_image          = localStorage.getItem('files_image')          ? JSON.parse(localStorage.getItem('files_image')          as string) : JSON.parse(DefaultValues.FILES_IMAGE)
+        getLocalStorage.active_subjects      = localStorage.getItem('active_subjects')      ? JSON.parse(localStorage.getItem('active_subjects')      as string) : JSON.parse(DefaultValues.ACTIVE_SUBJECTS)
+        getLocalStorage.inactive_subjects    = localStorage.getItem('inactive_subjects')    ? JSON.parse(localStorage.getItem('inactive_subjects')    as string) : JSON.parse(DefaultValues.INACTIVE_SUBJECTS)
+        getLocalStorage.school_report_colors = localStorage.getItem('school_report_colors') ? JSON.parse(localStorage.getItem('school_report_colors') as string) : JSON.parse(DefaultValues.SCHOOL_REPORT_COLORS)
 
         const keepValues     = getLocalStorage.keep_values     as MaintainReportCardData
         const activeSubjects = getLocalStorage.active_subjects as Matter[]
@@ -131,6 +135,7 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
         return getLocalStorage
     }
 
+    /* Recover values from LocalStorage */
     useEffect(() => {
         const subjectsLocalStorage = getItemsLocalStorage().active_subjects as string[]
         const academicRecordData = subjectsLocalStorage.reduce((record, subject, index) => {
@@ -176,11 +181,12 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
                 case 'has_concept_values':           return typeof value === 'boolean' && setHasConceptValues(value)
                 case 'has_final_result_values':      return typeof value === 'boolean' && setHasFinalResultValues(value)
                 case 'sidebar_open':                 return typeof value === 'boolean' && setIsOpen(value)
-                case 'keep_values':       return isMaintainReportCardData(value) && setMaintainReportCardData(value)
-                case 'active_quarter':    return isActiveQuarter(value)          && setActiveQuarter(value)
-                case 'files_image':       return isFilesImage(value)             && setFilesImage(value)
-                case 'active_subjects':   return isSubjects(value)               && setSubjects(value)
-                case 'inactive_subjects': return isSubjects(value)               && setInactiveSubjects(value)
+                case 'keep_values':          return isMaintainReportCardData(value) && setMaintainReportCardData(value)
+                case 'active_quarter':       return isActiveQuarter(value)          && setActiveQuarter(value)
+                case 'files_image':          return isFilesImage(value)             && setFilesImage(value)
+                case 'active_subjects':      return isSubjects(value)               && setSubjects(value)
+                case 'inactive_subjects':    return isSubjects(value)               && setInactiveSubjects(value)
+                case 'school_report_colors': return isSchoolReportColors(value)     && setSchoolReportColors(value)
             }
         })
 
@@ -188,6 +194,7 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    /* Save values from LocalStorage */
     useEffect(() => {
         if (isLoading) return
 
@@ -203,11 +210,12 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
             localStorage.setItem('has_final_result_values',      String(hasFinalResultValues))
             localStorage.setItem('sidebar_open',                 String(isOpen))
 
-            localStorage.setItem('keep_values',       JSON.stringify(maintainReportCardData))
-            localStorage.setItem('active_quarter',    JSON.stringify(activeQuarter))
-            localStorage.setItem('files_image',       JSON.stringify(filesImage))
-            localStorage.setItem('active_subjects',   JSON.stringify(subjects))
-            localStorage.setItem('inactive_subjects', JSON.stringify(inactiveSubjects))
+            localStorage.setItem('keep_values',          JSON.stringify(maintainReportCardData))
+            localStorage.setItem('active_quarter',       JSON.stringify(activeQuarter))
+            localStorage.setItem('files_image',          JSON.stringify(filesImage))
+            localStorage.setItem('active_subjects',      JSON.stringify(subjects))
+            localStorage.setItem('inactive_subjects',    JSON.stringify(inactiveSubjects))
+            localStorage.setItem('school_report_colors', JSON.stringify(schoolReportColors))
 
             localStorage.setItem('school',                 schoolReport.school)
             localStorage.setItem('teacher',                schoolReport.teacher)
@@ -271,6 +279,7 @@ export function LocalStorageProvider({ children }: LocalStorageProviderProps) {
         filesImage,
         subjects,
         inactiveSubjects,
+        schoolReportColors,
         isOpen
     ])
 
