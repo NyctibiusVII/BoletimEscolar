@@ -1,5 +1,5 @@
-import { useSidebar } from '@/hooks/useSidebar'
 import { Skeleton } from '@/components/Skeleton'
+import { useSidebar } from '@/hooks/useSidebar'
 
 export const SkeletonHome = () => {
     const { isOpen } = useSidebar()

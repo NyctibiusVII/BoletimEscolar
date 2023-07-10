@@ -5,8 +5,8 @@ import {
 import Draggable from 'react-draggable'
 import { BlockPicker } from 'react-color'
 
-import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { ColorPickerProps } from '@/interfaces/types'
+import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 
 export const ColorPicker = ({ item, className, ...rest }: ColorPickerProps) => {
     const [show, setShow] = useState(false)

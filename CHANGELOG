@@ -240,17 +240,21 @@ Check [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) for recommenda
 - `package.json`
 - `README.md`
 
-## [3.24.66] - 2023-07-10
+## [3.24.66, 3.24.67] - 2023-07-10
 ### Added
 -  Created color picker component in `components/colorPicker/index.tsx` file
 ### Changed
 - `components/schoolReport/index.tsx`
 - Added color picker for report card in `components/sidebar/index.tsx` file
+- `components/skeleton/pages/SkeletonHome/index.tsx`
+- `contexts/GenerateImageContext`
 - Saving colors - `contexts/LocalStorageContext`
 - `contexts/SchoolReportConfigContext`
 - `utils/isObject.ts`
 - `utils/reactIconsImports.ts`
 - `types.ts`
+- `_app.tsx`
+- `pages/index.tsx`
 - `CHANGELOG`
 - Added dependencies - `package.json`
 - `README.md`

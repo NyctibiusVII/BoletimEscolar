@@ -16,7 +16,7 @@ import {
     Student
 } from '@/interfaces/types'
 
-import { useSidebar } from '@/hooks/useSidebar'
+import { useSidebar }      from '@/hooks/useSidebar'
 import { useSchoolReport } from '@/hooks/useSchoolReport'
 
 export interface GenerateImageContextData {

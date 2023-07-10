@@ -7,7 +7,6 @@ import { SkeletonHome } from '@/components/Skeleton/pages/SkeletonHome'
 import { Sidebar }      from '@/components/sidebar'
 import { SchoolReport } from '@/components/schoolReport'
 
-
 export default function Home() {
     const { currentTheme } = useTheme()
     const { isLoading } = useLoading()

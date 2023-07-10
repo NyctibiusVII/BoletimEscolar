@@ -3,7 +3,7 @@
 </h1>
 <p align="center">
     <img alt="Plataforma" src="https://img.shields.io/static/v1?label=Plataforma&message=Web&color=000000&labelColor=00E88F">
-    <img alt="BoletimEscolar" src="https://img.shields.io/static/v1?label=Version&message=3.24.66&color=000000&labelColor=00E88F">
+    <img alt="BoletimEscolar" src="https://img.shields.io/static/v1?label=Version&message=3.24.67&color=000000&labelColor=00E88F">
     <img alt="Tamanho do repositório" src="https://img.shields.io/github/repo-size/NyctibiusVII/BoletimEscolar?color=000000&labelColor=00E88F">
     <a href="https://github.com/NyctibiusVII/BoletimEscolar/blob/main/LICENSE">
         <img alt="Licença" src="https://img.shields.io/static/v1?label=License&message=MIT&color=000000&labelColor=00E88F">
