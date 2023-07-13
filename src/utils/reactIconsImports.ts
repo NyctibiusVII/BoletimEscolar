@@ -1,7 +1,4 @@
 import {
-    MdOutlineLightMode,
-    MdOutlineDarkMode,
-    MdOutlineFileDownload,
     MdKeyboardArrowLeft,
     MdKeyboardArrowRight,
     MdFolderZip
@@ -9,7 +6,6 @@ import {
 import {
     HiX,
     HiMenu,
-    HiTrash,
     HiPlusSm,
     HiInformationCircle
 } from 'react-icons/hi'
@@ -18,15 +14,11 @@ import { FcImageFile } from 'react-icons/fc'
 import { VscDebugRestart as VscReset } from 'react-icons/vsc'
 
 export {
-    MdOutlineLightMode,
-    MdOutlineDarkMode,
-    MdOutlineFileDownload,
     MdKeyboardArrowLeft,
     MdKeyboardArrowRight,
     MdFolderZip,
     HiX,
     HiMenu,
-    HiTrash,
     HiPlusSm,
     HiInformationCircle,
     FaCircle,

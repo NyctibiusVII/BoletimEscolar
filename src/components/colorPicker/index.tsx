@@ -26,7 +26,7 @@ export const ColorPicker = ({ item, className, ...rest }: ColorPickerProps) => {
         <>
             <button
                 onClick={() => setShow(!show)} {...rest}
-                className={`w-12 h-5 border border-black shadow-[0_0_0_1px_rgba(255,255,255)_inset] rounded-md disabled:cursor-not-allowed ${className}`}
+                className={`w-12 h-5 border border-gray-700 shadow-[0_0_0_1px_#e2e8f0_inset] rounded-md disabled:cursor-not-allowed ${className}`}
                 style={{ backgroundColor: schoolReportColors[item] }}
             />
             { show &&
@@ -47,6 +47,7 @@ export const ColorPicker = ({ item, className, ...rest }: ColorPickerProps) => {
                                 triangle='hide'
                                 colors={colors}
                                 color={schoolReportColors[item]}
+                                className='color-picker'
                                 onChangeComplete={color => setSchoolReportColors({ ...schoolReportColors, [item]: color.hex })}
                                 styles={{
                                     default: {
@@ -58,6 +59,17 @@ export const ColorPicker = ({ item, className, ...rest }: ColorPickerProps) => {
                                             borderRadius: '0.5rem',
                                             boxShadow: `0 0 20rem -3rem ${schoolReportColors[item]}, 0 0 1.5rem 0 #0000000d`,
                                             backdropFilter: 'blur(12px)'
+                                        },
+                                        label: {
+                                            backgroundColor: '#0000000d',
+                                            border: '1px dashed #ffffffcc',
+                                            borderRadius: '0.5rem',
+                                            fontWeight: 600,
+                                            textTransform: 'uppercase',
+                                            padding: '0 0.5rem',
+                                            userSelect: 'text',
+                                            cursor: 'text',
+                                            zIndex: 1000,
                                         },
                                         input: { color: '#9ca3af' }
                                     }

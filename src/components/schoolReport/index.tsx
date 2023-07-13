@@ -30,6 +30,7 @@ import { LocalStorageContext }  from '@/contexts/LocalStorageContext'
 import { useSchoolReportConfig } from '@/hooks/useSchoolReportConfig'
 import { useSchoolReport }       from '@/hooks/useSchoolReport'
 import { useSwalTheme }          from '@/hooks/useSwalTheme'
+import { useTheme }              from '@/hooks/useTheme'
 import { Input } from '@/components/input'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -41,11 +42,13 @@ export const SchoolReport = () => {
 
     const [mainWidth, setMainWidth] = useState(0)
     const [isMainHovered, setIsMainHovered] = useState(false)
+    const [isMainScreenshot, setIsMainScreenshot] = useState(false)
     const [handleResizeTimeout, setHandleResizeTimeout] = useState(100)
     const [paddingYTableItems, setPaddingYTableItems] = useState('py-[0.35rem]')
 
     const { generateImage } = useContext(GenerateImageContext)
     const { getItemsLocalStorage } = useContext(LocalStorageContext)
+    const { currentTheme } = useTheme()
     const swalColors = useSwalTheme()
 
     const {
@@ -71,6 +74,7 @@ export const SchoolReport = () => {
 
     const handleFormSubmit: SubmitHandler<SchoolReportType> = data => {
         let timerInterval: NodeJS.Timer
+        setIsMainScreenshot(true)
 
         Swal.fire({
             title: 'Carregando...',
@@ -93,6 +97,7 @@ export const SchoolReport = () => {
                         color: swalColors.fg,
                         iconColor: swalColors.success.icon
                     })
+                    .then(() => setIsMainScreenshot(false))
                     .then(() => console.info('Imagem gerada com sucesso!', { 'data': schoolReport }))
                 })
                 .then(() => {
@@ -159,7 +164,8 @@ export const SchoolReport = () => {
             width: `${mainWidth}px`,
             backgroundColor: schoolReportColors.card,
             color: schoolReportColors.text,
-            ...(isMainHovered && { borderColor: schoolReportColors.clippingBorder })
+            ...((isMainHovered || isMainScreenshot) && { borderColor: schoolReportColors.clippingBorder }),
+            ...((isMainHovered && currentTheme === 'dark') && { boxShadow: `0 0 20rem -8rem ${schoolReportColors.clippingBorder}` })
         },
         border: { borderColor: schoolReportColors.border },
         signatures: { borderColor: schoolReportColors.signatures },
@@ -198,13 +204,13 @@ export const SchoolReport = () => {
                 ref={mainRef}
                 onMouseEnter={() => setIsMainHovered(true)}
                 onMouseLeave={() => setIsMainHovered(false)}
-                className={`font-bold ${inter.className} line-clamp-2 text-[0.5rem] xl:text-[0.7rem] 2xl:text-[1rem] border-2 border-transparent border-dashed p-3 opacity-0 flex flex-col items-center justify-center gap-3 xl:gap-4 2xl:gap-6 overflow-visible z-10`}
+                className={`font-bold ${inter.className} line-clamp-2 text-[0.5rem] xl:text-[0.7rem] 2xl:text-[1rem] border-2 border-transparent border-dashed p-3 transition-[color,background-color,box-shadow,width,height] duration-700 opacity-0 flex flex-col items-center justify-center gap-3 xl:gap-4 2xl:gap-6 overflow-hidden z-10`}
                 style={styles.card}
             >
                 <Form
                     ref={formRef}
                     onSubmit={handleFormSubmit}
-                    className='w-full border border-b-0'
+                    className='w-full border border-b-0 transition-border-color'
                     style={styles.border}
                 >
                     <section>
@@ -213,7 +219,7 @@ export const SchoolReport = () => {
                             <span>{schoolReport.academicYear}</span>
                         </h1>
 
-                        <hr style={styles.border} />
+                        <hr className='transition-border-color' style={styles.border} />
 
                         <div className={`min-h-[1rem] xl:min-h-[1.5rem] 2xl:min-h-[2rem] flex justify-between gap-8 px-2 ${paddingYTableItems}`}>
                             <Input
@@ -242,7 +248,7 @@ export const SchoolReport = () => {
                             }
                         </div>
 
-                        <hr style={styles.border} />
+                        <hr className='transition-border-color' style={styles.border} />
 
                         <div className={`min-h-[1rem] xl:min-h-[1.5rem] 2xl:min-h-[2rem] flex justify-between gap-8 px-2 ${paddingYTableItems}`}>
                             <Scope path='student'>
@@ -336,7 +342,7 @@ export const SchoolReport = () => {
                                                         <Input
                                                             name='firstQuarter'
                                                             type='number'
-                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            className='w-full text-center pl-3 inputNumberValues transition-[color] duration-700'
                                                             style={{ color: matter.grades.firstQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'firstQuarter', 'grades')}
                                                             value={matter.grades.firstQuarter}
@@ -351,7 +357,7 @@ export const SchoolReport = () => {
                                                         <Input
                                                             name='secondQuarter'
                                                             type='number'
-                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            className='w-full text-center pl-3 inputNumberValues transition-[color] duration-700'
                                                             style={{ color: matter.grades.secondQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'secondQuarter', 'grades')}
                                                             value={matter.grades.secondQuarter}
@@ -366,7 +372,7 @@ export const SchoolReport = () => {
                                                         <Input
                                                             name='thirdQuarter'
                                                             type='number'
-                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            className='w-full text-center pl-3 inputNumberValues transition-[color] duration-700'
                                                             style={{ color: matter.grades.thirdQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'thirdQuarter', 'grades')}
                                                             value={matter.grades.thirdQuarter}
@@ -381,7 +387,7 @@ export const SchoolReport = () => {
                                                         <Input
                                                             name='fourthQuarter'
                                                             type='number'
-                                                            className='w-full text-center pl-3 inputNumberValues'
+                                                            className='w-full text-center pl-3 inputNumberValues transition-[color] duration-700'
                                                             style={{ color: matter.grades.fourthQuarter >= minimumPassingGrade ? schoolReportColors.enoughGrade : schoolReportColors.insufficientGrade }}
                                                             onChange={event => updateStudentAcademicRecord(Number(event.target.value), subject, 'fourthQuarter', 'grades')}
                                                             value={matter.grades.fourthQuarter}
@@ -501,7 +507,7 @@ export const SchoolReport = () => {
                     <button
                         id='generate-image'
                         type='submit'
-                        className='text-white bg-green-500 hover:bg-green-600 border border-white rounded-lg shadow-lg px-4 py-2 fixed right-8 bottom-8 transition-colors'
+                        className='text-white bg-green-500 hover:bg-green-600 focus-visible:bg-green-600 active:bg-green-700 border border-white rounded-lg shadow-lg px-4 py-2 fixed right-8 bottom-8 interact-scale delay-75 active:delay-0 active:duration-200'
                     >
                         Gerar Imagem
                     </button>
@@ -510,12 +516,12 @@ export const SchoolReport = () => {
                 { hasSignatures &&
                     <div className='w-full'>
                         <div className='flex justify-between gap-10 xl:gap-12'>
-                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>1° Bim:</p>
-                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>2° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid transition-border-color' style={styles.signatures}>1° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid transition-border-color' style={styles.signatures}>2° Bim:</p>
                         </div>
                         <div className='flex justify-between gap-10 xl:gap-12 mt-3 xl:mt-4 2xl:mt-6'>
-                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>3° Bim:</p>
-                            <p className='w-full border-b-[0.07rem] border-solid' style={styles.signatures}>4° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid transition-border-color' style={styles.signatures}>3° Bim:</p>
+                            <p className='w-full border-b-[0.07rem] border-solid transition-border-color' style={styles.signatures}>4° Bim:</p>
                         </div>
                     </div>
                 }

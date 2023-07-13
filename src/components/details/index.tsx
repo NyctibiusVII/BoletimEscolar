@@ -27,7 +27,7 @@ export const Details = ({ summary = 'Title', children, containerClassName }: Det
             <summary className={`${detailsOpen ? 'rounded-t-lg' : 'rounded-lg'} text-center px-4 py-1 cursor-pointer`}>
                 {summary}
             </summary>
-            <div className={`${containerClassName} rounded-b-lg px-4 py-1 overflow-auto`}>
+            <div className={`${containerClassName ?? ''} rounded-b-lg px-4 py-1 overflow-auto`}>
                 {children}
             </div>
         </details>

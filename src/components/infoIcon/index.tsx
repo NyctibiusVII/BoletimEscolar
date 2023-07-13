@@ -30,7 +30,7 @@ export const InfoIcon = ({ topic, description, ...rest }: InfoIconProps) => {
 
             <HiInformationCircle
                 title={description}
-                className='text-black dark:text-white absolute top-0 right-[-1.2rem] cursor-help'
+                className='text-black dark:text-white interact-scale hover:drop-shadow-[0_0_1rem_#000] hover:dark:drop-shadow-[0_0_1rem_#fff] absolute top-0 right-[-1.2rem] cursor-help'
                 onClick={() => {
                     Swal.fire({
                         title: 'Informação',

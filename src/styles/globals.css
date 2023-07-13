@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 @layer base {
-    body  { @apply antialiased bg-slate-200 text-gray-950 dark:bg-gray-950 dark:text-gray-100 }
+    body           { @apply antialiased bg-slate-200 text-gray-950 dark:bg-gray-950 dark:text-gray-100 }
     p, span, input { @apply truncate }
-    label { @apply self-center }
-    aside { @apply bg-slate-100 dark:bg-gray-900 }
-    input { @apply bg-transparent disabled:bg-transparent }
-    summary { @apply bg-slate-300 dark:bg-gray-800 }
-    summary ~ div { @apply bg-slate-200 dark:bg-gray-700 }
+    label          { @apply self-center }
+    aside          { @apply bg-slate-100 dark:bg-gray-900 }
+    input          { @apply bg-transparent disabled:bg-transparent }
+    summary        { @apply bg-slate-300 dark:bg-gray-800 }
+    summary ~ div  { @apply bg-slate-200 dark:bg-gray-700 }
 
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
@@ -26,8 +26,42 @@
     ::-webkit-scrollbar-corner     { @apply bg-transparent }
 }
 @layer components {
-    .tableItens { @apply text-center align-middle border px-[0.1rem] }
+    .tableItens { @apply text-center align-middle border px-[0.1rem] transition-border-color }
     .inputNumberValues { @apply out-of-range:focus-visible:outline-red-600 }
     .asideContentInsetShadow { @apply shadow-[inset_0_2.5rem_2rem_-1.5rem_rgba(0,0,0,0.1)] }
     .skeleton-sidebar, .skeleton-school-report { @apply bg-slate-300 dark:bg-gray-900 }
+    .transition-border-color { @apply transition-[border-color] duration-700 }
+
+    .glow-on { @apply text-green-400 dark:drop-shadow-[0_4px_8px_#4ade8040] }
+    .glow-off { @apply text-red-400 dark:drop-shadow-[0_4px_8px_#f8717140] }
+    .interact-scale { @apply hover:scale-110 active:scale-95 focus-visible:scale-110 transition-[background,transform] ease-in-out duration-300 }
+    .color-picker div:nth-child(3) > div > span > div { @apply interact-scale }
+
+    .animate-download svg path,
+    .animate-add svg,
+    .animate-trash svg path { @apply transition-transform duration-300 ease-in-out }
+
+    .animate-download:hover svg path.download-top-icon,
+    .animate-download:active svg path.download-top-icon,
+    .animate-download:focus-visible svg path.download-top-icon { @apply animate-bounce }
+
+    .animate-add:hover svg { @apply scale-110 }
+    .animate-add:active svg { @apply scale-95 }
+    .animate-add:focus-visible svg { @apply scale-110 }
+
+    .animate-trash:hover svg path.trash-top-icon,
+    .animate-trash:active svg path.trash-top-icon,
+    .animate-trash:focus-visible svg path.trash-top-icon { @apply rotate-[-10deg] translate-x-[-0.15rem] }
+    .animate-trash:hover svg path.trash-bottom-icon,
+    .animate-trash:active svg path.trash-bottom-icon,
+    .animate-trash:focus-visible svg path.trash-bottom-icon { @apply rotate-[10deg] translate-x-[0.15rem] }
+
+    .animate-restore-colors p { @apply transition-[width] ease-linear duration-150 }
+    .animate-restore-colors svg { @apply transition-transform ease-in duration-500 }
+    .animate-restore-colors:hover p,
+    .animate-restore-colors:focus-visible p { @apply w-[4.3rem] duration-300 delay-300 }
+    .animate-restore-colors:hover svg,
+    .animate-restore-colors:focus-visible svg { @apply rotate-[-45deg] }
 }
+@keyframes bounce { 50% { transform: translateY(-15%) } }
+.animate-bounce { animation: bounce 1.5s infinite ease-in-out }
