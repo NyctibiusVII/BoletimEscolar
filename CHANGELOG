@@ -260,7 +260,7 @@ Check [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/) for recommenda
 - `README.md`
 - Added dependencies - `yarn.lock`
 
-## [3.25.68] - 2023-07-13
+## [3.25.68, 3.26.69] - 2023-07-13
 ### Changed
 - Adding readability to hex color - `components/colorPicker/index.tsx`
 - `components/details/index.tsx`
