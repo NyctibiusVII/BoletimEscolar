@@ -11,6 +11,10 @@
     summary        { @apply bg-slate-300 dark:bg-gray-800 }
     summary ~ div  { @apply bg-slate-200 dark:bg-gray-700 }
 
+    summary { @apply list-none relative after:content-['▼'] after:inline-block after:-rotate-90 after:absolute after:right-0 after:mr-4 }
+    details[open] summary::after    { @apply rotate-0 }
+    summary::-webkit-details-marker { @apply hidden }
+
     input:-webkit-autofill,
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
