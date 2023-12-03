@@ -173,17 +173,25 @@ export const Sidebar = () => {
             }`
         }>
             <button
+                type='button'
+                aria-label={isOpen ? 'Fechar Menu' : 'Abrir Menu'}
                 onClick={() => toggleSidebar()}
                 className={
-                    `mx-auto text-slate-200k text-2xl flex items-center justify-center gap-2
+                    `mx-auto text-slate-200k text-xl flex items-center justify-center gap-2
                     ${!isOpen
                         ? 'w-[calc(100%-5rem)] sm:w-[calc(100%-15rem)] h-[1.5rem] lg:w-10 lg:h-10 2xl:w-12 2xl:h-12 lg:mt-[70%]'
                         : 'w-full my-2 lg:my-6'
                     }`
                 }
             >
-                { isOpen ? <HiX /> : <HiMenu className='lg:text-3xl' /> }
-                <h1 className={`text-xl ${!isOpen ? 'lg:hidden' : ''}`}>Boletim Escolar</h1>
+                { isOpen ?
+                    <>
+                        <HiX className='text-2xl' />
+                        <h1 aria-hidden={true}>Boletim Escolar</h1>
+                    </>
+                    :
+                    <HiMenu className='lg:text-3xl' />
+                }
             </button>
 
             { isOpen &&
@@ -192,6 +200,7 @@ export const Sidebar = () => {
                         <div className='flex flex-nowrap items-baseline gap-2 lg:justify-between'>
                             <p>Nota de aprovação:</p>
                             <Input
+                                id='enoughGrade'
                                 name='enoughGrade'
                                 withForm={false}
                                 type='number'
@@ -201,11 +210,14 @@ export const Sidebar = () => {
                                 step='1'
                                 min='1'
                                 max='10'
+                                label='Nota miníma para aprovação'
+                                labelStyle='sr-only'
                             />
                         </div>
                         <div className='flex flex-nowrap items-baseline gap-2 lg:justify-between'>
                             <p>Nota de recuperação:</p>
                             <Input
+                                id='insufficientGrade'
                                 name='insufficientGrade'
                                 withForm={false}
                                 type='number'
@@ -215,11 +227,14 @@ export const Sidebar = () => {
                                 step='1'
                                 min='1'
                                 max='10'
+                                label='Nota miníma para ficar de recuperação'
+                                labelStyle='sr-only'
                             />
                         </div>
                         <div className='flex flex-nowrap items-baseline gap-2 lg:justify-between'>
                             <p>Presença minima (%):</p>
                             <Input
+                                id='frequencyPercentage'
                                 name='frequencyPercentage'
                                 withForm={false}
                                 type='number'
@@ -229,6 +244,8 @@ export const Sidebar = () => {
                                 step='1'
                                 min='1'
                                 max='100'
+                                label='Porcentagem da frequência miníma de aulas'
+                                labelStyle='sr-only'
                             />
                         </div>
 
@@ -238,7 +255,7 @@ export const Sidebar = () => {
                             <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
                                 <p className='w-fit font-bold relative overflow-visible'>
                                     Dados
-                                    <InfoIcon topic='Habilitar / Desabilitar - Dados' description='Os itens de "Dados" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os resultados dos respectivos campos do boletim escolar.' />
+                                    <InfoIcon topic='Habilitar / Desabilitar - Dados' aria-haspopup='true' description='Os itens de "Dados" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os resultados dos respectivos campos do boletim escolar.' />
                                 </p>
 
                                 <div>
@@ -249,6 +266,7 @@ export const Sidebar = () => {
                                             <button
                                                 key={quarterNumber}
                                                 onClick={() => updateActiveQuarter(quarterNumber as 1 | 2 | 3 | 4)}
+                                                aria-pressed={activeQuarter[quarterKey]}
                                                 className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                             >
                                                 {quarterNumber}° Bimestre
@@ -258,6 +276,7 @@ export const Sidebar = () => {
                                     }) }
                                     <button
                                         onClick={() => setHasConceptValues(!hasConceptValues)}
+                                        aria-pressed={hasConceptValues}
                                         className={`${hasConcept ? 'hover:bg-shadow-5 hover:dark:bg-shadow-15' : 'cursor-not-allowed'} w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md disabled:opacity-40 transition-[background-color]`}
                                         disabled={!hasConcept}
                                     >
@@ -266,6 +285,7 @@ export const Sidebar = () => {
                                     </button>
                                     <button
                                         onClick={() => setHasFinalResultValues(!hasFinalResultValues)}
+                                        aria-pressed={hasFinalResultValues}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Resultado final
@@ -277,12 +297,13 @@ export const Sidebar = () => {
                             <div className='mt-2 divide-x divide-solid divide-transparent hover:divide-violet-500'>
                                 <p className='w-fit font-bold relative overflow-visible'>
                                     Componentes
-                                    <InfoIcon topic='Habilitar / Desabilitar - Componentes' description='Os itens de "Componentes" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os respectivos campos do boletim escolar.' />
+                                    <InfoIcon topic='Habilitar / Desabilitar - Componentes' aria-haspopup='true' description='Os itens de "Componentes" providos de "Habilitar / Desabilitar" refere-se à possibilidade de apresentar ou não os respectivos campos do boletim escolar.' />
                                 </p>
 
                                 <div>
                                     <button
                                         onClick={() => setHasResponsibleTeacherName(!hasResponsibleTeacherName)}
+                                        aria-pressed={hasResponsibleTeacherName}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Professor(a)
@@ -290,6 +311,7 @@ export const Sidebar = () => {
                                     </button>
                                     <button
                                         onClick={() => setHasConcept(!hasConcept)}
+                                        aria-pressed={hasConcept}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         5° Conceito
@@ -297,6 +319,7 @@ export const Sidebar = () => {
                                     </button>
                                     <button
                                         onClick={() => setHasSignatures(!hasSignatures)}
+                                        aria-pressed={hasSignatures}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Assinaturas
@@ -310,7 +333,7 @@ export const Sidebar = () => {
                             <div className='divide-x divide-solid divide-transparent hover:divide-violet-500'>
                                 <p className='w-fit font-bold relative overflow-visible'>
                                     Cabeçalho
-                                    <InfoIcon topic='Manter dados' description='Os itens de "Cabeçalho" providos de "Manter Dados" refere-se à salvar os dados digitados dos respectivos campos no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
+                                    <InfoIcon topic='Manter dados' aria-haspopup='true' description='Os itens de "Cabeçalho" providos de "Manter Dados" refere-se à salvar os dados digitados dos respectivos campos no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
                                 </p>
 
                                 <div>
@@ -319,6 +342,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             school: !maintainReportCardData.school
                                         })}
+                                        aria-pressed={maintainReportCardData.school}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'>
                                         Escola
                                         <FaCircle className={`${maintainReportCardData.school ? 'glow-on' : 'glow-off'} text-lg`} />
@@ -328,6 +352,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             teacher: !maintainReportCardData.teacher
                                         })}
+                                        aria-pressed={maintainReportCardData.teacher}
                                         className={`${hasResponsibleTeacherName ? 'hover:bg-shadow-5 hover:dark:bg-shadow-15' : 'cursor-not-allowed'} w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color] disabled:opacity-40`}
                                         disabled={!hasResponsibleTeacherName}
                                     >
@@ -339,6 +364,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             studentName: !maintainReportCardData.studentName
                                         })}
+                                        aria-pressed={maintainReportCardData.studentName}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'>
                                         Nome
                                         <FaCircle className={`${maintainReportCardData.studentName ? 'glow-on' : 'glow-off'} text-lg`} />
@@ -348,6 +374,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             studentNumber: !maintainReportCardData.studentNumber
                                         })}
+                                        aria-pressed={maintainReportCardData.studentNumber}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'>
                                         N°
                                         <FaCircle className={`${maintainReportCardData.studentNumber ? 'glow-on' : 'glow-off'} text-lg`} />
@@ -357,6 +384,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             studentYearAndClass: !maintainReportCardData.studentYearAndClass
                                         })}
+                                        aria-pressed={maintainReportCardData.studentYearAndClass}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'>
                                         Ano
                                         <FaCircle className={`${maintainReportCardData.studentYearAndClass ? 'glow-on' : 'glow-off'} text-lg`} />
@@ -367,7 +395,7 @@ export const Sidebar = () => {
                             <div className='mt-2 divide-x divide-solid divide-transparent hover:divide-violet-500'>
                                 <p className='w-fit font-bold relative overflow-visible'>
                                     Grade curricular
-                                    <InfoIcon topic='Grade curricular' description='Os itens de "Grade curricular" providos de "Manter Dados" refere-se à salvar as notas, faltas e o total de aulas dadas em determinada matéria no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
+                                    <InfoIcon topic='Grade curricular' aria-haspopup='true' description='Os itens de "Grade curricular" providos de "Manter Dados" refere-se à salvar as notas, faltas e o total de aulas dadas em determinada matéria no LocalStorage, assim, a página poderá ser recarregada e a informação não se perderá!' />
                                 </p>
 
                                 <div>
@@ -376,6 +404,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             academicRecordGrades: !maintainReportCardData.academicRecordGrades
                                         })}
+                                        aria-pressed={maintainReportCardData.academicRecordGrades}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Notas
@@ -386,6 +415,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             academicRecordAbsences: !maintainReportCardData.academicRecordAbsences
                                         })}
+                                        aria-pressed={maintainReportCardData.academicRecordAbsences}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Faltas
@@ -396,6 +426,7 @@ export const Sidebar = () => {
                                             ...maintainReportCardData,
                                             academicRecordTotalClasses: !maintainReportCardData.academicRecordTotalClasses
                                         })}
+                                        aria-pressed={maintainReportCardData.academicRecordTotalClasses}
                                         className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-[background-color]'
                                     >
                                         Aulas dadas
@@ -493,10 +524,11 @@ export const Sidebar = () => {
                                 <div className='w-full flex items-center justify-between gap-2 py-1 px-3 rounded-md'>
                                     <p className='relative overflow-visible'>
                                         Aulas dadas
-                                        <InfoIcon topic='Matérias' description='O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. Este item é importante porque entra no cálculo da porcentagem de faltas do aluno, o que consequentemente pode determinar uma reprovação por falta.' />
+                                        <InfoIcon topic='Matérias' aria-haspopup='true' description='O item "Aulas dadas" refere-se à quantidade de aulas dadas em determinada matéria. Este item é importante porque entra no cálculo da porcentagem de faltas do aluno, o que consequentemente pode determinar uma reprovação por falta.' />
                                     </p>
 
                                     <Input
+                                        id='totalClasses'
                                         name='totalClasses'
                                         withForm={false}
                                         type='number'
@@ -506,6 +538,8 @@ export const Sidebar = () => {
                                         step='1'
                                         min='1'
                                         max='248'
+                                        label={`Total de aulas dadas em ${schoolReport.studentAcademicRecord[subjects[activeSubjectIndex]]}`}
+                                        labelStyle='sr-only'
                                     />
                                 </div>
 
@@ -561,7 +595,9 @@ export const Sidebar = () => {
                                     }) }
 
                                     <div className='w-full hover:bg-shadow-5 hover:dark:bg-shadow-15 flex items-center justify-between gap-2 py-1 px-3 rounded-md transition-colors'>
+                                        <label htmlFor='otherSubject' className='sr-only'>Adicionar outra matéria</label>
                                         <input
+                                            id='otherSubject'
                                             name='otherSubject'
                                             type='text'
                                             className={`w-full h-7 bg-shadow-5 dark:bg-shadow-15 px-2 rounded-md`}

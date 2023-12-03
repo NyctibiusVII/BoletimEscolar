@@ -11,23 +11,10 @@ const InputComponent = ({ name, label, labelPosition='before', container=false, 
     const Input = <input className={`text-center border border-dashed border-violet-500 rounded-lg pl-1 ${className}`} {...props}/>
     const Label = <label htmlFor={name} className={labelStyle}>{label}</label>
 
-    return <>{ container ?
-        <div className={`${containerStyle} flex flex-nowrap gap-2`}>
-            {
-                (label && labelPosition === 'after') && <>{Input}{Label}</>
-                ||
-                (label) && <>{Label}{Input}</>
-                || Input
-            }
-        </div>
-        :
-        <>{
-            (label && labelPosition === 'after') && <>{Input}{Label}</>
-            ||
-            (label) && <>{Label}{Input}</>
-            || Input
-        }</>
-    }</>
+    const labelPositionResponse = getLabelPosition(labelPosition, Input, Label)
+    const response = getHasContainer(container, labelPositionResponse, `${containerStyle} gap-2`)
+
+    return response
 }
 const UnFormInput = ({ name, label, labelPosition='before', container=false, labelStyle='', containerStyle='', ...props }: InputProps) => {
     const inputRef = useRef<HTMLInputElement>(null)
@@ -52,21 +39,15 @@ const UnFormInput = ({ name, label, labelPosition='before', container=false, lab
         })
     }, [fieldName, registerField])
 
-    return <>{ container ?
-        <div className={`${containerStyle} flex flex-nowrap gap-1`}>
-            {
-                (label && labelPosition === 'after') && <>{Input}{Label}</>
-                ||
-                (label) && <>{Label}{Input}</>
-                || Input
-            }
-        </div>
-        :
-        <>{
-            (label && labelPosition === 'after') && <>{Input}{Label}</>
-            ||
-            (label) && <>{Label}{Input}</>
-            || Input
-        }</>
-    }</>
+    const labelPositionResponse = getLabelPosition(labelPosition, Input, Label)
+    const response = getHasContainer(container, labelPositionResponse, `${containerStyle} gap-1`)
+
+    return response
+}
+
+function getLabelPosition(labelPosition: string, Input: JSX.Element, Label: JSX.Element) {
+    return labelPosition === 'after' ? <>{Input}{Label}</> : <>{Label}{Input}</>
+}
+function getHasContainer(container: boolean, labelPositionResponse: JSX.Element, containerStyle: string) {
+    return container ? <div className={`flex flex-nowrap ${containerStyle}`}>{ labelPositionResponse }</div> : labelPositionResponse
 }

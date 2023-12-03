@@ -101,7 +101,7 @@ export type InfoIconProps = JSX.IntrinsicElements['svg'] & InfoIconType
 /* Components/Input */
 type InputType = {
     name:            string
-    label?:          string
+    label:           string
     labelStyle?:     string
     labelPosition?:  'before' | 'after'
     container?:      boolean

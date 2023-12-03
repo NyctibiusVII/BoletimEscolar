@@ -331,6 +331,8 @@ export const SchoolReport = () => {
                                                     type='text'
                                                     className='min-w-[4.2rem] xl:min-w-[6rem] 2xl:min-w-[9rem] w-full text-center'
                                                     value={subject}
+                                                    label={`Disciplina de ${subject}`}
+                                                    labelStyle='sr-only'
                                                     readOnly
                                                     disabled
                                                 />
@@ -349,6 +351,8 @@ export const SchoolReport = () => {
                                                             step='0.1'
                                                             min='0'
                                                             max='10'
+                                                            label={`Notas do primeiro bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -364,6 +368,8 @@ export const SchoolReport = () => {
                                                             step='0.1'
                                                             min='0'
                                                             max='10'
+                                                            label={`Notas do segundo bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -379,6 +385,8 @@ export const SchoolReport = () => {
                                                             step='0.1'
                                                             min='0'
                                                             max='10'
+                                                            label={`Notas do terceiro bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -394,6 +402,8 @@ export const SchoolReport = () => {
                                                             step='0.1'
                                                             min='0'
                                                             max='10'
+                                                            label={`Notas do quarto bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -411,6 +421,8 @@ export const SchoolReport = () => {
                                                             step='1'
                                                             min='0'
                                                             max='62'
+                                                            label={`Faltas do primeiro bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -425,6 +437,8 @@ export const SchoolReport = () => {
                                                             step='1'
                                                             min='0'
                                                             max='62'
+                                                            label={`Faltas do segundo bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -439,6 +453,8 @@ export const SchoolReport = () => {
                                                             step='1'
                                                             min='0'
                                                             max='62'
+                                                            label={`Faltas do terceiro bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -453,6 +469,8 @@ export const SchoolReport = () => {
                                                             step='1'
                                                             min='0'
                                                             max='62'
+                                                            label={`Faltas do quarto bimestre de ${subject}`}
+                                                            labelStyle='sr-only'
                                                         />
                                                     }
                                                 </td>
@@ -468,6 +486,8 @@ export const SchoolReport = () => {
                                                             value={matter.concept}
                                                             maxLength={1}
                                                             minLength={1}
+                                                            label={`5° Conceito de ${subject}`}
+                                                            labelStyle='sr-only'
                                                             readOnly
                                                             disabled
                                                         />
@@ -480,6 +500,8 @@ export const SchoolReport = () => {
                                                     type='text'
                                                     className='w-full text-center decoration-slice'
                                                     value={matter.totalAbsences}
+                                                    label={`Total de faltas de ${subject}`}
+                                                    labelStyle='sr-only'
                                                     readOnly
                                                     disabled
                                                 />
@@ -491,6 +513,8 @@ export const SchoolReport = () => {
                                                         type='text'
                                                         className='min-w-[4.8rem] xl:min-w-[6.7rem] 2xl:min-w-[10rem] w-full text-center'
                                                         value={matter.finalResult}
+                                                        label={`Resultado final de ${subject}`}
+                                                        labelStyle='sr-only'
                                                         readOnly
                                                         disabled
                                                     />
